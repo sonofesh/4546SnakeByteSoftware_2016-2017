@@ -4,7 +4,15 @@
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/drawable-hdpi-v4/button_shape.xml"
     },
     {
+        "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/ic_launcher.png",
+        "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/drawable-hdpi-v4/ic_launcher.png"
+    },
+    {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/ic_launcher.png",
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/drawable-hdpi-v4/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/drawable-hdpi-v4/button_shape.xml",
+        "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/drawable-hdpi-v4/button_shape.xml"
     }
 ]

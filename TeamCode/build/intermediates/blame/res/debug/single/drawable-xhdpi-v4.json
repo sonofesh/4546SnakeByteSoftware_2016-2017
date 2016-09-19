@@ -4,11 +4,23 @@
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/TeamCode/build/intermediates/exploded-aar/SnakeByte4546_2016-2017/FtcRobotController/unspecified/res/drawable-xhdpi-v4/icon_robotcontroller.png"
     },
     {
+        "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/res/merged/debug/drawable-xhdpi-v4/icon_robotcontroller.png",
+        "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/exploded-aar/4546SnakeByteSoftware_2016-2017/FtcRobotController/unspecified/res/drawable-xhdpi-v4/icon_robotcontroller.png"
+    },
+    {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/TeamCode/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/TeamCode/build/intermediates/exploded-aar/SnakeByte4546_2016-2017/FtcRobotController/unspecified/res/drawable-xhdpi-v4/ic_launcher.png"
     },
     {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/TeamCode/build/intermediates/res/merged/debug/drawable-xhdpi-v4/icon_menu.png",
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/TeamCode/build/intermediates/exploded-aar/SnakeByte4546_2016-2017/FtcRobotController/unspecified/res/drawable-xhdpi-v4/icon_menu.png"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/res/merged/debug/drawable-xhdpi-v4/ic_launcher.png",
+        "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/exploded-aar/4546SnakeByteSoftware_2016-2017/FtcRobotController/unspecified/res/drawable-xhdpi-v4/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/res/merged/debug/drawable-xhdpi-v4/icon_menu.png",
+        "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/exploded-aar/4546SnakeByteSoftware_2016-2017/FtcRobotController/unspecified/res/drawable-xhdpi-v4/icon_menu.png"
     }
 ]

@@ -30,6 +30,8 @@ public class AutoOpMode extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
+        
+
 
     }
 }

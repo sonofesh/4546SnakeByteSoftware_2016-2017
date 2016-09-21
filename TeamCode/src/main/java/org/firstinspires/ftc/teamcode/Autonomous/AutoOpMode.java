@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
+import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,7 +22,7 @@ public class AutoOpMode extends LinearOpMode
     DcMotor BR;
     DcMotor FL;
     DcMotor BL;
-    SensorAdafruitIMU gyroSensor;
+    BNO055IMU IMU;
     ColorSensor colorSensor1;
     ColorSensor colorSensor2;
     int BRV, FRV;
@@ -37,7 +38,7 @@ public class AutoOpMode extends LinearOpMode
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
-        final Telemetry.Item item = telemetry.addData("gyro init, beggining");
+        telemetry.addData("gyro", "initializing");
 
 
     }

@@ -51,7 +51,7 @@ import java.util.concurrent.locks.Lock;
 public class ConceptI2cAddressChange extends LinearOpMode {
 
   public static final int ADDRESS_SET_NEW_I2C_ADDRESS = 0x70;
-  // trigger bytes used to change I2C address on ModernRobotics sensors.
+  // trigger bytes used to change I2C address on ModernRobotics sensors. 
   public static final byte TRIGGER_BYTE_1 = 0x55;
   public static final byte TRIGGER_BYTE_2 = (byte) 0xaa;
 

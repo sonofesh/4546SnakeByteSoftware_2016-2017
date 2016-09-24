@@ -16,17 +16,22 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 @TeleOp(name = "AutoOpMode", group = "Autonomous")
 @Disabled
-public class AutoOpMode extends LinearOpMode
+public abstract class AutoOpMode extends LinearOpMode
 {
     DcMotor FR;
     DcMotor BR;
     DcMotor FL;
     DcMotor BL;
-    BNO055IMU IMU;
+    SensorAdafruitIMU IMU;
     ColorSensor colorSensor1;
     ColorSensor colorSensor2;
-    int BRV, FRV;
+    int BRV, BLV;
     int avg;
+
+    public AutoOpMode()
+    {
+        super();
+    }
 
     public void initialize(String side) throws InterruptedException
     {
@@ -39,18 +44,47 @@ public class AutoOpMode extends LinearOpMode
         BL.setPower(0);
         BR.setPower(0);
         telemetry.addData("gyro", "initializing");
-
-
+        //initalize sensors
+        IMU = new SensorAdafruitIMU();
+        //gyro init
     }
 
-    @Override
-    public void runOpMode() throws InterruptedException
+    //Basic base movement
+    public void moveForward(double power)
     {
-        
+        FR.setPower(power);
+        BR.setPower(power);
+        FL.setPower(-power);
+        BL.setPower(-power);
+    }
+    public void moveBackward(double power)
+    {
+        moveForward(-power);
+    }
+    public void turnRight(double power)
+    {
+        FR.setPower(-power);
+        BR.setPower(-power);
+        FL.setPower(-power);
+        BL.setPower(-power);
+    }
+    public void turnLeft(double power)
+    {
+        turnRight(-power);
+    }
+
+    //Methods based soley on encoders
+    public void getAvg() throws InterruptedException {
+        sleep(500);
+        BRV = Math.abs(BR.getCurrentPosition());
+        BLV = Math.abs(BL.getCurrentPosition());
+        avg = (BRV + BLV)/2;
+
+    }
+    public void moveForwardWithEncoders(double power, int distance)
+    {
 
 
     }
-    public void moveForwardWithEncoders(){
 
-    }
 }

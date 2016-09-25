@@ -14,7 +14,7 @@ public class TestEncoders extends AutoOpMode
     {
         initialize();
         waitForStart();
-        moveForwardWithEncoders(.5, 500);
+        moveForwardWithEncoders(.5, 500);;
         moveBackWardWithEncoders(.5, 500);
     }
 }

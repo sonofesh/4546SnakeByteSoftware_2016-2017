@@ -12,7 +12,15 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorAdafruitIMU;
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.Locale;
 
 /**
  * Created by sopa on 9/19/16.
@@ -25,11 +33,14 @@ public abstract class AutoOpMode extends LinearOpMode
     DcMotor BR;
     DcMotor FL;
     DcMotor BL;
-    BNO055IMU imu;;
+    BNO055IMU imu;
     ColorSensor colorSensor1;
     ColorSensor colorSensor2;
     int BRV, BLV;
     int avg;
+    Orientation angles;
+    Acceleration gravity;
+    BNO055IMU.Parameters parameters;
 
     public AutoOpMode()
     {
@@ -42,11 +53,14 @@ public abstract class AutoOpMode extends LinearOpMode
         BR = hardwareMap.dcMotor.get("BR");
         FL = hardwareMap.dcMotor.get("FL");
         BL = hardwareMap.dcMotor.get("BL");
+        telemetry.addData("motors", "initialized");
+        telemetry.update();
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
         telemetry.addData("gyro", "initializing");
+        telemetry.update();
         //Initialize Sensors
         //Color Sensor Initialization
         //set up parameters for gyro sensors
@@ -67,7 +81,7 @@ public abstract class AutoOpMode extends LinearOpMode
         BLV = 0;
         reset();
     }
-
+    //
     //Basic base movement
     public void moveForward(double power)
     {
@@ -98,15 +112,15 @@ public abstract class AutoOpMode extends LinearOpMode
         FL.setPower(0);
         BL.setPower(0);
     }
-    //Methods based solely on encoders
     public void reset() throws InterruptedException
     {
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BRV = 0;
         BLV = 0;
-        stop();
+        imu.initialize(parameters);
     }
+    //Methods based solely on encoders
     public int getAvg() throws InterruptedException
     {
         BRV = Math.abs(BR.getCurrentPosition());
@@ -116,6 +130,8 @@ public abstract class AutoOpMode extends LinearOpMode
     }
     public void moveForwardWithEncoders(double power, int distance) throws InterruptedException
     {
+        angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        gravity  = imu.getGravity();
         while(getAvg() < distance)
         {
             moveForward(power);
@@ -124,16 +140,82 @@ public abstract class AutoOpMode extends LinearOpMode
     }
     public void moveBackWardWithEncoders(double power, int distance) throws InterruptedException
     {
-        while(getAvg() < distance)
-        {
+        while(getAvg() < distance) {
             moveBackward(power);
         }
         reset();
     }
-    //Gyro based turning methods
+    //Gyro methods
+    //Movement methods that correct with gyros
+    public void moveForwardWithEncodersCorrectingWithGyros(double power, int distance) throws InterruptedException
+    {
+
+        while (getAvg() < distance)
+        {
+
+        }
+        reset();
+    }
     public void turnRightWithGyro()
     {
 
     }
 
+    public void composeGyroTelemetry()
+    {
+        telemetry.addAction(new Runnable() { @Override public void run()
+        {
+            // Acquiring the angles is relatively expensive; we don't want
+            // to do that in each of the three items that need that info, as that's
+            // three times the necessary expense.
+            angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            gravity  = imu.getGravity();
+        }
+        });
+        telemetry.addLine()
+                .addData("status", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getSystemStatus().toShortString();
+                    }
+                })
+                .addData("calib", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getCalibrationStatus().toString();
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)));
+                    }
+                })
+                .addData("roll", new Func<String>() {
+                    @Override public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle)));
+                    }
+                })
+                .addData("pitch", new Func<String>() {
+                    @Override public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle)));
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("grvty", new Func<String>() {
+                    @Override public String value() {
+                        return gravity.toString();
+                    }
+                })
+                .addData("mag", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.3f",
+                                Math.sqrt(gravity.xAccel * gravity.xAccel
+                                        + gravity.yAccel * gravity.yAccel
+                                        + gravity.zAccel * gravity.zAccel));
+                    }
+                });
+
+    }
 }

@@ -10,8 +10,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorAdafruitIMU;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorMRColor;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -20,10 +23,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- * Created by sopa on 9/19/16.
+ * Created by 4546SnakeByte on 9/19/16.
  */
 @Autonomous(name = "AutoOpMode", group = "Autonomous")
 @Disabled
@@ -33,15 +37,32 @@ public abstract class AutoOpMode extends LinearOpMode
     DcMotor BR;
     DcMotor FL;
     DcMotor BL;
-    BNO055IMU imu;
-    ColorSensor colorSensor1;
-    ColorSensor colorSensor2;
+    ColorSensor colorSensorWL;
+    ColorSensor colorSensorWL2;
+    ColorSensor colorSensorBeacon;
+    //values for whiteline
+    public static int redValue = 0;
+    public static int greenValue = 0;
+    public static int blueValue = 0;
+    public static int alphaValue = 0;
+    //values for red beacon
+    public static int redValueR = 0;
+    public static int greenValueR = 0;
+    public static int blueValueR = 0;
+    public static int alphaValueR = 0;
+    //values for blue beacon
+    public static int redValueB = 0;
+    public static int greenValueB = 0;
+    public static int blueValueB = 0;
+    public static int alphaValueB = 0;
+    public int[][] colors;
     int BRV, BLV;
     int avg;
     Orientation angles;
     Acceleration gravity;
-    BNO055IMU.Parameters parameters;
-
+    SensorAdafruitIMU imu;
+    int standardBRV = 0;
+    int standardBLV = 0;
     public AutoOpMode()
     {
         super();
@@ -59,10 +80,10 @@ public abstract class AutoOpMode extends LinearOpMode
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
+
+        //Initialize Sensors
         telemetry.addData("gyro", "initializing");
         telemetry.update();
-        //Initialize Sensors
-        //Color Sensor Initialization
         //set up parameters for gyro sensors
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -71,17 +92,21 @@ public abstract class AutoOpMode extends LinearOpMode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        imu = new SensorAdafruitIMU();
         //Color Sensor Initialization
-
+        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
+        colorSensorWL2 = hardwareMap.colorSensor.get("cSWL2");
+        colorSensorBeacon = hardwareMap.colorSensor.get("cSBeacon");
+        colorSensorWL.enableLed(true);
+        colorSensorWL2.enableLed(true);
+        colorSensorBeacon.enableLed(true);
+        colors = new int[3][4];
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BRV = 0;
         BLV = 0;
         reset();
     }
-    //
     //Basic base movement
     public void moveForward(double power)
     {
@@ -105,6 +130,7 @@ public abstract class AutoOpMode extends LinearOpMode
     {
         turnRight(-power);
     }
+
     public void stopBase()
     {
         FR.setPower(0);
@@ -114,11 +140,11 @@ public abstract class AutoOpMode extends LinearOpMode
     }
     public void reset() throws InterruptedException
     {
-        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BRV = 0;
-        BLV = 0;
-        imu.initialize(parameters);
+        standardBRV = Math.abs(BR.getCurrentPosition()) - standardBRV;
+        standardBLV = Math.abs(BL.getCurrentPosition()) - standardBLV;
+        BRV -= standardBRV;
+        BLV -= standardBLV;
+        imu
     }
     //Methods based solely on encoders
     public int getAvg() throws InterruptedException
@@ -130,8 +156,6 @@ public abstract class AutoOpMode extends LinearOpMode
     }
     public void moveForwardWithEncoders(double power, int distance) throws InterruptedException
     {
-        angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        gravity  = imu.getGravity();
         while(getAvg() < distance)
         {
             moveForward(power);
@@ -140,7 +164,8 @@ public abstract class AutoOpMode extends LinearOpMode
     }
     public void moveBackWardWithEncoders(double power, int distance) throws InterruptedException
     {
-        while(getAvg() < distance) {
+        while(getAvg() < distance)
+        {
             moveBackward(power);
         }
         reset();
@@ -149,10 +174,11 @@ public abstract class AutoOpMode extends LinearOpMode
     //Movement methods that correct with gyros
     public void moveForwardWithEncodersCorrectingWithGyros(double power, int distance) throws InterruptedException
     {
-
+        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         while (getAvg() < distance)
         {
-
+            moveForward(power);
+            if (imu.getYaw)
         }
         reset();
     }
@@ -216,6 +242,15 @@ public abstract class AutoOpMode extends LinearOpMode
                                         + gravity.zAccel * gravity.zAccel));
                     }
                 });
+    }
+    //Color sensor methods
+    public void getColors(ColorSensor input)
+    {
+    }
+    public boolean isOnWhiteLine()
+    {
 
+
+        return false;
     }
 }

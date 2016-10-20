@@ -58,8 +58,7 @@ public abstract class AutoOpMode extends LinearOpMode
     public int[][] colors;
     int BRV, BLV;
     int avg;
-    Orientation angles;
-    Acceleration gravity;
+    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     SensorAdafruitIMU imu;
     int standardBRV = 0;
     int standardBLV = 0;
@@ -144,7 +143,6 @@ public abstract class AutoOpMode extends LinearOpMode
         standardBLV = Math.abs(BL.getCurrentPosition()) - standardBLV;
         BRV -= standardBRV;
         BLV -= standardBLV;
-        imu
     }
     //Methods based solely on encoders
     public int getAvg() throws InterruptedException
@@ -174,11 +172,11 @@ public abstract class AutoOpMode extends LinearOpMode
     //Movement methods that correct with gyros
     public void moveForwardWithEncodersCorrectingWithGyros(double power, int distance) throws InterruptedException
     {
-        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        angles = imu.
         while (getAvg() < distance)
         {
             moveForward(power);
-            if (imu.getYaw)
+            if (imu.getIMUGyroAngles())
         }
         reset();
     }

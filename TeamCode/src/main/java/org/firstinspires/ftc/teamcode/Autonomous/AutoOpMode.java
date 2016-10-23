@@ -169,6 +169,11 @@ public abstract class AutoOpMode extends LinearOpMode
         reset();
     }
     //Gyro methods
+    public void getGryoM()
+    {
+        imu.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        telemetry.addData("heading", yawAngle[0]);
+    }
     //Movement methods that correct with gyros
     public void moveForwardWithEncodersCorrectingWithGyros(double power, int distance) throws InterruptedException
     {

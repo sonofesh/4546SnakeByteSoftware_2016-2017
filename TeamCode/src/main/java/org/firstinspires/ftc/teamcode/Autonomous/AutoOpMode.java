@@ -38,8 +38,8 @@ public abstract class AutoOpMode extends LinearOpMode
     DcMotor FL;
     DcMotor BL;
     ColorSensor colorSensorWL;
-    ColorSensor colorSensorWL2;
-    ColorSensor colorSensorBeacon;
+    ColorSensor colorSensorBeaconR;
+    ColorSensor colorSensorBeaconL;
     //values for whiteline
     public static int redValue = 0;
     public static int greenValue = 0;
@@ -58,8 +58,9 @@ public abstract class AutoOpMode extends LinearOpMode
     public int[][] colors;
     int BRV, BLV;
     int avg;
-    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
-    SensorAdafruitIMU imu;
+    volatile double[] anglesM = new double[2];
+    public static BNO055IMU imu;
+    public static BNO055IMU.Parameters parameters;
     int standardBRV = 0;
     int standardBLV = 0;
     public AutoOpMode()
@@ -79,27 +80,29 @@ public abstract class AutoOpMode extends LinearOpMode
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
-
         //Initialize Sensors
         telemetry.addData("gyro", "initializing");
         telemetry.update();
         //set up parameters for gyro sensors
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = new SensorAdafruitIMU();
+        imu.initialize(parameters);
         //Color Sensor Initialization
         colorSensorWL = hardwareMap.colorSensor.get("cSWL");
-        colorSensorWL2 = hardwareMap.colorSensor.get("cSWL2");
-        colorSensorBeacon = hardwareMap.colorSensor.get("cSBeacon");
+        colorSensorBeaconR= hardwareMap.colorSensor.get("cSWL2");
+        colorSensorBeaconL = hardwareMap.colorSensor.get("cSBeacon");
+        colorSensorWL.setI2cAddress(I2cAddr.create7bit(0x20));
+        colorSensorBeaconR.setI2cAddress(I2cAddr.create7bit(0x20));
+        colorSensorBeaconL.setI2cAddress(I2cAddr.create7bit(0x20));
         colorSensorWL.enableLed(true);
-        colorSensorWL2.enableLed(true);
-        colorSensorBeacon.enableLed(true);
-        colors = new int[3][4];
+        colorSensorBeaconR.enableLed(true);
+        colorSensorBeaconL.enableLed(true);
+        //colors = new int[3][4];
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BRV = 0;
@@ -169,91 +172,139 @@ public abstract class AutoOpMode extends LinearOpMode
         reset();
     }
     //Gyro methods
-    public void getGryoM()
+    public float getGryoYaw()
     {
-        imu.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-        telemetry.addData("heading", yawAngle[0]);
+        Orientation angles = imu.getAngularOrientation();
+        return angles.firstAngle;
+    }
+    public float getGyroPitch()
+    {
+        Orientation angles = imu.getAngularOrientation();
+        return angles.secondAngle;
+    }
+    public float getGyroRoll()
+    {
+        Orientation angles = imu.getAngularOrientation();
+        return angles.thirdAngle;
     }
     //Movement methods that correct with gyros
     public void moveForwardWithEncodersCorrectingWithGyros(double power, int distance) throws InterruptedException
     {
-        angles = imu.
+        float beforeA = getGryoYaw();
+        float afterA = 0;
+        float error = 0;
         while (getAvg() < distance)
         {
+            beforeA = getGryoYaw();
+            error = afterA - beforeA;
             moveForward(power);
-            if (imu.getIMUGyroAngles())
+            if (Math.abs(error) > 2)
+            {
+                if(error > 0)
+                    turnRightWithGyro(.1, error);
+                else
+                    turnLeftWithGyro(.1, error * -1);
+            }
+            afterA = getGryoYaw();
         }
         reset();
     }
-    public void turnRightWithGyro()
+    public void turnRightWithGyro(double power, float angle)
     {
-
+        float beforeA = getGryoYaw();
+        float afterA = 0;
+        float error = 0;
+        while(angle < getGryoYaw())
+        {
+            beforeA = getGryoYaw();
+            error = afterA - beforeA;
+            turnRight(power);
+            if (Math.abs(error) > 2)
+            {
+                if(error > 0)
+                    turnRightWithGyro(.1, error);
+                else
+                    turnLeftWithGyro(.1, error * -1);
+            }
+            afterA = getGryoYaw();
+        }
     }
 
-    public void composeGyroTelemetry()
+    public void turnLeftWithGyro(double power, float angle)
     {
-        telemetry.addAction(new Runnable() { @Override public void run()
-        {
-            // Acquiring the angles is relatively expensive; we don't want
-            // to do that in each of the three items that need that info, as that's
-            // three times the necessary expense.
-            angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-            gravity  = imu.getGravity();
-        }
-        });
-        telemetry.addLine()
-                .addData("status", new Func<String>() {
-                    @Override public String value() {
-                        return imu.getSystemStatus().toShortString();
-                    }
-                })
-                .addData("calib", new Func<String>() {
-                    @Override public String value() {
-                        return imu.getCalibrationStatus().toString();
-                    }
-                });
-
-        telemetry.addLine()
-                .addData("heading", new Func<String>() {
-                    @Override public String value() {
-                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle)));
-                    }
-                })
-                .addData("roll", new Func<String>() {
-                    @Override public String value() {
-                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle)));
-                    }
-                })
-                .addData("pitch", new Func<String>() {
-                    @Override public String value() {
-                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle)));
-                    }
-                });
-
-        telemetry.addLine()
-                .addData("grvty", new Func<String>() {
-                    @Override public String value() {
-                        return gravity.toString();
-                    }
-                })
-                .addData("mag", new Func<String>() {
-                    @Override
-                    public String value() {
-                        return String.format(Locale.getDefault(), "%.3f",
-                                Math.sqrt(gravity.xAccel * gravity.xAccel
-                                        + gravity.yAccel * gravity.yAccel
-                                        + gravity.zAccel * gravity.zAccel));
-                    }
-                });
+        turnRightWithGyro(-power, angle);
     }
     //Color sensor methods
-    public void getColors(ColorSensor input)
+    public int[] getColors(ColorSensor input)
     {
+        int[] colorArray = {input.red(), input.green(), input.blue()};
+        return colorArray;
     }
     public boolean isOnWhiteLine()
     {
 
 
         return false;
+    }
+    public void composeTelemetry() {
+        final Orientation[] angles = {imu.getAngularOrientation()};
+        final Acceleration[] gravity = {imu.getGravity()};
+        telemetry.addAction(new Runnable() {
+            @Override
+            public void run() {
+                angles[0] = imu.getAngularOrientation();
+                gravity[0] = imu.getGravity();
+            }
+        });
+        telemetry.addLine()
+                .addData("status", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return imu.getSystemStatus().toShortString();
+                    }
+                })
+                .addData("calib", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return imu.getCalibrationStatus().toString();
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles[0].angleUnit, angles[0].firstAngle)));
+                    }
+                })
+                .addData("roll", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles[0].angleUnit, angles[0].secondAngle)));
+                    }
+                })
+                .addData("pitch", new Func<String>() {
+                    @Override
+                    public String value() {
+                        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles[0].angleUnit, angles[0].thirdAngle)));
+                    }
+                });
+
+        telemetry.addLine().addData("grvty", new Func<String>() {
+            @Override
+            public String value() {
+                return gravity[0].toString();
+            }
+        }).addData("mag", new Func<String>() {
+            @Override
+            public String value() {
+                return String.format(Locale.getDefault(), "%.3f",
+                        Math.sqrt(gravity[0].xAccel * gravity[0].xAccel + gravity[0].yAccel * gravity[0].yAccel + gravity[0].zAccel * gravity[0].zAccel));
+            }
+        });
+        telemetry.addLine();
+            telemetry.addData("Red  ", colorSensorWL.red());
+            telemetry.addData("Green", colorSensorBeaconR.green());
+            telemetry.addData("Blue ", colorSensorBeaconL.blue());
     }
 }

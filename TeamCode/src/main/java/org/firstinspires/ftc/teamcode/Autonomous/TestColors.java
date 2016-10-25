@@ -10,7 +10,8 @@ public class TestColors extends AutoOpMode
     {
         initialize();
         waitForStart();
-
+        getColors(colorSensorWL);
+        composeTelemetry();
     }
 
 }

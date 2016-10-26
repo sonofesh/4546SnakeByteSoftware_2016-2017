@@ -240,26 +240,44 @@ public abstract class AutoOpMode extends LinearOpMode
         int[] colorArray = {input.red(), input.green(), input.blue()};
         return colorArray;
     }
-    public boolean isOnWhiteLine()
+    public boolean isOnWhiteLine(ColorSensor input)
     {
-
-
+        if(Math.abs(redValue - input.red()) < 50)
+        {
+            if((Math.abs(blueValue - input.blue()) < 50))
+            {
+                if((Math.abs(greenValue - input.green()) < 50))
+                {
+                    return true;
+                }
+            }
+        }
         return false;
     }
-    public void composeTelemetry() {
+    //Whiteline and gyro methods
+    public void stopAtWhiteLine(double power) throws InterruptedException {
+        while(!isOnWhiteLine(colorSensorWL))
+            moveForwardWithEncodersCorrectingWithGyros(.1, 1000);
+    }
+    public void composeTelemetry()
+    {
         final Orientation[] angles = {imu.getAngularOrientation()};
         final Acceleration[] gravity = {imu.getGravity()};
-        telemetry.addAction(new Runnable() {
+        telemetry.addAction(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 angles[0] = imu.getAngularOrientation();
                 gravity[0] = imu.getGravity();
             }
         });
         telemetry.addLine()
-                .addData("status", new Func<String>() {
+                .addData("status", new Func<String>()
+                {
                     @Override
-                    public String value() {
+                    public String value()
+                    {
                         return imu.getSystemStatus().toShortString();
                     }
                 })
@@ -306,5 +324,7 @@ public abstract class AutoOpMode extends LinearOpMode
             telemetry.addData("Red  ", colorSensorWL.red());
             telemetry.addData("Green", colorSensorBeaconR.green());
             telemetry.addData("Blue ", colorSensorBeaconL.blue());
+        telemetry.addLine();
+            telemetry.addData("WhiteLine?", isOnWhiteLine(colorSensorWL));
     }
 }

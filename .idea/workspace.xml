@@ -24,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AutoOpMode.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AutoOpMode.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/AutoOpMode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.814816">
-              <caret line="246" column="21" selection-start-line="246" selection-start-column="21" selection-end-line="246" selection-end-column="21" />
+            <state vertical-scroll-proportion="6.251841">
+              <caret line="283" column="20" selection-start-line="283" selection-start-column="20" selection-end-line="283" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2566#2567#0" expanded="true" />
@@ -39,24 +39,26 @@
                 <element signature="e#4981#4982#0" expanded="true" />
                 <element signature="e#7821#7822#0" expanded="true" />
                 <element signature="e#7869#7870#0" expanded="true" />
-                <element signature="e#8317#8515#0" expanded="true" />
-                <element signature="e#8514#8515#0" expanded="true" />
-                <element signature="e#9783#10092#0" expanded="true" />
-                <element signature="e#10091#10092#0" expanded="true" />
-                <element signature="e#10141#10289#0" expanded="true" />
-                <element signature="e#10288#10289#0" expanded="true" />
-                <element signature="e#10306#10629#0" expanded="true" />
-                <element signature="e#10628#10629#0" expanded="true" />
+                <element signature="e#8851#9069#0" expanded="true" />
+                <element signature="e#9068#9069#0" expanded="true" />
+                <element signature="e#9135#9375#0" expanded="true" />
+                <element signature="e#9374#9375#0" expanded="true" />
+                <element signature="e#9411#9615#0" expanded="true" />
+                <element signature="e#9614#9615#0" expanded="true" />
+                <element signature="e#10027#10337#0" expanded="true" />
+                <element signature="e#10336#10337#0" expanded="true" />
+                <element signature="e#10373#10682#0" expanded="true" />
+                <element signature="e#10681#10682#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestColors.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TestColors.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/TestColors.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3611898">
-              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -2730,8 +2732,8 @@
         <option value="$PROJECT_DIR$/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/SensorAdafruitIMU.java" />
         <option value="$PROJECT_DIR$/TeamCode/build/generated/source/r/androidTest/debug/org/firstinspires/ftc/teamcode/TeleOP/TeleOpATest.java" />
         <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/TeleOP/TeleOpA.java" />
-        <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/AutoOpMode.java" />
         <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/TestColors.java" />
+        <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/AutoOpMode.java" />
       </list>
     </option>
   </component>
@@ -3282,14 +3284,16 @@
             <element signature="e#4981#4982#0" expanded="true" />
             <element signature="e#7821#7822#0" expanded="true" />
             <element signature="e#7869#7870#0" expanded="true" />
-            <element signature="e#8317#8515#0" expanded="true" />
-            <element signature="e#8514#8515#0" expanded="true" />
-            <element signature="e#9783#10092#0" expanded="true" />
-            <element signature="e#10091#10092#0" expanded="true" />
-            <element signature="e#10141#10289#0" expanded="true" />
-            <element signature="e#10288#10289#0" expanded="true" />
-            <element signature="e#10306#10629#0" expanded="true" />
-            <element signature="e#10628#10629#0" expanded="true" />
+            <element signature="e#8851#9069#0" expanded="true" />
+            <element signature="e#9068#9069#0" expanded="true" />
+            <element signature="e#9135#9375#0" expanded="true" />
+            <element signature="e#9374#9375#0" expanded="true" />
+            <element signature="e#9411#9615#0" expanded="true" />
+            <element signature="e#9614#9615#0" expanded="true" />
+            <element signature="e#10027#10337#0" expanded="true" />
+            <element signature="e#10336#10337#0" expanded="true" />
+            <element signature="e#10373#10682#0" expanded="true" />
+            <element signature="e#10681#10682#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3393,14 +3397,16 @@
             <element signature="e#4981#4982#0" expanded="true" />
             <element signature="e#7821#7822#0" expanded="true" />
             <element signature="e#7869#7870#0" expanded="true" />
-            <element signature="e#8317#8515#0" expanded="true" />
-            <element signature="e#8514#8515#0" expanded="true" />
-            <element signature="e#9783#10092#0" expanded="true" />
-            <element signature="e#10091#10092#0" expanded="true" />
-            <element signature="e#10141#10289#0" expanded="true" />
-            <element signature="e#10288#10289#0" expanded="true" />
-            <element signature="e#10306#10629#0" expanded="true" />
-            <element signature="e#10628#10629#0" expanded="true" />
+            <element signature="e#8851#9069#0" expanded="true" />
+            <element signature="e#9068#9069#0" expanded="true" />
+            <element signature="e#9135#9375#0" expanded="true" />
+            <element signature="e#9374#9375#0" expanded="true" />
+            <element signature="e#9411#9615#0" expanded="true" />
+            <element signature="e#9614#9615#0" expanded="true" />
+            <element signature="e#10027#10337#0" expanded="true" />
+            <element signature="e#10336#10337#0" expanded="true" />
+            <element signature="e#10373#10682#0" expanded="true" />
+            <element signature="e#10681#10682#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3453,14 +3459,16 @@
             <element signature="e#4981#4982#0" expanded="true" />
             <element signature="e#7821#7822#0" expanded="true" />
             <element signature="e#7869#7870#0" expanded="true" />
-            <element signature="e#8317#8515#0" expanded="true" />
-            <element signature="e#8514#8515#0" expanded="true" />
-            <element signature="e#9783#10092#0" expanded="true" />
-            <element signature="e#10091#10092#0" expanded="true" />
-            <element signature="e#10141#10289#0" expanded="true" />
-            <element signature="e#10288#10289#0" expanded="true" />
-            <element signature="e#10306#10629#0" expanded="true" />
-            <element signature="e#10628#10629#0" expanded="true" />
+            <element signature="e#8851#9069#0" expanded="true" />
+            <element signature="e#9068#9069#0" expanded="true" />
+            <element signature="e#9135#9375#0" expanded="true" />
+            <element signature="e#9374#9375#0" expanded="true" />
+            <element signature="e#9411#9615#0" expanded="true" />
+            <element signature="e#9614#9615#0" expanded="true" />
+            <element signature="e#10027#10337#0" expanded="true" />
+            <element signature="e#10336#10337#0" expanded="true" />
+            <element signature="e#10373#10682#0" expanded="true" />
+            <element signature="e#10681#10682#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3513,14 +3521,16 @@
             <element signature="e#4981#4982#0" expanded="true" />
             <element signature="e#7821#7822#0" expanded="true" />
             <element signature="e#7869#7870#0" expanded="true" />
-            <element signature="e#8317#8515#0" expanded="true" />
-            <element signature="e#8514#8515#0" expanded="true" />
-            <element signature="e#9783#10092#0" expanded="true" />
-            <element signature="e#10091#10092#0" expanded="true" />
-            <element signature="e#10141#10289#0" expanded="true" />
-            <element signature="e#10288#10289#0" expanded="true" />
-            <element signature="e#10306#10629#0" expanded="true" />
-            <element signature="e#10628#10629#0" expanded="true" />
+            <element signature="e#8851#9069#0" expanded="true" />
+            <element signature="e#9068#9069#0" expanded="true" />
+            <element signature="e#9135#9375#0" expanded="true" />
+            <element signature="e#9374#9375#0" expanded="true" />
+            <element signature="e#9411#9615#0" expanded="true" />
+            <element signature="e#9614#9615#0" expanded="true" />
+            <element signature="e#10027#10337#0" expanded="true" />
+            <element signature="e#10336#10337#0" expanded="true" />
+            <element signature="e#10373#10682#0" expanded="true" />
+            <element signature="e#10681#10682#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3693,10 +3703,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/TestColors.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/AutoOpMode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.814816">
-          <caret line="246" column="21" selection-start-line="246" selection-start-column="21" selection-end-line="246" selection-end-column="21" />
+        <state vertical-scroll-proportion="6.251841">
+          <caret line="283" column="20" selection-start-line="283" selection-start-column="20" selection-end-line="283" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2566#2567#0" expanded="true" />
@@ -3707,23 +3725,17 @@
             <element signature="e#4981#4982#0" expanded="true" />
             <element signature="e#7821#7822#0" expanded="true" />
             <element signature="e#7869#7870#0" expanded="true" />
-            <element signature="e#8317#8515#0" expanded="true" />
-            <element signature="e#8514#8515#0" expanded="true" />
-            <element signature="e#9783#10092#0" expanded="true" />
-            <element signature="e#10091#10092#0" expanded="true" />
-            <element signature="e#10141#10289#0" expanded="true" />
-            <element signature="e#10288#10289#0" expanded="true" />
-            <element signature="e#10306#10629#0" expanded="true" />
-            <element signature="e#10628#10629#0" expanded="true" />
+            <element signature="e#8851#9069#0" expanded="true" />
+            <element signature="e#9068#9069#0" expanded="true" />
+            <element signature="e#9135#9375#0" expanded="true" />
+            <element signature="e#9374#9375#0" expanded="true" />
+            <element signature="e#9411#9615#0" expanded="true" />
+            <element signature="e#9614#9615#0" expanded="true" />
+            <element signature="e#10027#10337#0" expanded="true" />
+            <element signature="e#10336#10337#0" expanded="true" />
+            <element signature="e#10373#10682#0" expanded="true" />
+            <element signature="e#10681#10682#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/TestColors.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3611898">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>

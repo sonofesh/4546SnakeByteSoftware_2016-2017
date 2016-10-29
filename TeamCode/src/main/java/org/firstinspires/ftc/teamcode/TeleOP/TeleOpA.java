@@ -18,8 +18,8 @@ public class TeleOpA extends OpMode
     DcMotor BR;
     DcMotor BL;
     DcMotor Shooter;
-    DcMotor HarvesterR;
-    DcMotor HarvesterL;
+    DcMotor ManipulatorR;
+    DcMotor ManipulatorL;
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
@@ -34,15 +34,15 @@ public class TeleOpA extends OpMode
         FL = hardwareMap.dcMotor.get("FL");
         BL = hardwareMap.dcMotor.get("BL");
         Shooter = hardwareMap.dcMotor.get("Shooter");
-        HarvesterR = hardwareMap.dcMotor.get("HarvesterR");
-        HarvesterL = hardwareMap.dcMotor.get("HarvesterL");
+        ManipulatorR = hardwareMap.dcMotor.get("ManipulatorR");
+        ManipulatorL = hardwareMap.dcMotor.get("ManipulatorL");
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
         Shooter.setPower(0);
-        HarvesterL.setPower(0);
-        HarvesterR.setPower(0);
+        ManipulatorL.setPower(0);
+        ManipulatorR.setPower(0);
         shootfull = false;
         shootpartial = false;
         harvest = false;
@@ -77,9 +77,9 @@ public class TeleOpA extends OpMode
         }
 
         //Update Current Time
-        //currenttime = System.nanoTime(); You don't need this for the shooter
+        //currenttime = System.nanoTime(); For future macro use
 
-        //Shooter Control - Toggle A for Full Power, Toggle B for 3/4 Power
+        //Shooter Control - Need to test for various to configure various shooting postions
         if (gamepad2.a)
             Shooter.setPower(1);
         else
@@ -96,13 +96,13 @@ public class TeleOpA extends OpMode
         //Manipulator Control
         if(Math.abs(gamepad2.right_stick_y) > .1)
         {
-            HarvesterR.setPower(gamepad2.right_stick_y);
-            HarvesterL.setPower(gamepad2.right_stick_y * -1);
+            ManipulatorR.setPower(gamepad2.right_stick_y);
+            ManipulatorL.setPower(gamepad2.right_stick_y * -1);
         }
         else
         {
-            HarvesterR.setPower(0);
-            HarvesterL.setPower(0);
+            ManipulatorR.setPower(0);
+            ManipulatorL.setPower(0);
         }
     }
 }

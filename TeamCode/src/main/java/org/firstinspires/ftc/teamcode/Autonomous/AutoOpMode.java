@@ -4,6 +4,7 @@ import com.qualcomm.hardware.adafruit.AdafruitI2cColorSensor;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -44,30 +45,30 @@ public abstract class AutoOpMode extends LinearOpMode
     public static int redValue = 0;
     public static int greenValue = 0;
     public static int blueValue = 0;
-    public static int alphaValue = 0;
+    public static int alphaValue = 0; //not sure if this will be used
     //values for red beacon
     public static int redValueR = 0;
     public static int greenValueR = 0;
     public static int blueValueR = 0;
-    public static int alphaValueR = 0;
+    public static int alphaValueR = 0; //not sure if this will be used
     //values for blue beacon
     public static int redValueB = 0;
     public static int greenValueB = 0;
     public static int blueValueB = 0;
-    public static int alphaValueB = 0;
+    public static int alphaValueB = 0; //not sure if this will be used
     public int[][] colors;
     int BRV, BLV;
     int avg;
-    volatile double[] anglesM = new double[2];
+    //volatile double[] anglesM = new double[2];
     public static BNO055IMU imu;
     public static BNO055IMU.Parameters parameters;
+    ModernRoboticsI2cRangeSensor rangeSensor;
     int standardBRV = 0;
     int standardBLV = 0;
     public AutoOpMode()
     {
         super();
     }
-
     public void initialize() throws InterruptedException
     {
         FR = hardwareMap.dcMotor.get("FR");
@@ -103,6 +104,7 @@ public abstract class AutoOpMode extends LinearOpMode
         colorSensorBeaconR.enableLed(true);
         colorSensorBeaconL.enableLed(true);
         //colors = new int[3][4];
+        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range sensor");
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BRV = 0;
@@ -258,6 +260,10 @@ public abstract class AutoOpMode extends LinearOpMode
     public void stopAtWhiteLine(double power) throws InterruptedException {
         while(!isOnWhiteLine(colorSensorWL))
             moveForwardWithEncodersCorrectingWithGyros(.1, 1000);
+    }
+    public double getDistance()
+    {
+        return rangeSensor.cmOptical();
     }
     public void composeTelemetry()
     {

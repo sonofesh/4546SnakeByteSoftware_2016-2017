@@ -95,14 +95,14 @@ public abstract class AutoOpMode extends LinearOpMode
         imu.initialize(parameters);
         //Color Sensor Initialization
         colorSensorWL = hardwareMap.colorSensor.get("cSWL");
-        colorSensorBeaconR= hardwareMap.colorSensor.get("cSWL2");
-        colorSensorBeaconL = hardwareMap.colorSensor.get("cSBeacon");
+        //colorSensorBeaconR = hardwareMap.colorSensor.get("cSWL2");
+        //colorSensorBeaconL = hardwareMap.colorSensor.get("cSBeacon");
         colorSensorWL.setI2cAddress(I2cAddr.create7bit(0x20));
-        colorSensorBeaconR.setI2cAddress(I2cAddr.create7bit(0x20));
-        colorSensorBeaconL.setI2cAddress(I2cAddr.create7bit(0x20));
+        //colorSensorBeaconR.setI2cAddress(I2cAddr.create7bit(0x20));
+        //colorSensorBeaconL.setI2cAddress(I2cAddr.create7bit(0x20));
         colorSensorWL.enableLed(true);
-        colorSensorBeaconR.enableLed(true);
-        colorSensorBeaconL.enableLed(true);
+        //colorSensorBeaconR.enableLed(true);
+        //colorSensorBeaconL.enableLed(true);
         //colors = new int[3][4];
         rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range sensor");
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -328,8 +328,8 @@ public abstract class AutoOpMode extends LinearOpMode
         });
         telemetry.addLine();
             telemetry.addData("Red  ", colorSensorWL.red());
-            telemetry.addData("Green", colorSensorBeaconR.green());
-            telemetry.addData("Blue ", colorSensorBeaconL.blue());
+            telemetry.addData("Green", colorSensorWL.green());
+            telemetry.addData("Blue ", colorSensorWL.blue());
         telemetry.addLine();
             telemetry.addData("WhiteLine?", isOnWhiteLine(colorSensorWL));
     }

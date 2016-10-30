@@ -1,12 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" >
-
-    <item
-        jar="/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/exploded-aar/4546SnakeByteSoftware_2016-2017/FtcRobotController/unspecified/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.3"
-        sha1="33b64f199c50479eb21495ca9869c752a01da044">
-        <dex dex="/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/pre-dexed/debug/4546SnakeByteSoftware_2016-2017-FtcRobotController-unspecified_b8cf2acaf47a379af32b74f0490df0933c863c0a.jar" />
-    </item>
-
-</items>
+<items version="2" />

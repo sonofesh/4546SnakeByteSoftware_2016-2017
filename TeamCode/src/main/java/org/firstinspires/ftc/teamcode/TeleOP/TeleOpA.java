@@ -19,7 +19,7 @@ public class TeleOpA extends OpMode
     DcMotor FL;
     DcMotor BR;
     DcMotor BL;
-    //DcMotor Shooter;
+    DcMotor Shooter;
     DcMotor ManIn;
     DcMotor ManLift;
     boolean shootfull;
@@ -32,10 +32,15 @@ public class TeleOpA extends OpMode
     long harvesttime;
     long currentTime;
     long lastTime;
+    boolean halfspeed = false;
+    final double HALFSPEED = .25;
+    final double FULLSPEED = 1;
     final long DURATION = 2000000000;
-    final int UPDISTANCE = 500;
+    final int UPDISTANCE = 30;
+    double speed = 0;
     @Override
-    public void init() {
+    public void init()
+    {
         FR = hardwareMap.dcMotor.get("FR");
         BR = hardwareMap.dcMotor.get("BR");
         FL = hardwareMap.dcMotor.get("FL");
@@ -68,8 +73,8 @@ public class TeleOpA extends OpMode
         //Tank Drive
         if (Math.abs(gamepad1.left_stick_y) > .1)
         {
-            FL.setPower(gamepad1.left_stick_y * direction * -1);
-            BL.setPower(gamepad1.left_stick_y * direction * -1);
+            FL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
+            BL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
         }
         else
         {
@@ -78,15 +83,28 @@ public class TeleOpA extends OpMode
         }
         if (Math.abs(gamepad1.right_stick_y) > .1)
         {
-            FR.setPower(gamepad1.right_stick_y * direction);
-            BR.setPower(gamepad1.right_stick_y * direction);
+            FR.setPower(gamepad1.right_stick_y * direction * speed);
+            BR.setPower(gamepad1.right_stick_y * direction * speed);
         }
         else
         {
             FR.setPower(0);
             BR.setPower(0);
         }
-
+        if (gamepad1.a)
+        {
+            currentTime = System.nanoTime();
+            if(currentTime > lastTime + DURATION)
+            {
+                if(halfspeed) {
+                    halfspeed = false;
+                }
+                else
+                    halfspeed = true;
+            }
+            speed = (halfspeed)? HALFSPEED:FULLSPEED;
+            lastTime = System.nanoTime();
+        }
         //Reverse Macro
         if(gamepad1.y)
         {
@@ -101,7 +119,7 @@ public class TeleOpA extends OpMode
         //Below is harvester & shooter controls for a second controller. For testing reasons, alternate 1 control
         //program follows
         //Shooter Control - Need to test for various to configure various shooting postions
-        /**if (gamepad2.a)
+        if (gamepad2.a)
             Shooter.setPower(1);
         else
             Shooter.setPower(0);
@@ -113,47 +131,34 @@ public class TeleOpA extends OpMode
             Shooter.setPower(.5);
         else
             Shooter.setPower(0);
-         */
         //Manipulator Control
-        /*if(Math.abs(gamepad2.right_stick_y) > .1)
+        if(Math.abs(gamepad2.right_stick_y) > .1)
         {
             ManIn.setPower(gamepad2.right_stick_y);
-            ManLift.setPower(gamepad2.right_stick_y * -1);
-        }
-        else
-        {
-            ManIn.setPower(0);
-            ManLift.setPower(0);
-        }
-        */
-        //harvest backward
-        if(gamepad1.b)
-        {
-             ManIn.setPower(.5);
-        }
-        //harvester i
-        if(gamepad1.a)
-        {
-            ManIn.setPower(-.5);
         }
         else
         {
             ManIn.setPower(0);
         }
-        if(gamepad1.right_trigger > .5)
+        if(Math.abs(gamepad2.left_stick_y) > .5)
         {
-            liftPosO = ManLift.getCurrentPosition();
-            liftPosCurrent = ManLift.getCurrentPosition();
-            while (Math.abs(liftPosCurrent - liftPosO) < UPDISTANCE)
+            //liftPosO = ManLift.getCurrentPosition();
+            //telemetry.addData("liftPosition", liftPosO);
+            ManLift.setPower(gamepad2.left_stick_y * -.05);
+            //liftPosCurrent = ManLift.getCurrentPosition();
+            /**while (Math.abs(liftPosCurrent - liftPosO) < UPDISTANCE)
             {
-                ManLift.setPower(gamepad1.right_trigger * .3);
+                ManLift.setPower(gamepad1.right_trigger * -.05);
                 liftPosCurrent = ManLift.getCurrentPosition();
             }
+             **/
+            //telemetry.addData("liftPosition", liftPosCurrent);
         }
-        else if (gamepad1.left_trigger > .5)
+        /**else if (gamepad2.left_trigger > .5)
         {
-            ManLift.setPower(-gamepad1.left_trigger * .3);
+            ManLift.setPower(gamepad1.left_trigger * .1);
         }
+         */
         else
         {
             ManLift.setPower(0);

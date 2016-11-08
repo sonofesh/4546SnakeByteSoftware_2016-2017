@@ -13,9 +13,8 @@ public class TestEncoders extends AutoOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initialize();
-        waitForStart();
         moveForwardWithEncoders(.5, 500);
         moveBackWardWithEncoders(.5, 500);
+        idle();
     }
 }

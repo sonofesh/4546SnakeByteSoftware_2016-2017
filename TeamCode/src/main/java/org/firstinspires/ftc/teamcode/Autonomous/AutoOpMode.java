@@ -38,8 +38,10 @@ public abstract class AutoOpMode extends LinearOpMode
     DcMotor BR;
     DcMotor FL;
     DcMotor BL;
+    DcMotor ManIn;
+    DcMotor ManLift;
     ColorSensor colorSensorWL;
-    ColorSensor colorSensorBeaconR;
+    ColorSensor colorSensorBeacon;
     ColorSensor colorSensorBeaconL;
     //values for whiteline
     public static int redValue = 0;
@@ -65,6 +67,7 @@ public abstract class AutoOpMode extends LinearOpMode
     ModernRoboticsI2cRangeSensor rangeSensor;
     int standardBRV = 0;
     int standardBLV = 0;
+    int wallDistance = 20; //adjust distance later
     public AutoOpMode()
     {
         super();
@@ -75,6 +78,8 @@ public abstract class AutoOpMode extends LinearOpMode
         BR = hardwareMap.dcMotor.get("BR");
         FL = hardwareMap.dcMotor.get("FL");
         BL = hardwareMap.dcMotor.get("BL");
+        DcMotor ManIn = hardwareMap.dcMotor.get("ManIn");
+        DcMotor ManLift = hardwareMap.dcMotor.get("ManLift");
         telemetry.addData("motors", "initialized");
         telemetry.update();
         FL.setPower(0);
@@ -93,13 +98,14 @@ public abstract class AutoOpMode extends LinearOpMode
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
+        telemetry.addData("gyro", "initialized");
         //Color Sensor Initialization
         colorSensorWL = hardwareMap.colorSensor.get("cSWL");
         //colorSensorBeaconR = hardwareMap.colorSensor.get("cSWL2");
-        //colorSensorBeaconL = hardwareMap.colorSensor.get("cSBeacon");
+        colorSensorBeacon = hardwareMap.colorSensor.get("cSBeacon");
         colorSensorWL.setI2cAddress(I2cAddr.create7bit(0x20));
         //colorSensorBeaconR.setI2cAddress(I2cAddr.create7bit(0x20));
-        //colorSensorBeaconL.setI2cAddress(I2cAddr.create7bit(0x20));
+        colorSensorBeacon.setI2cAddress(I2cAddr.create7bit(0x20));
         colorSensorWL.enableLed(true);
         //colorSensorBeaconR.enableLed(true);
         //colorSensorBeaconL.enableLed(true);
@@ -134,7 +140,6 @@ public abstract class AutoOpMode extends LinearOpMode
     {
         turnRight(-power);
     }
-
     public void stopBase()
     {
         FR.setPower(0);
@@ -256,6 +261,12 @@ public abstract class AutoOpMode extends LinearOpMode
         }
         return false;
     }
+    public boolean isBlue(ColorSensor input)
+    {
+        if(Math.abs(input.red()) > 100)
+            return true;
+        return false;
+    }
     //Whiteline and gyro methods
     public void stopAtWhiteLine(double power) throws InterruptedException {
         while(!isOnWhiteLine(colorSensorWL))
@@ -265,6 +276,13 @@ public abstract class AutoOpMode extends LinearOpMode
     {
         return rangeSensor.cmOptical();
     }
+    /**public void approachWall(int power, int distance, int spaceFromWall)
+    {
+        while()
+        {
+            moveForwardWithEncoders();
+        }
+    }*/
     public void composeTelemetry()
     {
         final Orientation[] angles = {imu.getAngularOrientation()};

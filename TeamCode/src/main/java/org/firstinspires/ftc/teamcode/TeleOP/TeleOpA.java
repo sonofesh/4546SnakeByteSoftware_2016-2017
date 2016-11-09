@@ -25,6 +25,7 @@ public class TeleOpA extends OpMode
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
+    boolean liftUp;
     int direction = 1;
     int liftPosO;
     int liftPosCurrent;
@@ -61,6 +62,7 @@ public class TeleOpA extends OpMode
         shootfull = false;
         shootpartial = false;
         harvest = false;
+	liftUp = false;
         shoottime = 0;
         harvesttime = 0;
         currentTime = 0;
@@ -91,6 +93,7 @@ public class TeleOpA extends OpMode
             FR.setPower(0);
             BR.setPower(0);
         }
+	//HalfSpeed Macro
         if (gamepad1.a)
         {
             currentTime = System.nanoTime();
@@ -165,3 +168,32 @@ public class TeleOpA extends OpMode
         }
     }
 }
+
+/* Shooter toggle controls - Please check this code to make sure it is fine
+button y is now a toggle which controls liftUp boolean. If liftUp boolean is true
+and the encoder does not read 0 (we are starting up, so the encoder should read 0 at the top)
+if(gamepad2.y)
+        {
+            currentTime = System.nanoTime();
+            if(currentTime > lastTime + DURATION)
+            {
+                if(liftUp) liftUp = false;
+		else liftUp = true;
+            }
+            lastTime = System.nanoTime();
+        }
+if(liftUp && ManLift.getCurrentPosition() > 0)
+{
+	ManLift.setPower(-.3);
+}
+else if(!liftUp && ManLift.getCurrentPosition() != UPDISTANCE)
+{
+	ManLift.setPower(.3);
+}
+else
+{
+	ManLift.setPower(0);
+}
+
+
+*/

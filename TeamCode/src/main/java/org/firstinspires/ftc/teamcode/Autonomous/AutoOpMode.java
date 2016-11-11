@@ -159,7 +159,7 @@ public abstract class AutoOpMode extends LinearOpMode
     {
         BRV = Math.abs(BR.getCurrentPosition());
         BLV = Math.abs(BL.getCurrentPosition());
-        avg = (BRV + BLV)/2;
+        avg = Math.abs((BRV + BLV)/2);
         return avg;
     }
     public void moveForwardWithEncoders(double power, int distance) throws InterruptedException

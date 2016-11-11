@@ -19,7 +19,8 @@ public class TeleOpA extends OpMode
     DcMotor FL;
     DcMotor BR;
     DcMotor BL;
-    DcMotor Shooter;
+    DcMotor ShooterF;
+    DcMotor ShooterB;
     DcMotor ManIn;
     DcMotor ManLift;
     boolean shootfull;
@@ -39,6 +40,7 @@ public class TeleOpA extends OpMode
     final long DURATION = 2000000000;
     final int UPDISTANCE = 30;
     double speed = 0;
+    boolean liftUp;
     @Override
     public void init()
     {
@@ -46,17 +48,23 @@ public class TeleOpA extends OpMode
         BR = hardwareMap.dcMotor.get("BR");
         FL = hardwareMap.dcMotor.get("FL");
         BL = hardwareMap.dcMotor.get("BL");
-        //Shooter = hardwareMap.dcMotor.get("Shooter");
+        ShooterB = hardwareMap.dcMotor.get("B");
+        ShooterF = hardwareMap.dcMotor.get("F");
         ManIn = hardwareMap.dcMotor.get("ManIn");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
         BR.setPower(0);
+        ShooterB.setPower(0);
+        ShooterF.setPower(0);
+        ManLift.setPower(0);
+        ManIn.setPower(0);
         //Shooter.setPower(0);
         ManLift.setPower(0);
         ManIn.setPower(0);
         ManLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //ManLift.setMode(DcMotor.RunMode.RESET_ENCODERS);
         liftPosO = 0;
         liftPosCurrent = 0;
         shootfull = false;
@@ -67,6 +75,7 @@ public class TeleOpA extends OpMode
         harvesttime = 0;
         currentTime = 0;
         lastTime = 0;
+        liftUp = false;
     }
 
     @Override
@@ -105,7 +114,10 @@ public class TeleOpA extends OpMode
                 else
                     halfspeed = true;
             }
-            speed = (halfspeed)? HALFSPEED:FULLSPEED;
+            if(halfspeed)
+                speed = HALFSPEED;
+            else
+                speed = FULLSPEED;
             lastTime = System.nanoTime();
         }
         //Reverse Macro
@@ -123,17 +135,25 @@ public class TeleOpA extends OpMode
         //program follows
         //Shooter Control - Need to test for various to configure various shooting postions
         if (gamepad2.a)
-            Shooter.setPower(1);
+        {
+            ShooterF.setPower(1);
+            ShooterB.setPower(-1);
+        }
+        else if (gamepad2.b)
+        {
+            ShooterF.setPower(.75);
+            ShooterB.setPower(-.75);
+        }
+        else if (gamepad2.x)
+        {
+            ShooterF.setPower(.5);
+            ShooterB.setPower(-.5);
+        }
         else
-            Shooter.setPower(0);
-        if (gamepad2.b)
-           Shooter.setPower(.75);
-        else
-            Shooter.setPower(0);
-        if (gamepad2.x)
-            Shooter.setPower(.5);
-        else
-            Shooter.setPower(0);
+        {
+            ShooterF.setPower(0);
+            ShooterB.setPower(0);
+        }
         //Manipulator Control
         if(Math.abs(gamepad2.right_stick_y) > .1)
         {
@@ -143,32 +163,50 @@ public class TeleOpA extends OpMode
         {
             ManIn.setPower(0);
         }
-        if(Math.abs(gamepad2.left_stick_y) > .5)
+        if(Math.abs(gamepad2.left_trigger) > .05)
+            ManLift.setPower(gamepad2.left_trigger * .25 * -1);
+
+        else if(Math.abs(gamepad2.right_trigger) > .05)
+            ManLift.setPower(gamepad2.right_trigger * .25);
+
+        else
+            ManLift.setPower(0);
+        /**if(gamepad2.y)
         {
-            //liftPosO = ManLift.getCurrentPosition();
-            //telemetry.addData("liftPosition", liftPosO);
-            ManLift.setPower(gamepad2.left_stick_y * -.05);
-            //liftPosCurrent = ManLift.getCurrentPosition();
-            /**while (Math.abs(liftPosCurrent - liftPosO) < UPDISTANCE)
+            currentTime = System.nanoTime();
+            if(currentTime > lastTime + DURATION)
             {
-                ManLift.setPower(gamepad1.right_trigger * -.05);
-                liftPosCurrent = ManLift.getCurrentPosition();
+                if(liftUp) liftUp = false;
+                else liftUp = true;
             }
-             **/
-            //telemetry.addData("liftPosition", liftPosCurrent);
+            lastTime = System.nanoTime();
         }
-        /**else if (gamepad2.left_trigger > .5)
+        /**if(Math.abs(gamepad2.left_stick_y) > .05)
         {
-            ManLift.setPower(gamepad1.left_trigger * .1);
+            ManLift.setPower(-1 * gamepad2.left_stick_y * .1);
         }
-         */
+        else
+            ManLift.setPower(0);
+        if(Math.abs(gamepad2.left_trigger) > .05)
+            ManLift.setPower(gamepad2.left_trigger * .1);
+        else
+            ManLift.setPower(0);
+        liftPosO = ManLift.getCurrentPosition();
+        if(liftUp && Math.abs(ManLift.getCurrentPosition() - liftPosO) < UPDISTANCE)
+        {
+            ManLift.setPower(-.3);
+            telemetry.addData("upPosition", ManLift.getCurrentPosition());
+        }
+        else if(!liftUp && ManLift.getCurrentPosition() > 0) {
+            ManLift.setPower(.3);
+        }
         else
         {
             ManLift.setPower(0);
         }
+         */
     }
 }
-
 /* Shooter toggle controls - Please check this code to make sure it is fine
 button y is now a toggle which controls liftUp boolean. If liftUp boolean is true
 and the encoder does not read 0 (we are starting up, so the encoder should read 0 at the top)

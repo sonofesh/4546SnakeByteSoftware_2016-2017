@@ -26,7 +26,6 @@ public class TeleOpA extends OpMode
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
-    boolean liftUp;
     int direction = 1;
     int liftPosO;
     int liftPosCurrent;
@@ -70,7 +69,7 @@ public class TeleOpA extends OpMode
         shootfull = false;
         shootpartial = false;
         harvest = false;
-	liftUp = false;
+	    liftUp = false;
         shoottime = 0;
         harvesttime = 0;
         currentTime = 0;

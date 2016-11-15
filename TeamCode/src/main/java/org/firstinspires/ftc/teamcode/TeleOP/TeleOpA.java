@@ -1,3 +1,19 @@
+/** CONTROLS
+ *      Controller 1 - Drive
+ *          Right Stick Y Axis : Right Wheel Power          Left Stick Y Axis : Left Wheel Power
+ *          Y : Reverse Drive Toggle                        A : Half Speed Toggle
+ *
+ *      Controller 2 - Scoring
+ *          Right Stick Y Axis : Manipulator High Power     Left Stick Y Axis : Manipulator Low Power
+ *          Right Trigger : Ramp Up                         Left Trigger : Ramp Down
+ *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
+ *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
+ *          Y : Lift Stopper Toggle                         A : Lift Release
+ *
+ */
+
+
+
 package org.firstinspires.ftc.teamcode.TeleOP;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -26,6 +42,7 @@ public class TeleOpA extends OpMode
     DcMotor ManLift;
     Servo Stopper;
     Servo Beacon;
+    //Servo Release;
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
@@ -58,7 +75,9 @@ public class TeleOpA extends OpMode
         ManLift = hardwareMap.dcMotor.get("ManLift");
         Beacon = hardwareMap.servo.get("Beacon");
         Stopper = hardwareMap.servo.get("Stopper");
-        Beacon.setPosition(0);
+        //Release = hardwareMap.servo.get("Release");
+        //Release.setPosition(0);
+        Beacon.setPosition(.2);
         Stopper.setPosition(0);
         FL.setPower(0);
         FR.setPower(0);
@@ -68,7 +87,6 @@ public class TeleOpA extends OpMode
         ShooterF.setPower(0);
         ManLift.setPower(0);
         ManIn.setPower(0);
-        //Shooter.setPower(0);
         ManLift.setPower(0);
         ManIn.setPower(0);
         ManLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -89,6 +107,8 @@ public class TeleOpA extends OpMode
 
     @Override
     public void loop() {
+
+        //CONTROLLER 1
 
         //Tank Drive
         if (Math.abs(gamepad1.left_stick_y) > .1)
@@ -111,7 +131,7 @@ public class TeleOpA extends OpMode
             FR.setPower(0);
             BR.setPower(0);
         }
-	//HalfSpeed Macro
+	    //HalfSpeed Macro
         if (gamepad1.a)
         {
             currentTime = System.nanoTime();
@@ -140,40 +160,18 @@ public class TeleOpA extends OpMode
             lastTime = System.nanoTime();
         }
 
-        //Below is harvester & shooter controls for a second controller. For testing reasons, alternate 1 control
-        //program follows
-        //Shooter Control - Need to test for various to configure various shooting postions
-        if (gamepad2.a)
-        {
-            ShooterF.setPower(1);
-            ShooterB.setPower(-1);
-        }
-        else if (gamepad2.b)
-        {
-            ShooterF.setPower(.75);
-            ShooterB.setPower(-.75);
-        }
-        else if (gamepad2.x)
-        {
-            ShooterF.setPower(.5);
-            ShooterB.setPower(-.5);
-        }
+        //CONTROLLER 2
 
-        /*
-            Alternate Shooter Controls
-            if(gamepad2.right_bumper)
-            {
+        //Shooter Controls
+        if(gamepad2.right_bumper)
+        {
                 ShooterF.setPower(1);
                 ShooterB.setPower(-1);
-            }
-            else if(gamepad2.left_bumper)
-            {
-                ShooterF.setPower(.75);
-                ShooterB.setPower(-.75);
-            }
-
-         */
-
+        }
+        else if(gamepad2.left_bumper) {
+            ShooterF.setPower(.9);
+            ShooterB.setPower(-.9);
+        }
         else
         {
             ShooterF.setPower(0);
@@ -202,29 +200,49 @@ public class TeleOpA extends OpMode
         else
             ManLift.setPower(0);
 
-
-
-        /* //Physical Lift Stop Servo Control
-            if(gamepad2.y)
+        //Physical Lift Stop Servo Control
+        if(gamepad2.y)
+        {
+            currentTime = System.nanoTime();
+            if(currentTime > lastTime + DURATION)
             {
-                currentTime = System.nanoTime();
-                if(currentTime > lastTime + DURATION)
-                {
-                    if(stop) stop = false;
-                    else stop = true;
-                }
-                lastTime = System.nanoTime();
+                if(stop) stop = false;
+                else stop = true;
             }
-            if(stop)
-            {
-                    Stopper.setPosition(180); //Abritary Values
-            }
+            lastTime = System.nanoTime();
+        }
+        if(stop)
+        {
+            Stopper.setPosition(1); //Arbitrary Values
+        }
+        else
+        {
+            Stopper.setPosition(0);
+        }
 
+        //Beacon Pusher Controls0
+        if(gamepad2.b)
+        {
+            Beacon.setPosition(.4); //Arbitrary Value
+        }
+        else if(gamepad2.x)
+        {
+            Beacon.setPosition(0.0); //Arbitrary Value
+        }
+        else
+        {
+            Beacon.setPosition(.2); //Arbitrary Value
+        }
 
-
-
-
+        //Lift Release
+        /*
+        if(gamepad2.a)
+        {
+            Release.setPosition(1);
+        }
          */
+
+
         /**if(gamepad2.y)
         {
             currentTime = System.nanoTime();

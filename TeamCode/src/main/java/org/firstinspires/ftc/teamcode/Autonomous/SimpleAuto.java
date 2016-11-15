@@ -21,6 +21,7 @@ public class SimpleAuto extends LinearOpMode
     DcMotor ManLift;
     DcMotor ManIn;
     int beforeALV = 0;
+    int beforeMLV = 0;
     int FRV = 0;
     int FLV = 0;
     int avg = 0;
@@ -53,20 +54,17 @@ public class SimpleAuto extends LinearOpMode
     }
     public void bringDownShooter(double power) throws InterruptedException
     {
-        int beforePos = ManLift.getCurrentPosition();
+        int beforePos = Math.abs(ManLift.getCurrentPosition());
         telemetry.addData("ManLift", ManLift.getCurrentPosition());
         telemetry.update();
-        while (Math.abs(ManLift.getCurrentPosition() - beforePos) < 20)
+        while (Math.abs(ManLift.getCurrentPosition()) <  beforeALV + 300)
         {
             ManLift.setPower(power);
-            telemetry.addData("ManLift", ManLift.getCurrentPosition());
-            telemetry.update();
             idle();
         }
         ManLift.setPower(0);
         telemetry.addData("ManLift", ManLift.getCurrentPosition());
         telemetry.update();
-        Thread.sleep(2000);
     }
 
     public void bringDownShooterTime(double power) throws InterruptedException
@@ -136,67 +134,53 @@ public class SimpleAuto extends LinearOpMode
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //beforeALV = getAvg();
         //wait(15000);
-        telemetry.addData("encoders", BR.getCurrentPosition());
-        telemetry.addData("encoders", BL.getCurrentPosition());
+        telemetry.addData("encodersR", FR.getCurrentPosition());
+        telemetry.addData("encodersL", FL.getCurrentPosition());
         telemetry.update();
-        beforeTime = System.currentTimeMillis();
-        while(Math.abs(currentTime - beforeTime) < 3000)
-        {
-            currentTime = System.currentTimeMillis();
-            moveForward(.1);
-            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
-            //telemetry.update();
-            //idle();
-        }
-        telemetry.addData("encoders", BR.getCurrentPosition());
-        telemetry.addData("encoders", BL.getCurrentPosition());
-        telemetry.update();
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        beforeTime = System.currentTimeMillis();
-        telemetry.addData("encoders", BR.getCurrentPosition());
-        telemetry.addData("encoders", BL.getCurrentPosition());
-        telemetry.update();
-        while(Math.abs(currentTime - beforeTime) < 3000)
-        {
-            currentTime = System.currentTimeMillis();
-            moveBackward(.1);
-            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
-            //telemetry.update();
-            idle();
-        }
-        telemetry.addData("encoders", BR.getCurrentPosition());
-        telemetry.addData("encoders", BL.getCurrentPosition());
-        telemetry.update();
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        /**
-        //long startTime = System.currentTimeMillis();
-        bringDownShooterTime(.05);
         beforeALV = getAvg();
-        shootTime(1);
-        while(Math.abs(getAvg() - beforeALV) < 1500)
+        while(getAvg() <  beforeALV + 3000)
         {
-            moveForward(.1);
-            telemetry.addData("distance", Math.abs(getAvg() - beforeALV));
-            telemetry.update();
+            moveForward(.2);
+            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+            //telemetry.update();
             idle();
         }
-        zero();
+        telemetry.addData("encodersR", getAvg());
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        sleep(2000);
+        //bring down shooter
+        bringDownShooter(.1);
+        sleep(1000);
+        beforeALV = getAvg();
+        beforeALV = getAvg();
+        while(getAvg() <  beforeALV + 3000)
+        {
+            turnRight(.2);
+            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+            //telemetry.update();
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("encoders", getAvg());
+        telemetry.update();
+        sleep(3000);
+
         //long currTime = System.currentTimeMillis();
         //if(Math.abs(currTime - startTime) > 15000)
-        */
     }
 }

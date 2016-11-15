@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOP;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import javax.xml.datatype.Duration;
 
@@ -23,9 +24,12 @@ public class TeleOpA extends OpMode
     DcMotor ShooterB;
     DcMotor ManIn;
     DcMotor ManLift;
+    Servo Stopper;
+    Servo Beacon;
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
+    boolean stop;
     int direction = 1;
     int liftPosO;
     int liftPosCurrent;
@@ -33,7 +37,8 @@ public class TeleOpA extends OpMode
     long harvesttime;
     long currentTime;
     long lastTime;
-    boolean halfspeed = false;
+    //Since Toggle A activates halfspeed AND Start A starts robot, halfspeed starts true to it's immediately deactivated
+    boolean halfspeed = true;
     final double HALFSPEED = .25;
     final double FULLSPEED = 1;
     final long DURATION = 2000000000;
@@ -51,6 +56,10 @@ public class TeleOpA extends OpMode
         ShooterF = hardwareMap.dcMotor.get("F");
         ManIn = hardwareMap.dcMotor.get("ManIn");
         ManLift = hardwareMap.dcMotor.get("ManLift");
+        Beacon = hardwareMap.servo.get("Beacon");
+        Stopper = hardwareMap.servo.get("Stopper");
+        Beacon.setPosition(0);
+        Stopper.setPosition(0);
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
@@ -75,6 +84,7 @@ public class TeleOpA extends OpMode
         currentTime = 0;
         lastTime = 0;
         liftUp = false;
+        stop = false;
     }
 
     @Override
@@ -148,6 +158,22 @@ public class TeleOpA extends OpMode
             ShooterF.setPower(.5);
             ShooterB.setPower(-.5);
         }
+
+        /*
+            Alternate Shooter Controls
+            if(gamepad2.right_bumper)
+            {
+                ShooterF.setPower(1);
+                ShooterB.setPower(-1);
+            }
+            else if(gamepad2.left_bumper)
+            {
+                ShooterF.setPower(.75);
+                ShooterB.setPower(-.75);
+            }
+
+         */
+
         else
         {
             ShooterF.setPower(0);
@@ -157,6 +183,11 @@ public class TeleOpA extends OpMode
         if(Math.abs(gamepad2.right_stick_y) > .1)
         {
             ManIn.setPower(gamepad2.right_stick_y);
+        }
+        //Half Power Manipulator
+        else if(Math.abs(gamepad2.left_stick_y) > .1)
+        {
+            ManIn.setPower(gamepad2.left_stick_y*.5);
         }
         else
         {
@@ -170,6 +201,30 @@ public class TeleOpA extends OpMode
 
         else
             ManLift.setPower(0);
+
+
+
+        /* //Physical Lift Stop Servo Control
+            if(gamepad2.y)
+            {
+                currentTime = System.nanoTime();
+                if(currentTime > lastTime + DURATION)
+                {
+                    if(stop) stop = false;
+                    else stop = true;
+                }
+                lastTime = System.nanoTime();
+            }
+            if(stop)
+            {
+                    Stopper.setPosition(180); //Abritary Values
+            }
+
+
+
+
+
+         */
         /**if(gamepad2.y)
         {
             currentTime = System.nanoTime();

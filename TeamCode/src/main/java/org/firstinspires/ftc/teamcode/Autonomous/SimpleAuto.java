@@ -95,7 +95,7 @@ public class SimpleAuto extends LinearOpMode
     public void shoot(double power, int distance) throws InterruptedException
     {
         bringDownShooter(.3 * -1, distance);
-        wait(1000);
+        sleep(1000); /** Changed this to sleep from wait **/
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
     }
@@ -111,7 +111,7 @@ public class SimpleAuto extends LinearOpMode
             idle();
         }
         ManLift.setPower(0);
-        wait(1000);
+        sleep(1000); /** Changed this to sleep from wait **/
         ShooterF.setPower(0);
         ShooterB.setPower(0);
     }
@@ -167,13 +167,14 @@ public class SimpleAuto extends LinearOpMode
         }
         telemetry.addData("encodersR", getAvg());
         telemetry.update();
-        FR.setPower(0);
+        zero();
+        /* FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
-        BL.setPower(0);
+        BL.setPower(0); */
         sleep(2000);
         //bring down shooter
-        bringDownShooter(.1, 900);
+        bringDownShooter(.1, 750); /** Lowered Distance Value by 150 **/
         sleep(1000);
         beforeAngle = getGryoYaw();
         while(Math.abs(getGryoYaw() - beforeALV) > 20)
@@ -183,14 +184,15 @@ public class SimpleAuto extends LinearOpMode
             //telemetry.update();
             idle();
         }
-        FR.setPower(0);
+        zero();
+        /* FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
-        BL.setPower(0);
+        BL.setPower(0); */
         telemetry.addData("yaw angle", getGryoYaw());
         telemetry.update();
         sleep(1000);
-        shoot(1, 400);
+        shoot(1, 400); /** Error Occurs here **/
         ShooterB.setPower(0);
         ShooterF.setPower(0);
         //long currTime = System.currentTimeMillis();

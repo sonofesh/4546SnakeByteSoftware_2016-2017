@@ -47,17 +47,17 @@ public class SimpleAuto extends LinearOpMode
     }
     public void turnRight(double power) throws InterruptedException
     {
-        FR.setPower(-power);
-        BR.setPower(-power);
-        FL.setPower(-power);
-        BL.setPower(-power);
+        FR.setPower(power);
+        BR.setPower(power);
+        FL.setPower(0);
+        BL.setPower(0);
     }
-    public void bringDownShooter(double power) throws InterruptedException
+    public void bringDownShooter(double power, int distance) throws InterruptedException
     {
         int beforePos = Math.abs(ManLift.getCurrentPosition());
         telemetry.addData("ManLift", ManLift.getCurrentPosition());
         telemetry.update();
-        while (Math.abs(ManLift.getCurrentPosition()) <  beforeALV + 300)
+        while (Math.abs(ManLift.getCurrentPosition() - beforePos) < distance)
         {
             ManLift.setPower(power);
             idle();
@@ -66,42 +66,19 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("ManLift", ManLift.getCurrentPosition());
         telemetry.update();
     }
-
-    public void bringDownShooterTime(double power) throws InterruptedException
+    public void shoot(double power, int distance) throws InterruptedException
     {
-        double startTime = System.currentTimeMillis();
-        while (Math.abs(System.currentTimeMillis() - startTime) < 250)
-        {
-            ManLift.setPower(power);
-            //telemetry.addData("ManLift", ManLift.getCurrentPosition());
-            //telemetry.update();
-            idle();
-        }
-        ManLift.setPower(0);
-        telemetry.addData("ManLift", startTime);
-        telemetry.update();
-        Thread.sleep(2000);
-    }
-    public void shoot(double power) throws InterruptedException
-    {
+        bringDownShooter(.3 * -1, distance);
+        wait(1000);
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
-        int beforePos = ManLift.getCurrentPosition();
-        while(Math.abs(ManLift.getCurrentPosition() - beforePos) < 500)
-        {
-            ManLift.setPower(.1);
-            idle();
-        }
-        wait(1000);
-        ShooterF.setPower(1);
-        ShooterB.setPower(-1);
     }
     public void shootTime(double power) throws InterruptedException
     {
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
         double startTime = System.currentTimeMillis();
-        while(Math.abs(ManLift.getCurrentPosition() - startTime) < 250)
+        while(Math.abs(ManLift.getCurrentPosition() - startTime) < 600)
         {
             ManLift.setPower(.05);
             idle();
@@ -146,7 +123,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("encodersL", FL.getCurrentPosition());
         telemetry.update();
         beforeALV = getAvg();
-        while(getAvg() <  beforeALV + 3000)
+        while(getAvg() <  beforeALV + 1000)
         {
             moveForward(.2);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
@@ -161,13 +138,12 @@ public class SimpleAuto extends LinearOpMode
         BL.setPower(0);
         sleep(2000);
         //bring down shooter
-        bringDownShooter(.1);
+        bringDownShooter(.1, 900);
         sleep(1000);
         beforeALV = getAvg();
-        beforeALV = getAvg();
-        while(getAvg() <  beforeALV + 3000)
+        while(getAvg() <  beforeALV + 50)
         {
-            turnRight(.2);
+            turnLeft(.3);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
             //telemetry.update();
             idle();
@@ -179,7 +155,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("encoders", getAvg());
         telemetry.update();
         sleep(3000);
-
+        shoot(1, 400);
         //long currTime = System.currentTimeMillis();
         //if(Math.abs(currTime - startTime) > 15000)
     }

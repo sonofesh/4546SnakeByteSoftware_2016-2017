@@ -41,7 +41,7 @@ public class ShootOnlyAuto extends LinearOpMode
 
     public void shoot(double power, int distance) throws InterruptedException
     {
-        bringDownShooter(.1 * -1, distance);
+        bringDownShooter(.3 * -1, distance);
         sleep(1000);
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
@@ -57,7 +57,7 @@ public class ShootOnlyAuto extends LinearOpMode
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         waitForStart();
-        bringDownShooter(.1, 750);
+        bringDownShooter(.1, 800);
         sleep(1000);
         shoot(1, 400);
         ShooterB.setPower(0);

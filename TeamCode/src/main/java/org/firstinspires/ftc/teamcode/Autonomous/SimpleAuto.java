@@ -174,7 +174,7 @@ public class SimpleAuto extends LinearOpMode
         BL.setPower(0); */
         sleep(2000);
         //bring down shooter
-        bringDownShooter(.1, 750); /** Lowered Distance Value by 150 **/
+        bringDownShooter(.1, 800); /** Lowered Distance Value by 100 **/
         sleep(1000);
         beforeAngle = getGryoYaw();
         while(Math.abs(getGryoYaw() - beforeALV) > 20)

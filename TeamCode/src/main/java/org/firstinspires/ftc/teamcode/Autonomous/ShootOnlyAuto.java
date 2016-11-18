@@ -54,6 +54,7 @@ public class ShootOnlyAuto extends LinearOpMode
     {
         if (!stop) Stopper.setPosition(1);
         else Stopper.setPosition(0);
+        sleep(100);
     }
 
     @Override

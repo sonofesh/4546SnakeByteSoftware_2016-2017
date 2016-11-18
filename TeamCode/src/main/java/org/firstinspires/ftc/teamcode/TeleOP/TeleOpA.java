@@ -221,11 +221,11 @@ public class TeleOpA extends OpMode
         }
 
         //Beacon Pusher Controls0
-        if(gamepad2.b)
+        if(gamepad2.x)
         {
             Beacon.setPosition(.45); //Test 2 Value; 1Value = .5; 0value = .4
         }
-        else if(gamepad2.x)
+        else if(gamepad2.b)
         {
             Beacon.setPosition(0.05); //Test 2 Value; 1Value = 0; 0value = 0
         }

@@ -130,30 +130,35 @@ public class SimpleAuto extends LinearOpMode
 
 
     /** Added Servo Methods **/
-    public void BeaconRight() throws InterruptedException
-    {
-        Beacon.setPosition(.45);
-    }
-
     public void BeaconLeft() throws InterruptedException
     {
+        Beacon.setPosition(.45);
+        sleep(100);
+    }
+
+    public void BeaconRight() throws InterruptedException
+    {
         Beacon.setPosition(.05);
+        sleep(100);
     }
 
     public void BeaconRest() throws InterruptedException
     {
         Beacon.setPosition(.25);
+        sleep(100);
     }
 
     public void setBeacon(double pos) throws InterruptedException
     {
         Beacon.setPosition(pos);
+        sleep(100);
     }
 
     public void useStopper() throws InterruptedException
     {
         if (!stop) Stopper.setPosition(1);
         else Stopper.setPosition(0);
+        sleep(100);
     }
 
     @Override

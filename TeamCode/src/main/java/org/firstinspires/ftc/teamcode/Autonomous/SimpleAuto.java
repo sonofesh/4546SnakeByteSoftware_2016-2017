@@ -7,6 +7,7 @@ import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -24,6 +25,9 @@ public class SimpleAuto extends LinearOpMode
     DcMotor ShooterF;
     DcMotor ManLift;
     DcMotor ManIn;
+    Servo Beacon;
+    Servo Stopper;
+    Boolean stop;
     //average encoder value
     int beforeALV = 0;
     int beforeMLV = 0;
@@ -124,6 +128,34 @@ public class SimpleAuto extends LinearOpMode
         return avg;
     }
 
+
+    /** Added Servo Methods **/
+    public void BeaconRight() throws InterruptedException
+    {
+        Beacon.setPosition(.45);
+    }
+
+    public void BeaconLeft() throws InterruptedException
+    {
+        Beacon.setPosition(.05);
+    }
+
+    public void BeaconRest() throws InterruptedException
+    {
+        Beacon.setPosition(.25);
+    }
+
+    public void setBeacon(double pos) throws InterruptedException
+    {
+        Beacon.setPosition(pos);
+    }
+
+    public void useStopper() throws InterruptedException
+    {
+        if (!stop) Stopper.setPosition(1);
+        else Stopper.setPosition(0);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -151,7 +183,9 @@ public class SimpleAuto extends LinearOpMode
         imu.initialize(parameters);
         telemetry.addData("gyro", "initalized");
         telemetry.update();
+        stop = false;
         waitForStart();
+        Stopper.setPosition(0);
         //beforeALV = getAvg();
         //wait(15000);
         telemetry.addData("encodersR", FR.getCurrentPosition());
@@ -176,6 +210,7 @@ public class SimpleAuto extends LinearOpMode
         //bring down shooter
         bringDownShooter(.1, 800); /** Lowered Distance Value by 100 **/
         sleep(1000);
+        useStopper();
         beforeAngle = getGryoYaw();
         while(Math.abs(getGryoYaw() - beforeALV) > 20)
         {

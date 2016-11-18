@@ -12,6 +12,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by viperbots 4546 on 11/17/16.
@@ -23,6 +24,8 @@ public class ShootOnlyAuto extends LinearOpMode
     DcMotor ShooterF;
     DcMotor ManLift;
     DcMotor ManIn;
+    Servo Stopper;
+    Boolean stop;
 
     public void bringDownShooter(double power, int distance) throws InterruptedException
     {
@@ -47,6 +50,12 @@ public class ShootOnlyAuto extends LinearOpMode
         ShooterB.setPower(-power);
     }
 
+    public void useStopper() throws InterruptedException
+    {
+        if (!stop) Stopper.setPosition(1);
+        else Stopper.setPosition(0);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -56,9 +65,12 @@ public class ShootOnlyAuto extends LinearOpMode
         ManIn = hardwareMap.dcMotor.get("ManIn");
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        stop = false;
         waitForStart();
+        Stopper.setPosition(0);
         bringDownShooter(.1, 800);
         sleep(1000);
+        useStopper();
         shoot(1, 400);
         ShooterB.setPower(0);
         ShooterF.setPower(0);

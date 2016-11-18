@@ -58,7 +58,7 @@ public class TeleOpA extends OpMode
     boolean halfspeed = true;
     final double HALFSPEED = .25;
     final double FULLSPEED = 1;
-    final long DURATION = 2000000000;
+    final long DURATION = 500;
     final int UPDISTANCE = 30;
     double speed = 0;
     boolean liftUp;
@@ -134,7 +134,7 @@ public class TeleOpA extends OpMode
 	    //HalfSpeed Macro
         if (gamepad1.a)
         {
-            currentTime = System.nanoTime();
+            currentTime = System.currentTimeMillis();
             if(currentTime > lastTime + DURATION)
             {
                 if(halfspeed) {
@@ -147,17 +147,17 @@ public class TeleOpA extends OpMode
                 speed = HALFSPEED;
             else
                 speed = FULLSPEED;
-            lastTime = System.nanoTime();
+            lastTime = System.currentTimeMillis();
         }
         //Reverse Macro
         if(gamepad1.y)
         {
-            currentTime = System.nanoTime();
+            currentTime = System.currentTimeMillis();
             if(currentTime > lastTime + DURATION)
             {
                 direction *= -1;
             }
-            lastTime = System.nanoTime();
+            lastTime = System.currentTimeMillis();
         }
 
         //CONTROLLER 2
@@ -203,13 +203,13 @@ public class TeleOpA extends OpMode
         //Physical Lift Stop Servo Control
         if(gamepad2.y)
         {
-            currentTime = System.nanoTime();
+            currentTime = System.currentTimeMillis();
             if(currentTime > lastTime + DURATION)
             {
                 if(stop) stop = false;
                 else stop = true;
             }
-            lastTime = System.nanoTime();
+            lastTime = System.currentTimeMillis();
         }
         if(stop)
         {

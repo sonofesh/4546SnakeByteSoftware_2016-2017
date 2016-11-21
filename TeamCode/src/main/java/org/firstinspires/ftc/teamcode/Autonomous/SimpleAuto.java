@@ -6,6 +6,7 @@ import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -28,14 +29,15 @@ public class SimpleAuto extends LinearOpMode
     int beforeALV = 0;
     int beforeMLV = 0;
     double beforeAngle = 0;
+    double whiteACV = 0;
     int FRV = 0;
     int FLV = 0;
     int avg = 0;
     long beforeTime = 0;
     long currentTime = 0;
-    public static BNO055IMU imu;
-    public static BNO055IMU.Parameters parameters;
-
+    public BNO055IMU imu;
+    BNO055IMU.Parameters parameters;
+    ColorSensor colorSensorWL;
     public void zero() throws InterruptedException
     {
         FR.setPower(0);
@@ -59,8 +61,8 @@ public class SimpleAuto extends LinearOpMode
 
     public void turnRight(double power) throws InterruptedException
     {
-        FR.setPower(power);
-        BR.setPower(power);
+        FR.setPower(-power);
+        BR.setPower(-power);
         FL.setPower(-power);
         BL.setPower(-power);
     }
@@ -71,7 +73,7 @@ public class SimpleAuto extends LinearOpMode
     }
 
     //gyro methods
-    public float getGryoYaw()
+    public float getGryoYaw() throws InterruptedException
     {
         Orientation angles = imu.getAngularOrientation();
         return angles.firstAngle;
@@ -95,23 +97,13 @@ public class SimpleAuto extends LinearOpMode
     public void shoot(double power, int distance) throws InterruptedException
     {
         bringDownShooter(.3 * -1, distance);
-        wait(1000);
-        ShooterF.setPower(power);
-        ShooterB.setPower(-power);
-    }
-
-    public void shootTime(double power) throws InterruptedException
-    {
-        ShooterF.setPower(power);
-        ShooterB.setPower(-power);
-        double startTime = System.currentTimeMillis();
-        while(Math.abs(ManLift.getCurrentPosition() - startTime) < 600)
+        sleep(500);
+        beforeTime = System.currentTimeMillis();
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2500)
         {
-            ManLift.setPower(.05);
-            idle();
+            ShooterF.setPower(power);
+            ShooterB.setPower(-power);
         }
-        ManLift.setPower(0);
-        wait(1000);
         ShooterF.setPower(0);
         ShooterB.setPower(0);
     }
@@ -122,6 +114,12 @@ public class SimpleAuto extends LinearOpMode
         FLV = Math.abs(FL.getCurrentPosition());
         avg = Math.abs((FRV + FLV)/2);
         return avg;
+    }
+
+    public double colorSensorAverageValues() throws InterruptedException
+    {
+        double average = (colorSensorWL.red() + colorSensorWL.blue() + colorSensorWL.green())/3.0;
+        return average;
     }
 
     @Override
@@ -141,6 +139,8 @@ public class SimpleAuto extends LinearOpMode
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        telemetry.addData("gyro", "initalizing");
+        telemetry.update();
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -148,8 +148,12 @@ public class SimpleAuto extends LinearOpMode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initalized");
+        telemetry.update();
+        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
+        telemetry.addData("colorSensor", "initalized");
         telemetry.update();
         waitForStart();
         //beforeALV = getAvg();
@@ -158,7 +162,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("encodersL", FL.getCurrentPosition());
         telemetry.update();
         beforeALV = getAvg();
-        while(getAvg() <  beforeALV + 1000)
+        while(getAvg() <  beforeAngle + 1000)
         {
             moveForward(.2);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
@@ -174,9 +178,12 @@ public class SimpleAuto extends LinearOpMode
         sleep(2000);
         //bring down shooter
         bringDownShooter(.1, 900);
+        telemetry.addData("yaw angle", getGryoYaw());
+        telemetry.update();
         sleep(1000);
+        /**
         beforeAngle = getGryoYaw();
-        while(Math.abs(getGryoYaw() - beforeALV) > 20)
+        while(Math.abs(getGryoYaw() - beforeAngle) < 20)
         {
             turnLeft(.3);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
@@ -190,10 +197,72 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("yaw angle", getGryoYaw());
         telemetry.update();
         sleep(1000);
-        shoot(1, 400);
-        ShooterB.setPower(0);
-        ShooterF.setPower(0);
+        */
+        shoot(1, 350);
+        sleep(1000);
+
+
+
         //long currTime = System.currentTimeMillis();
         //if(Math.abs(currTime - startTime) > 15000)
+
+        //Push the Beacon
+        /**
+        beforeAngle = getGryoYaw();
+        while(Math.abs(getGryoYaw() - beforeALV) > 70)
+        {
+            turnRight(.3);
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("yaw angle", getGryoYaw());
+        telemetry.update();
+        sleep(500);
+        beforeALV = getAvg();
+        while(getAvg() <  beforeALV + 1000)
+        {
+            moveForward(.2);
+            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+            //telemetry.update();
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("encodersR", FR.getCurrentPosition());
+        telemetry.addData("encodersL", FL.getCurrentPosition());
+        telemetry.update();
+        sleep(500);
+        beforeALV = getAvg();
+        while(Math.abs(colorSensorAverageValues() - whiteACV) < 50 && getAvg() <  beforeALV + 1000)
+        {
+            moveForward(.2);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("encodersR", FR.getCurrentPosition());
+        telemetry.addData("encodersL", FL.getCurrentPosition());
+        telemetry.update();
+        sleep(500);
+        beforeALV = getAvg();
+        while(Math.abs(colorSensorAverageValues() - whiteACV) < 50 && getAvg() <  beforeALV + 1000)
+        {
+            moveBackward(.2);
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("encodersR", FR.getCurrentPosition());
+        telemetry.addData("encodersL", FL.getCurrentPosition());
+        telemetry.update();
+        sleep(500);
+        **/
     }
 }

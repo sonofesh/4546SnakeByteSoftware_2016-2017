@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.R;
  * Created by johnsjim on 10/7/2016.
  */
 
-@Autonomous(name = "AutoOpMode", group = "Autonomous")
+@Autonomous(name = "Vuforia", group = "Autonomous")
 public class vuforiaOp extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {

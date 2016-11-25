@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -25,11 +27,13 @@ public class SimpleAuto extends LinearOpMode
     DcMotor ShooterF;
     DcMotor ManLift;
     DcMotor ManIn;
+    Servo Beacon;
     //average encoder value
     int beforeALV = 0;
     int beforeMLV = 0;
-    double beforeAngle = 0;
-    double whiteACV = 0;
+    double beforeAngle = 2;
+    final double blackAVC = 2;
+    final double whiteACV = 27;
     int FRV = 0;
     int FLV = 0;
     int avg = 0;
@@ -38,6 +42,7 @@ public class SimpleAuto extends LinearOpMode
     public BNO055IMU imu;
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
+    ColorSensor colorSensorBeacon;
     public void zero() throws InterruptedException
     {
         FR.setPower(0);
@@ -61,10 +66,10 @@ public class SimpleAuto extends LinearOpMode
 
     public void turnRight(double power) throws InterruptedException
     {
-        FR.setPower(-power);
-        BR.setPower(-power);
-        FL.setPower(-power);
-        BL.setPower(-power);
+        FR.setPower(power);
+        BR.setPower(power);
+        FL.setPower(power);
+        BL.setPower(power);
     }
 
     public void turnLeft(double power) throws InterruptedException
@@ -96,14 +101,12 @@ public class SimpleAuto extends LinearOpMode
 
     public void shoot(double power, int distance) throws InterruptedException
     {
-        bringDownShooter(.3 * -1, distance);
-        sleep(500);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2500)
-        {
-            ShooterF.setPower(power);
-            ShooterB.setPower(-power);
-        }
+        ShooterF.setPower(power);
+        ShooterB.setPower(-power);
+        bringDownShooter(.2 * -1, distance);
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 5000)
+            idle();
         ShooterF.setPower(0);
         ShooterB.setPower(0);
     }
@@ -116,9 +119,9 @@ public class SimpleAuto extends LinearOpMode
         return avg;
     }
 
-    public double colorSensorAverageValues() throws InterruptedException
+    public double colorSensorAverageValues(ColorSensor sensor) throws InterruptedException
     {
-        double average = (colorSensorWL.red() + colorSensorWL.blue() + colorSensorWL.green())/3.0;
+        double average = (sensor.red() + sensor.blue() + sensor.green())/3.0;
         return average;
     }
 
@@ -133,6 +136,7 @@ public class SimpleAuto extends LinearOpMode
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
+        Beacon = hardwareMap.servo.get("Beacon");
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -153,7 +157,14 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("gyro", "initalized");
         telemetry.update();
         colorSensorWL = hardwareMap.colorSensor.get("cSWL");
-        telemetry.addData("colorSensor", "initalized");
+        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
+        telemetry.addData("colorSensorL", "initalized");
+        telemetry.update();
+        colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
+        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
+        telemetry.addData("colorSensorB", "initalized");
+        telemetry.update();
+        telemetry.addData("test5", "initalized");
         telemetry.update();
         waitForStart();
         //beforeALV = getAvg();
@@ -162,7 +173,8 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("encodersL", FL.getCurrentPosition());
         telemetry.update();
         beforeALV = getAvg();
-        while(getAvg() <  beforeAngle + 1000)
+        //original moveForward
+        while(getAvg() <  beforeALV + 1200)
         {
             moveForward(.2);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
@@ -181,7 +193,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("yaw angle", getGryoYaw());
         telemetry.update();
         sleep(1000);
-        /**
+        //turn before shooting
         beforeAngle = getGryoYaw();
         while(Math.abs(getGryoYaw() - beforeAngle) < 20)
         {
@@ -197,19 +209,22 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("yaw angle", getGryoYaw());
         telemetry.update();
         sleep(1000);
-        */
-        shoot(1, 350);
-        sleep(1000);
-
-
-
-        //long currTime = System.currentTimeMillis();
-        //if(Math.abs(currTime - startTime) > 15000)
-
-        //Push the Beacon
-        /**
+        //shoot
+        shoot(1, 400);
+        sleep(250);
+        //move forward a little
+        beforeALV = getAvg();
+        while(getAvg() <  beforeALV + 500)
+        {
+            moveForward(.2);
+            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+            //telemetry.update();
+            idle();
+        }
+        telemetry.addData("encodersAvg", getAvg());
+        //turn 110 degrees
         beforeAngle = getGryoYaw();
-        while(Math.abs(getGryoYaw() - beforeALV) > 70)
+        while(Math.abs(getGryoYaw() - beforeAngle) > 110)
         {
             turnRight(.3);
         }
@@ -219,11 +234,12 @@ public class SimpleAuto extends LinearOpMode
         BL.setPower(0);
         telemetry.addData("yaw angle", getGryoYaw());
         telemetry.update();
-        sleep(500);
+        sleep(250);
+        //move across the field
         beforeALV = getAvg();
-        while(getAvg() <  beforeALV + 1000)
+        while(getAvg() <  beforeALV + 3000)
         {
-            moveForward(.2);
+            moveBackward(.2);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
             //telemetry.update();
             idle();
@@ -237,32 +253,35 @@ public class SimpleAuto extends LinearOpMode
         telemetry.update();
         sleep(500);
         beforeALV = getAvg();
-        while(Math.abs(colorSensorAverageValues() - whiteACV) < 50 && getAvg() <  beforeALV + 1000)
+        //barely move "backward" until white line sensed
+        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) < 5 || getAvg() <  beforeALV + 400)
         {
-            moveForward(.2);
+            moveBackward(.1);
             idle();
         }
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
-        telemetry.addData("encodersR", FR.getCurrentPosition());
-        telemetry.addData("encodersL", FL.getCurrentPosition());
+        telemetry.addData("encodersA", getAvg());
+        telemetry.addData("colorAverage", colorSensorAverageValues(colorSensorWL));
         telemetry.update();
         sleep(500);
         beforeALV = getAvg();
-        while(Math.abs(colorSensorAverageValues() - whiteACV) < 50 && getAvg() <  beforeALV + 1000)
+        //move "backward" until white line sensed
+        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) < 5 && getAvg() <  beforeALV + 2000)
         {
             moveBackward(.2);
+            idle();
         }
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
-        telemetry.addData("encodersR", FR.getCurrentPosition());
-        telemetry.addData("encodersL", FL.getCurrentPosition());
+        telemetry.addData("encodersA", FR.getCurrentPosition());
+        telemetry.update();
+        telemetry.addData("colorAverage", colorSensorAverageValues(colorSensorWL));
         telemetry.update();
         sleep(500);
-        **/
     }
 }

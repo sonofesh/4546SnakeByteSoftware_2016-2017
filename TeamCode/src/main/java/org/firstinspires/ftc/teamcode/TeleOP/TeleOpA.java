@@ -58,7 +58,7 @@ public class TeleOpA extends OpMode
     boolean halfspeed = true;
     final double HALFSPEED = .25;
     final double FULLSPEED = 1;
-    final long DURATION = 2000000000;
+    final long DURATION = 500;
     final int UPDISTANCE = 30;
     double speed = 0;
     boolean liftUp;
@@ -77,7 +77,7 @@ public class TeleOpA extends OpMode
         Stopper = hardwareMap.servo.get("Stopper");
         //Release = hardwareMap.servo.get("Release");
         //Release.setPosition(0);
-        Beacon.setPosition(.2);
+        Beacon.setPosition(.5);
         Stopper.setPosition(0);
         FL.setPower(0);
         FR.setPower(0);
@@ -134,7 +134,7 @@ public class TeleOpA extends OpMode
 	    //HalfSpeed Macro
         if (gamepad1.a)
         {
-            currentTime = System.nanoTime();
+            currentTime = System.currentTimeMillis();
             if(currentTime > lastTime + DURATION)
             {
                 if(halfspeed) {
@@ -147,17 +147,17 @@ public class TeleOpA extends OpMode
                 speed = HALFSPEED;
             else
                 speed = FULLSPEED;
-            lastTime = System.nanoTime();
+            lastTime = System.currentTimeMillis();
         }
         //Reverse Macro
         if(gamepad1.y)
         {
-            currentTime = System.nanoTime();
+            currentTime = System.currentTimeMillis();
             if(currentTime > lastTime + DURATION)
             {
                 direction *= -1;
             }
-            lastTime = System.nanoTime();
+            lastTime = System.currentTimeMillis();
         }
 
         //CONTROLLER 2
@@ -185,7 +185,7 @@ public class TeleOpA extends OpMode
         //Half Power Manipulator
         else if(Math.abs(gamepad2.left_stick_y) > .1)
         {
-            ManIn.setPower(gamepad2.left_stick_y*.5);
+            ManIn.setPower(gamepad2.left_stick_y * .25);
         }
         else
         {
@@ -203,13 +203,13 @@ public class TeleOpA extends OpMode
         //Physical Lift Stop Servo Control
         if(gamepad2.y)
         {
-            currentTime = System.nanoTime();
+            currentTime = System.currentTimeMillis();
             if(currentTime > lastTime + DURATION)
             {
                 if(stop) stop = false;
                 else stop = true;
             }
-            lastTime = System.nanoTime();
+            lastTime = System.currentTimeMillis();
         }
         if(stop)
         {
@@ -221,17 +221,17 @@ public class TeleOpA extends OpMode
         }
 
         //Beacon Pusher Controls0
-        if(gamepad2.b)
+        if(gamepad2.x)
         {
-            Beacon.setPosition(.4); //Arbitrary Value
+            Beacon.setPosition(.45); //Test 2 Value; 1Value = .5; 0value = .4
         }
-        else if(gamepad2.x)
+        else if(gamepad2.b)
         {
-            Beacon.setPosition(0.0); //Arbitrary Value
+            Beacon.setPosition(0.05); //Test 2 Value; 1Value = 0; 0value = 0
         }
         else
         {
-            Beacon.setPosition(.2); //Arbitrary Value
+            Beacon.setPosition(.25); //Test 2 Value; 1Value = .25; 0value = .2
         }
 
         //Lift Release

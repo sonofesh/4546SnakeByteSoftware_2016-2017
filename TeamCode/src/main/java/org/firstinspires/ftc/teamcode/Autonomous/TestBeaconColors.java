@@ -6,6 +6,7 @@ import android.view.View;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 
 /**
  * Created by sopa on 11/18/16.
@@ -14,25 +15,30 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 public class TestBeaconColors extends LinearOpMode
 {
     ColorSensor colorSensorBeacon;
-    public double colorSensorAverageValues() throws InterruptedException
+    public double colorSensorRed() throws InterruptedException
     {
-        double average = (colorSensorBeacon.red() + colorSensorBeacon.blue() + colorSensorBeacon.green())/3.0;
-        return average;
+        return colorSensorBeacon.red();
+    }
+    public double colorSensorBlue() throws InterruptedException
+    {
+        return colorSensorBeacon.blue();
     }
     @Override
     public void runOpMode() throws InterruptedException
     {
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
         colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
+        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         colorSensorBeacon.enableLed(true);
         telemetry.addData("colorSensor", "initialized");
+        telemetry.addData("test6", "initialized");
         waitForStart();
-        while(true)
-        {
-            telemetry.addData("cAverage", colorSensorAverageValues());
+            telemetry.addData("cRed", colorSensorRed());
             telemetry.update();
-            sleep(500);
+            sleep(1500);
+            telemetry.addData("cBlue", colorSensorBlue());
+            telemetry.update();
+            sleep(1500);
             idle();
-        }
     }
 }

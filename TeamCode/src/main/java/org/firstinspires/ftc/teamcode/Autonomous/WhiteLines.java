@@ -123,7 +123,14 @@ public class WhiteLines extends LinearOpMode
         double average = (sensor.red() + sensor.blue() + sensor.green())/3.0;
         return average;
     }
-
+    public double colorSensorRed() throws InterruptedException
+    {
+        return colorSensorBeacon.red();
+    }
+    public double colorSensorBlue() throws InterruptedException
+    {
+        return colorSensorBeacon.blue();
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         FR = hardwareMap.dcMotor.get("FR");
@@ -135,6 +142,7 @@ public class WhiteLines extends LinearOpMode
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
         Beacon = hardwareMap.servo.get("Beacon");
+        Beacon.setPosition(.7);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -162,19 +170,18 @@ public class WhiteLines extends LinearOpMode
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensorB", "initalized");
         telemetry.update();
-        telemetry.addData("test17", "initalized");
-        telemetry.update();
-        waitForStart();
         telemetry.addData("WhiteLine", colorSensorAverageValues(colorSensorWL));
         telemetry.update();
         sleep(3000);
         telemetry.addData("Beacon", colorSensorAverageValues(colorSensorBeacon));
         telemetry.update();
-        sleep(3000);
+        sleep(3000);telemetry.addData("test20", "initialized");
+        telemetry.update();
+        waitForStart();
 
         beforeALV = getAvg();
         //barely move forward until white line is sensed
-        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && getAvg() <  beforeALV + 300)
+        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && getAvg() <  beforeALV + 400)
         {
             moveForward(.15);
             idle();
@@ -187,16 +194,15 @@ public class WhiteLines extends LinearOpMode
         telemetry.addData("colorAverage", colorSensorAverageValues(colorSensorWL));
         telemetry.update();
         sleep(250);
-        
-        /* Comment in as soon as the last part works
+
         //move forward and push the correct beacon
-        if(Math.abs(blueACV - colorSensorAverageValues(colorSensorBeacon)) < Math.abs(redACV - colorSensorAverageValues(colorSensorBeacon)))
+        if(colorSensorRed() > colorSensorBlue())
         {
-            Beacon.setPosition(.8);
+            Beacon.setPosition(.5);
             beforeALV = getAvg();
-            while(getAvg() <  beforeALV + 300)
+            while(getAvg() <  beforeALV + 200)
             {
-                moveForward(.15);
+                moveBackward(.15);
                 idle();
             }
             FR.setPower(0);
@@ -204,13 +210,34 @@ public class WhiteLines extends LinearOpMode
             FL.setPower(0);
             BL.setPower(0);
             telemetry.addData("encodersA", getAvg());
-            Beacon.setPosition(.6);
+            Beacon.setPosition(.8);
+            beforeALV = getAvg();
+            while(getAvg() <  beforeALV + 200)
+            {
+                moveBackward(.15);
+                idle();
+            }
+            FR.setPower(0);
+            BR.setPower(0);
+            FL.setPower(0);
+            BL.setPower(0);
         }
         else
         {
-            Beacon.setPosition(.8);
+            Beacon.setPosition(.5);
             beforeALV = getAvg();
-            while(getAvg() <  beforeALV + 600)
+            while(getAvg() <  beforeALV + 200)
+            {
+                moveForward(.15);
+                idle();
+            }
+            FR.setPower(0);
+            BR.setPower(0);
+            FL.setPower(0);
+            BL.setPower(0);
+            telemetry.addData("encodersA", getAvg());
+            beforeALV = getAvg();
+            /*while(getAvg() <  beforeALV + 300)
             {
                 moveForward(.15);
                 idle();
@@ -221,6 +248,7 @@ public class WhiteLines extends LinearOpMode
             BL.setPower(0);
             telemetry.addData("encodersA", getAvg());
             Beacon.setPosition(.6);
+            */
         }
         sleep(250);
 
@@ -239,13 +267,13 @@ public class WhiteLines extends LinearOpMode
         telemetry.update();
         sleep(250);
         //move forward and push the correct beacon
-        if(Math.abs(blueACV - colorSensorAverageValues(colorSensorBeacon)) < Math.abs(redACV - colorSensorAverageValues(colorSensorBeacon)))
+        if(colorSensorRed() > colorSensorBlue())
         {
-            Beacon.setPosition(.8);
+            Beacon.setPosition(.5);
             beforeALV = getAvg();
             while(getAvg() <  beforeALV + 300)
             {
-                moveForward(.15);
+                moveBackward(.15);
                 idle();
             }
             FR.setPower(0);
@@ -253,14 +281,12 @@ public class WhiteLines extends LinearOpMode
             FL.setPower(0);
             BL.setPower(0);
             telemetry.addData("encodersA", getAvg());
-            Beacon.setPosition(.6);
-        }
-        else
-        {
             Beacon.setPosition(.8);
+        }
+        else {
+            Beacon.setPosition(.5);
             beforeALV = getAvg();
-            while(getAvg() <  beforeALV + 600)
-            {
+            while (getAvg() < beforeALV + 200) {
                 moveForward(.15);
                 idle();
             }
@@ -269,8 +295,7 @@ public class WhiteLines extends LinearOpMode
             FL.setPower(0);
             BL.setPower(0);
             telemetry.addData("encodersA", getAvg());
-            Beacon.setPosition(.6);
+            beforeALV = getAvg();
         }
-        */
     }
 }

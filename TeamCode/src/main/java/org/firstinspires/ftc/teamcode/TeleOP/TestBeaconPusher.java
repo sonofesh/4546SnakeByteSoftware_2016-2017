@@ -32,7 +32,7 @@ public class TestBeaconPusher extends OpMode {
         else
             Beacon.setPosition(.6);
         if(gamepad1.x)
-            Delayer.setPosition(.7);
+            Delayer.setPosition(.5);
         else
             Stopper.setPosition(.2);
     }

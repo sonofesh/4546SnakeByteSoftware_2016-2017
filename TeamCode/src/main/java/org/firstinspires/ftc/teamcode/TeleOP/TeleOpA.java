@@ -5,10 +5,10 @@
  *
  *      Controller 2 - Scoring
  *          Right Stick Y Axis : Manipulator High Power     Left Stick Y Axis : Manipulator Low Power
- *          Right Trigger : Ramp Up                         Left Trigger : Ramp Down
+ *          Right Trigger : Ramp Down                       Left Trigger : Ramp Uo
  *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
  *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
- *          Y : Lift Stopper Toggle                         A : Lift Release
+ *          Y : Deploy Stopper Toggle                       A : Deploy Lift Gate
  *
  */
 
@@ -41,12 +41,14 @@ public class TeleOpA extends OpMode
     DcMotor ManIn;
     DcMotor ManLift;
     Servo Stopper;
+    Servo Gate;
     Servo Beacon;
     //Servo Release;
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
     boolean stop;
+    boolean gate;
     int direction = 1;
     int liftPosO;
     int liftPosCurrent;
@@ -96,13 +98,14 @@ public class TeleOpA extends OpMode
         shootfull = false;
         shootpartial = false;
         harvest = false;
-	    liftUp = false;
+        liftUp = false;
         shoottime = 0;
         harvesttime = 0;
         currentTime = 0;
         lastTime = 0;
         liftUp = false;
         stop = false;
+        gate = false;
     }
 
     @Override
@@ -131,7 +134,7 @@ public class TeleOpA extends OpMode
             FR.setPower(0);
             BR.setPower(0);
         }
-	    //HalfSpeed Macro
+        //HalfSpeed Macro
         if (gamepad1.a)
         {
             currentTime = System.currentTimeMillis();
@@ -165,8 +168,8 @@ public class TeleOpA extends OpMode
         //Shooter Controls
         if(gamepad2.right_bumper)
         {
-                ShooterF.setPower(1);
-                ShooterB.setPower(-1);
+            ShooterF.setPower(1);
+            ShooterB.setPower(-1);
         }
         else if(gamepad2.left_bumper) {
             ShooterF.setPower(.9);
@@ -220,6 +223,26 @@ public class TeleOpA extends OpMode
             Stopper.setPosition(0);
         }
 
+        //Servo gate control
+        if(gamepad2.a)
+        {
+            currentTime = System.currentTimeMillis();
+            if(currentTime > lastTime + DURATION)
+            {
+                if(gate) gate = false;
+                else gate = true;
+            }
+            lastTime = System.currentTimeMillis();
+        }
+        if(gate)
+        {
+            Gate.setPosition(1); //Arbitrary Values
+        }
+        else
+        {
+            Gate.setPosition(0);
+        }
+
         //Beacon Pusher Controls0
         if(gamepad2.x)
         {
@@ -236,7 +259,7 @@ public class TeleOpA extends OpMode
 
         //Lift Release
         /*
-        if(gamepad2.a)
+        if(gamepad2.start)
         {
             Release.setPosition(1);
         }
@@ -244,38 +267,38 @@ public class TeleOpA extends OpMode
 
 
         /**if(gamepad2.y)
-        {
-            currentTime = System.nanoTime();
-            if(currentTime > lastTime + DURATION)
-            {
-                if(liftUp) liftUp = false;
-                else liftUp = true;
-            }
-            lastTime = System.nanoTime();
-        }
-        /**if(Math.abs(gamepad2.left_stick_y) > .05)
-        {
-            ManLift.setPower(-1 * gamepad2.left_stick_y * .1);
-        }
-        else
-            ManLift.setPower(0);
-        if(Math.abs(gamepad2.left_trigger) > .05)
-            ManLift.setPower(gamepad2.left_trigger * .1);
-        else
-            ManLift.setPower(0);
-        liftPosO = ManLift.getCurrentPosition();
-        if(liftUp && Math.abs(ManLift.getCurrentPosition() - liftPosO) < UPDISTANCE)
-        {
-            ManLift.setPower(-.3);
-            telemetry.addData("upPosition", ManLift.getCurrentPosition());
-        }
-        else if(!liftUp && ManLift.getCurrentPosition() > 0) {
-            ManLift.setPower(.3);
-        }
-        else
-        {
-            ManLift.setPower(0);
-        }
+         {
+         currentTime = System.nanoTime();
+         if(currentTime > lastTime + DURATION)
+         {
+         if(liftUp) liftUp = false;
+         else liftUp = true;
+         }
+         lastTime = System.nanoTime();
+         }
+         /**if(Math.abs(gamepad2.left_stick_y) > .05)
+         {
+         ManLift.setPower(-1 * gamepad2.left_stick_y * .1);
+         }
+         else
+         ManLift.setPower(0);
+         if(Math.abs(gamepad2.left_trigger) > .05)
+         ManLift.setPower(gamepad2.left_trigger * .1);
+         else
+         ManLift.setPower(0);
+         liftPosO = ManLift.getCurrentPosition();
+         if(liftUp && Math.abs(ManLift.getCurrentPosition() - liftPosO) < UPDISTANCE)
+         {
+         ManLift.setPower(-.3);
+         telemetry.addData("upPosition", ManLift.getCurrentPosition());
+         }
+         else if(!liftUp && ManLift.getCurrentPosition() > 0) {
+         ManLift.setPower(.3);
+         }
+         else
+         {
+         ManLift.setPower(0);
+         }
          */
     }
 }

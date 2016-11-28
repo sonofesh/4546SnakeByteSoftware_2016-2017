@@ -236,11 +236,11 @@ public class TeleOpA extends OpMode
         }
         if(gate)
         {
-            Gate.setPosition(1); //Arbitrary Values
+            Gate.setPosition(.8); //Arbitrary Values
         }
         else
         {
-            Gate.setPosition(0);
+            Gate.setPosition(.4);
         }
 
         //Beacon Pusher Controls0

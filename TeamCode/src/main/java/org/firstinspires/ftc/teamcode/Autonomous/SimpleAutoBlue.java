@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Created by sopa on 11/9/16.
  */
 @Autonomous(name = "SimpleAutoBlue", group = "Autonomous")
+@Disabled
 public class SimpleAutoBlue extends LinearOpMode
 {
     DcMotor FR;
@@ -194,9 +196,9 @@ public class SimpleAutoBlue extends LinearOpMode
         beforeALV = getAvg();
         //original moveForward
 
-        while(Math.abs(getAvg() - beforeALV) < 1200)
+        while(Math.abs(getAvg() - beforeALV) < 900)
         {
-            moveForward(.3);
+            moveForward(.2);
             //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
             //telemetry.update();
             idle();
@@ -232,6 +234,19 @@ public class SimpleAutoBlue extends LinearOpMode
         //shoot
         shoot(1, 400);
         sleep(250);
+        while(Math.abs(getAvg() - beforeALV) < 900)
+        {
+            moveBackward(.2);
+            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+            //telemetry.update();
+            idle();
+        }
+        telemetry.addData("encodersR", getAvg());
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
 
 //        beforeALV = getAvg();
 //        while(Math.abs(getAvg() - beforeALV) < 6000)
@@ -248,76 +263,60 @@ public class SimpleAutoBlue extends LinearOpMode
 //        BL.setPower(0);
 //        sleep(1000);
 
-        //turn right 40˚
-        beforeAngle = getGryoYaw();
-        while(Math.abs(getGryoYaw() - beforeAngle) < 40)
-        {
-            turnLeft(.3);
-            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
-            //telemetry.update();
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("yaw angle", getGryoYaw());
-        telemetry.update();
-        sleep(1000);
-        //move across
-        beforeALV = getAvg();
-        while(Math.abs(getAvg() - beforeALV) < 5000)
-        {
-            moveForward(.2);
-            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
-            //telemetry.update();
-            idle();
-        }
-        telemetry.addData("encodersAvg", getAvg());
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        sleep(1000);
-        //turn 70˚
-        beforeAngle = getGryoYaw();
-        while(Math.abs(getGryoYaw() - beforeAngle) < 20)
-        {
-            turnLeft(.3);
-            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
-            //telemetry.update();
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("yaw angle", getGryoYaw());
-        telemetry.update();
-        sleep(1000);
-        Delayer.setPosition(.5);
-        beforeALV = getAvg();
-        //barely move forward until white line is sensed
-        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && getAvg() <  beforeALV + 400)
-        {
-            moveForward(.15);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("encodersA", getAvg());
-        telemetry.addData("colorAverage", colorSensorAverageValues(colorSensorWL));
-        telemetry.update();
-        sleep(250);
-
-//        //move forward and push the correct beacon
-//        if(colorSensorRed() > colorSensorBlue())
+//        //turn right 40˚
+//        beforeAngle = getGryoYaw();
+//        while(Math.abs(getGryoYaw() - beforeAngle) < 40)
+//        {
+//            turnRight(.3);
+//            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+//            //telemetry.update();
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        telemetry.addData("yaw angle", getGryoYaw());
+//        telemetry.update();
+//        sleep(1000);
+//        //move across
+//        beforeALV = getAvg();
+//        while(Math.abs(getAvg() - beforeALV) < 5000)
+//        {
+//            moveForward(.2);
+//            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+//            //telemetry.update();
+//            idle();
+//        }
+//        telemetry.addData("encodersAvg", getAvg());
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        sleep(1000);
+//        //turn 70˚
+//        beforeAngle = getGryoYaw();
+//        while(Math.abs(getGryoYaw() - beforeAngle) < 20)
+//        {
+//            turnLeft(.3);
+//            //telemetry.addData("distance", Math.abs(System.currentTimeMillis() - beforeTime));
+//            //telemetry.update();
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        telemetry.addData("yaw angle", getGryoYaw());
+//        telemetry.update();
+//        sleep(1000);
+//        Delayer.setPosition(.5);
+//        beforeALV = getAvg();
+//        if(colorSensorRed() < colorSensorBlue())
 //        {
 //            Beacon.setPosition(.5);
 //            beforeALV = getAvg();
-//            while(getAvg() <  beforeALV + 200)
+//            while(getAvg() <  beforeALV + 100)
 //            {
 //                moveBackward(.15);
 //                idle();
@@ -329,9 +328,9 @@ public class SimpleAutoBlue extends LinearOpMode
 //            telemetry.addData("encodersA", getAvg());
 //            Beacon.setPosition(.8);
 //            beforeALV = getAvg();
-//            while(getAvg() <  beforeALV + 200)
+//            while(getAvg() <  beforeALV + 100)
 //            {
-//                moveBackward(.15);
+//                moveForward(.15);
 //                idle();
 //            }
 //            FR.setPower(0);
@@ -370,7 +369,7 @@ public class SimpleAutoBlue extends LinearOpMode
 //        sleep(250);
 //
 //        //forward until the next white line is sensed
-//        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && getAvg() <  beforeALV + 2000)
+//        while(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && getAvg() <  beforeALV + 1500)
 //        {
 //            moveForward(.15);
 //            idle();
@@ -384,7 +383,7 @@ public class SimpleAutoBlue extends LinearOpMode
 //        telemetry.update();
 //        sleep(250);
 //        //move forward and push the correct beacon
-//        if(colorSensorRed() > colorSensorBlue())
+//        if(colorSensorRed() < colorSensorBlue())
 //        {
 //            Beacon.setPosition(.5);
 //            beforeALV = getAvg();

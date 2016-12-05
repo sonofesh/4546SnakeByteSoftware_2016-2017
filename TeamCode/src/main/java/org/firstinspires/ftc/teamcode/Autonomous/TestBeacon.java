@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Created by sopa on 11/18/16.
  */
 @Autonomous(name = "TestBeacon", group = "Autonomous")
+@Disabled
 public class TestBeacon extends LinearOpMode
 {
     ColorSensor colorSensorBeacon;

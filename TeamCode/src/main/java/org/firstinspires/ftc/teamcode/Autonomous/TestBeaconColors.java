@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
  * Created by sopa on 11/18/16.
  */
 @Autonomous(name = "TestBeaconColors", group = "Autonomous")
+@Disabled
 public class TestBeaconColors extends LinearOpMode
 {
     ColorSensor colorSensorBeacon;

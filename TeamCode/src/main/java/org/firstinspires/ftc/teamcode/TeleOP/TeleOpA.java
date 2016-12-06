@@ -5,10 +5,10 @@
  *
  *      Controller 2 - Scoring
  *          Right Stick Y Axis : Manipulator High Power     Left Stick Y Axis : Manipulator Low Power
- *          Right Trigger : Ramp Up                         Left Trigger : Ramp Down
+ *          Right Trigger : Ramp Down                       Left Trigger : Ramp Uo
  *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
  *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
- *          Y : Lift Stopper Toggle                         A : Lift Release
+ *          Y : Deploy Stopper Toggle                       A : Deploy Lift Gate
  *
  */
 
@@ -39,13 +39,13 @@ public class TeleOpA extends OpMode {
     DcMotor ShooterB;
     DcMotor ManIn;
     DcMotor ManLift;
-    //Servo Stopper;
     Servo Beacon;
     //Servo Release;
     boolean shootfull;
     boolean shootpartial;
     boolean harvest;
     boolean stop;
+    boolean gate;
     int direction = 1;
     int liftPosO;
     int liftPosCurrent;
@@ -99,6 +99,7 @@ public class TeleOpA extends OpMode {
         lastTime = 0;
         liftUp = false;
         stop = false;
+        gate = false;
     }
 
     @Override
@@ -176,7 +177,8 @@ public class TeleOpA extends OpMode {
 
         else
             ManLift.setPower(0);
-
+    }
+}
 //        //Physical Lift Stop Servo Control
 //        if (gamepad2.y) {
 //            currentTime = System.currentTimeMillis();
@@ -203,10 +205,9 @@ public class TeleOpA extends OpMode {
 //        else {
 //            Beacon.setPosition(.5); //Test 2 Value; 1Value = .25; 0value = .2
 //        }
-
         //Lift Release
         /*
-        if(gamepad2.a)
+        if(gamepad2.start)
         {
             Release.setPosition(1);
         }
@@ -247,8 +248,6 @@ public class TeleOpA extends OpMode {
          ManLift.setPower(0);
          }
          */
-    }
-}
 /* Shooter toggle controls - Please check this code to make sure it is fine
 button y is now a toggle which controls liftUp boolean. If liftUp boolean is true
 and the encoder does not read 0 (we are starting up, so the encoder should read 0 at the top)

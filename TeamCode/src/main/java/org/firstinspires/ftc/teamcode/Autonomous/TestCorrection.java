@@ -14,14 +14,18 @@ public class TestCorrection extends AutoOpMode
         initalize();
         waitForStart();
         telemetry.addData("before yaw forward", getGryoYaw());
-        sleep(3000);
-        moveForwardWithCorrection(.15, 3000);
+        telemetry.update();
+        sleep(2000);
+        moveForwardWithCorrection(.4, 3000);
         telemetry.addData("after yaw forward", getGryoYaw());
-        sleep(3000);
+        telemetry.update();
+        sleep(2000);
         telemetry.addData("before yaw backward", getGryoYaw());
-        moveBackWarddWithCorrection(.15, 3000);
-        sleep(3000);
+        telemetry.update();
+        moveBackWarddWithCorrection(.4, 3000);
+        sleep(2000);
         telemetry.addData("after yaw backward", getGryoYaw());
-        sleep(3000);
+        telemetry.update();
+        sleep(2000);
     }
 }

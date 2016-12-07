@@ -66,7 +66,7 @@ public abstract class AutoOpMode extends LinearOpMode
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode0
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
@@ -247,14 +247,18 @@ public abstract class AutoOpMode extends LinearOpMode
         beforeALV = getAvg();
         beforeAngle = getGryoYaw();
         double correction = CORRECTION;
+        FR.setPower(power);
+        BR.setPower(power);
+        FL.setPower(power);
+        BL.setPower(power);
         while(Math.abs(getAvg()-beforeALV) < distance)
         {
             if(Math.abs(getGryoYaw() - beforeAngle) > 2)
             {
                 FR.setPower(power * (1 + getGryoYaw() * correction));
                 BR.setPower(power * (1 + getGryoYaw() * correction));
-                FL.setPower(-power);
-                BL.setPower(-power);
+                FL.setPower(power);
+                BL.setPower(power);
             }
         }
     }

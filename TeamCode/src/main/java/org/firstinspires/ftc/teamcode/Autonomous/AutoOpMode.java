@@ -270,7 +270,8 @@ public abstract class AutoOpMode extends LinearOpMode
     {
         beforeALV = getAvg();
         //barely move forward until white line is sensed
-        while (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+        while (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10)
+        {
             moveForwardWithCorrection(.15, 400);
             idle();
         }

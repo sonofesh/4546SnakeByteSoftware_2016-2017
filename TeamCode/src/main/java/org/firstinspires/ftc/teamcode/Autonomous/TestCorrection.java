@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 /**
  * Created by sopa on 12/7/16.
  */
-public class TestCorrection extends AutoOpMode{
+@Autonomous(name = "TestCorrection", group = "Autonomous")
+public class TestCorrection extends AutoOpMode
+{
     @Override
     public void runOpMode() throws InterruptedException
     {
-        init();
+        initalize();
+        waitForStart();
         telemetry.addData("before yaw forward", getGryoYaw());
         sleep(3000);
         moveForwardWithCorrection(.15, 3000);

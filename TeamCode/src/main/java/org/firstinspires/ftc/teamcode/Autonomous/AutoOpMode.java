@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Created by sopa on 11/28/16.
  */
 public abstract class AutoOpMode extends LinearOpMode
+
 {
     DcMotor FR;
     DcMotor BR;
@@ -26,8 +27,6 @@ public abstract class AutoOpMode extends LinearOpMode
     DcMotor ManLift;
     DcMotor ManIn;
     Servo Beacon;
-    Servo Stopper;
-    Servo Delayer;
     //average encoder value
     int beforeALV = 0;
     int beforeMLV = 0;
@@ -44,7 +43,7 @@ public abstract class AutoOpMode extends LinearOpMode
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
     ColorSensor colorSensorBeacon;
-    public void initalize()
+    public void initalize() throws InterruptedException
     {
         FR = hardwareMap.dcMotor.get("FR");
         BR = hardwareMap.dcMotor.get("BR");
@@ -55,11 +54,7 @@ public abstract class AutoOpMode extends LinearOpMode
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
         Beacon = hardwareMap.servo.get("Beacon");
-        Delayer = hardwareMap.servo.get("Delayer");
-        Stopper = hardwareMap.servo.get("Stopper");
         Beacon.setPosition(.6);
-        Delayer.setPosition(.9);
-        Stopper.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -87,6 +82,9 @@ public abstract class AutoOpMode extends LinearOpMode
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensorB", "initalized");
         telemetry.update();
+        telemetry.addData("test1", "initalized");
+        telemetry.update();
+
     }
     //movement methods
     public void zero() throws InterruptedException

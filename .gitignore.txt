@@ -22,10 +22,6 @@ Thumbs.db
 *.iml
 .idea
 .gradle
-.xml
-.json
-.bin
-.lock
 build/
 
 *ASUS_PC_01*

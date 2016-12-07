@@ -286,7 +286,72 @@ public abstract class AutoOpMode extends LinearOpMode
 
     public void pushRedBeacon(double power, int distance) throws InterruptedException
     {
+        //power: .15
+        //distance: 25
 
+        //move forward and push the correct beacon
+        if (colorSensorRed(colorSensorBeacon) < colorSensorBlue(colorSensorBeacon))
+        {
+            beforeALV = getAvg();
+            moveBackWarddWithCorrection(power, distance);
+            Beacon.setPosition(.43);
+            beforeALV = getAvg();
+            moveForwardWithCorrection(power, distance);
+            telemetry.addData("hit1", "rip");
+            sleep(3000); //change sleep values when this part works
+            Beacon.setPosition(1);
+            beforeALV = getAvg();
+            moveForwardWithCorrection(power, distance);
+            idle();
+        }
+        else
+        {
+            Beacon.setPosition(.43);
+            sleep(2000);
+            moveBackWarddWithCorrection(.15, 40);
+            moveForwardWithCorrection(.15, 40);
+            idle();
+            telemetry.addData("hit2", "rip");
+            Beacon.setPosition(1);
+            telemetry.addData("encodersA", getAvg());
+            beforeALV = getAvg();
+        }
+        sleep(2000);
+    }
+
+    public void pushBlueBeacon(double power, int distance) throws InterruptedException
+    {
+        //power: .15
+        //distance: 25
+
+        //move forward and push the correct beacon
+        if (colorSensorRed(colorSensorBeacon) > colorSensorBlue(colorSensorBeacon))
+        {
+            beforeALV = getAvg();
+            moveBackWarddWithCorrection(power, distance);
+            Beacon.setPosition(.43);
+            beforeALV = getAvg();
+            moveForwardWithCorrection(power, distance);
+            telemetry.addData("hit1", "rip");
+            sleep(3000); //change sleep values when this part works
+            Beacon.setPosition(1);
+            beforeALV = getAvg();
+            moveForwardWithCorrection(power, distance);
+            idle();
+        }
+        else
+        {
+            Beacon.setPosition(.43);
+            sleep(2000);
+            moveBackWarddWithCorrection(.15, 40);
+            moveForwardWithCorrection(.15, 40);
+            idle();
+            telemetry.addData("hit2", "rip");
+            Beacon.setPosition(1);
+            telemetry.addData("encodersA", getAvg());
+            beforeALV = getAvg();
+        }
+        sleep(2000);
     }
 
 }

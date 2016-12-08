@@ -33,7 +33,7 @@ public abstract class AutoOpMode extends LinearOpMode
     double beforeAngle = 2;
     final double blackAVC = 2;
     final double whiteACV = 27;
-    final double CORRECTION = .01;
+    final double CORRECTION = .02;
     int FRV = 0;
     int FLV = 0;
     int avg = 0;
@@ -243,29 +243,38 @@ public abstract class AutoOpMode extends LinearOpMode
     //gyro stablization
     public void moveForwardWithCorrection(double power, int distance) throws InterruptedException
     {
-        telemetry.addData("beforeAverage", getAvg());
         beforeALV = getAvg();
-        beforeAngle = getGryoYaw();
-        double correction = CORRECTION;
-        FR.setPower(power);
-        BR.setPower(power);
-        FL.setPower(power);
-        BL.setPower(power);
-        while(Math.abs(getAvg()-beforeALV) < distance)
+        while(Math.abs(getAvg() - beforeALV) < distance)
         {
-            
-            if(Math.abs(getGryoYaw() - beforeAngle) > 2)
-            {
-                FR.setPower(power * (1 + getGryoYaw() * correction));
-                BR.setPower(power * (1 + getGryoYaw() * correction));
-                FL.setPower(power);
-                BL.setPower(power);
+            telemetry.addData("beforeAverage", getAvg());
+            beforeALV = getAvg();
+            beforeAngle = getGryoYaw();
+            double correction = CORRECTION;
+            FR.setPower(power);
+            BR.setPower(power);
+            FL.setPower(-power);
+            BL.setPower(-power);
+            while (Math.abs(getAvg() - beforeALV) < distance) {
+                double difference = Math.abs(getAvg() - beforeALV);
+                if (Math.abs(getGryoYaw() - beforeAngle) > 2) {
+                    FR.setPower(power * (1 + difference * correction));
+                    BR.setPower(power * (1 + difference * correction));
+                    FL.setPower(-power);
+                    BL.setPower(-power);
+                }
+                idle();
             }
+            idle();
         }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
     public void moveBackWarddWithCorrection(double power, int distance) throws InterruptedException
     {
         moveForwardWithCorrection(-power, distance);
+        idle();
     }
 
     //beacon pushing methods

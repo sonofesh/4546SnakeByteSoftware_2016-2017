@@ -253,6 +253,7 @@ public abstract class AutoOpMode extends LinearOpMode
         BL.setPower(power);
         while(Math.abs(getAvg()-beforeALV) < distance)
         {
+            
             if(Math.abs(getGryoYaw() - beforeAngle) > 2)
             {
                 FR.setPower(power * (1 + getGryoYaw() * correction));

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.OpModes;
 
 import android.graphics.Color;
 
@@ -175,7 +175,7 @@ public abstract class AutoOpMode extends LinearOpMode
     }
 
     //gyro methods
-    public float getGryoYaw() throws InterruptedException
+    public float getGyroYaw() throws InterruptedException
     {
         Orientation angles = imu.getAngularOrientation();
         return angles.firstAngle;
@@ -221,15 +221,15 @@ public abstract class AutoOpMode extends LinearOpMode
     //turn right
     public void turnRightWithGyro(double power, double angle) throws InterruptedException
     {
-        beforeAngle = getGryoYaw();
+        beforeAngle = getGyroYaw();
         telemetry.addData("beforeYawAngle", beforeAngle);
         telemetry.update();
-        while(Math.abs(getGryoYaw() - beforeAngle) < angle)
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle)
         {
             turnRight(power);
             idle();
         }
-        beforeAngle = getGryoYaw();
+        beforeAngle = getGyroYaw();
         telemetry.addData("afterYawAngle", beforeAngle);
         telemetry.update();
     }
@@ -240,28 +240,27 @@ public abstract class AutoOpMode extends LinearOpMode
         turnRightWithGyro(-power, angle);
     }
 
-    //gyro stablization
+    //gyro stabilization
     public void moveForwardWithCorrection(double power, int distance) throws InterruptedException
     {
         beforeALV = getAvg();
+        beforeAngle = getGyroYaw();
+        double correction = CORRECTION;
         while(Math.abs(getAvg() - beforeALV) < distance)
         {
-            telemetry.addData("beforeAverage", getAvg());
-            beforeALV = getAvg();
-            beforeAngle = getGryoYaw();
-            double correction = CORRECTION;
             FR.setPower(power);
             BR.setPower(power);
             FL.setPower(-power);
             BL.setPower(-power);
-            while (Math.abs(getAvg() - beforeALV) < distance) {
-                double difference = Math.abs(getAvg() - beforeALV);
-                if (Math.abs(getGryoYaw() - beforeAngle) > 2) {
-                    FR.setPower(power * (1 + difference * correction));
-                    BR.setPower(power * (1 + difference * correction));
-                    FL.setPower(-power);
-                    BL.setPower(-power);
-                }
+            double difference = Math.abs(getGyroYaw() - beforeAngle);
+            while (Math.abs(getGyroYaw() - beforeAngle) > 2) {
+                FR.setPower(power * (1 + difference * correction));
+                BR.setPower(power * (1 + difference * correction));
+                FL.setPower(-power);
+                BL.setPower(-power);
+                telemetry.addData("LeftPower", FR.getPower());
+                telemetry.addData("RightPower", BR.getPower());
+                telemetry.update();
                 idle();
             }
             idle();
@@ -270,8 +269,19 @@ public abstract class AutoOpMode extends LinearOpMode
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
-    }
-    public void moveBackWarddWithCorrection(double power, int distance) throws InterruptedException
+        telemetry.addData("EncoderMovement", Math.abs(getAvg() - beforeALV));
+        telemetry.update();
+        if(Math.abs(beforeAngle - getGyroYaw()) < 2)
+        {
+            telemetry.addData("success", "correction works");
+            telemetry.update();
+        }
+        else
+            telemetry.addData("success", "correction failed");
+            telemetry.update();
+        }
+
+    public void moveBackWardWithCorrection(double power, int distance) throws InterruptedException
     {
         moveForwardWithCorrection(-power, distance);
         idle();
@@ -303,10 +313,9 @@ public abstract class AutoOpMode extends LinearOpMode
         //distance: 25
 
         //move forward and push the correct beacon
-        if (colorSensorRed(colorSensorBeacon) < colorSensorBlue(colorSensorBeacon))
-        {
+        if (colorSensorRed(colorSensorBeacon) < colorSensorBlue(colorSensorBeacon)) {
             beforeALV = getAvg();
-            moveBackWarddWithCorrection(power, distance);
+            moveBackWardWithCorrection(power, distance);
             Beacon.setPosition(.43);
             beforeALV = getAvg();
             moveForwardWithCorrection(power, distance);
@@ -321,7 +330,7 @@ public abstract class AutoOpMode extends LinearOpMode
         {
             Beacon.setPosition(.43);
             sleep(2000);
-            moveBackWarddWithCorrection(.15, 40);
+            moveBackWardWithCorrection(.15, 40);
             moveForwardWithCorrection(.15, 40);
             idle();
             telemetry.addData("hit2", "rip");
@@ -338,10 +347,9 @@ public abstract class AutoOpMode extends LinearOpMode
         //distance: 25
 
         //move forward and push the correct beacon
-        if (colorSensorRed(colorSensorBeacon) > colorSensorBlue(colorSensorBeacon))
-        {
+        if (colorSensorRed(colorSensorBeacon) > colorSensorBlue(colorSensorBeacon)) {
             beforeALV = getAvg();
-            moveBackWarddWithCorrection(power, distance);
+            moveBackWardWithCorrection(power, distance);
             Beacon.setPosition(.43);
             beforeALV = getAvg();
             moveForwardWithCorrection(power, distance);
@@ -356,7 +364,7 @@ public abstract class AutoOpMode extends LinearOpMode
         {
             Beacon.setPosition(.43);
             sleep(2000);
-            moveBackWarddWithCorrection(.15, 40);
+            moveBackWardWithCorrection(.15, 40);
             moveForwardWithCorrection(.15, 40);
             idle();
             telemetry.addData("hit2", "rip");

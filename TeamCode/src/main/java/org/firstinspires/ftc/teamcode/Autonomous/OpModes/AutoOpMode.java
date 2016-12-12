@@ -240,14 +240,17 @@ public abstract class AutoOpMode extends LinearOpMode
         turnRightWithGyro(-power, angle);
     }
 
-    //gyro stabilization
-    public void moveForwardWithCorrection(double power, int distance) throws InterruptedException
+    public void turnRightWithPID(double power, double angle) throws InterruptedException
     {
+        beforeAngle = getGyroYaw();
+    }
+
+    //gyro stabilization
+    public void moveForwardWithCorrection(double power, int distance) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double correction = CORRECTION;
-        while(Math.abs(getAvg() - beforeALV) < distance)
-        {
+        while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(power);
             BR.setPower(power);
             FL.setPower(-power);
@@ -271,15 +274,16 @@ public abstract class AutoOpMode extends LinearOpMode
         BL.setPower(0);
         telemetry.addData("EncoderMovement", Math.abs(getAvg() - beforeALV));
         telemetry.update();
-        if(Math.abs(beforeAngle - getGyroYaw()) < 2)
-        {
+        if (Math.abs(beforeAngle - getGyroYaw()) < 2) {
             telemetry.addData("success", "correction works");
             telemetry.update();
         }
         else
+        {
             telemetry.addData("success", "correction failed");
             telemetry.update();
         }
+    }
 
     public void moveBackWardWithCorrection(double power, int distance) throws InterruptedException
     {

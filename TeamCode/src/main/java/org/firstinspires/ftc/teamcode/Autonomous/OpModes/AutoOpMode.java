@@ -243,6 +243,16 @@ public abstract class AutoOpMode extends LinearOpMode
     public void turnRightWithPID(double power, double angle) throws InterruptedException
     {
         beforeAngle = getGyroYaw();
+        telemetry.addData("beforeYawAngle", beforeAngle);
+        telemetry.update();
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle)
+        {
+            turnRight(power);
+            idle();
+        }
+        beforeAngle = getGyroYaw();
+        telemetry.addData("afterYawAngle", beforeAngle);
+        telemetry.update();
     }
 
     //gyro stabilization
@@ -256,7 +266,8 @@ public abstract class AutoOpMode extends LinearOpMode
             FL.setPower(-power);
             BL.setPower(-power);
             double difference = Math.abs(getGyroYaw() - beforeAngle);
-            while (Math.abs(getGyroYaw() - beforeAngle) > 2) {
+            while (difference > 2)
+            {
                 FR.setPower(power * (1 + difference * correction));
                 BR.setPower(power * (1 + difference * correction));
                 FL.setPower(-power);
@@ -264,6 +275,7 @@ public abstract class AutoOpMode extends LinearOpMode
                 telemetry.addData("LeftPower", FR.getPower());
                 telemetry.addData("RightPower", BR.getPower());
                 telemetry.update();
+                difference = Math.abs(getGyroYaw() - beforeAngle);
                 idle();
             }
             idle();

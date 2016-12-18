@@ -27,11 +27,21 @@
       <file leaf-file-name="AutoOpMode.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/AutoOpMode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7111111">
-              <caret line="355" column="56" selection-start-line="355" selection-start-column="56" selection-end-line="355" selection-end-column="56" />
+            <state vertical-scroll-proportion="-0.51111114">
+              <caret line="277" column="66" selection-start-line="277" selection-start-column="66" selection-end-line="277" selection-end-column="66" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TestTurn.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/TestFiles/TestTurn.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2749,6 +2759,7 @@
         <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/TestCorrection.java" />
         <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/AutoOpMode.java" />
         <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/TestFiles/TestCorrection.java" />
+        <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/TestFiles/TestTurn.java" />
         <option value="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/AutoOpMode.java" />
       </list>
     </option>
@@ -2764,9 +2775,9 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-2" />
+    <option name="x" value="2" />
     <option name="y" value="23" />
-    <option name="width" value="1224" />
+    <option name="width" value="1437" />
     <option name="height" value="846" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
@@ -3644,7 +3655,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2" y="23" width="1224" height="846" extended-state="0" />
+    <frame x="2" y="23" width="1437" height="846" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -4092,10 +4103,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/TestFiles/TestTurn.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="10" selection-start-line="17" selection-start-column="10" selection-end-line="17" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Autonomous/OpModes/AutoOpMode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7111111">
-          <caret line="355" column="56" selection-start-line="355" selection-start-column="56" selection-end-line="355" selection-end-column="56" />
+        <state vertical-scroll-proportion="-0.51111114">
+          <caret line="277" column="66" selection-start-line="277" selection-start-column="66" selection-end-line="277" selection-end-column="66" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

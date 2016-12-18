@@ -13,31 +13,31 @@ public class TestTurn extends AutoOpMode {
     public void runOpMode() throws InterruptedException
     {
     }
-
-    public void correctionsTurnRight(double power, float angle) throws InterruptedException {
-        {
-            float beforeAngle = getGyroYaw();
-            telemetry.addData("beforeYawAngle", beforeAngle);
-            telemetry.update();
-            while(Math.abs(getGyroYaw() - beforeAngle) < angle)
-            {
-                turnRight(power);
-                double difference = Math.abs(getGyroYaw() - beforeAngle);
-                while (Math.abs(getGyroYaw() - beforeAngle) > 2) {
-                    FR.setPower(power * (1 + difference * correction));
-                    BR.setPower(power * (1 + difference * correction));
-                    FL.setPower(power);
-                    BL.setPower(-power);
-                    telemetry.addData("LeftPower", FR.getPower());
-                    telemetry.addData("RightPower", BR.getPower());
-                    telemetry.update();
-                    idle();
-                }
-                idle();
-            }
-            beforeAngle = getGyroYaw();
-            telemetry.addData("afterYawAngle", beforeAngle);
-            telemetry.update();
-        }
-    }
+//
+//    public void correctionsTurnRight(double power, float angle) throws InterruptedException {
+//        {
+//            float beforeAngle = getGyroYaw();
+//            telemetry.addData("beforeYawAngle", beforeAngle);
+//            telemetry.update();
+//            while(Math.abs(getGyroYaw() - beforeAngle) < angle)
+//            {
+//                turnRight(power);
+//                double difference = Math.abs(getGyroYaw() - beforeAngle);
+//                while (Math.abs(getGyroYaw() - beforeAngle) > 2) {
+//                    FR.setPower(power * (1 + difference * correction));
+//                    BR.setPower(power * (1 + difference * correction));
+//                    FL.setPower(power);
+//                    BL.setPower(-power);
+//                    telemetry.addData("LeftPower", FR.getPower());
+//                    telemetry.addData("RightPower", BR.getPower());
+//                    telemetry.update();
+//                    idle();
+//                }
+//                idle();
+//            }
+//            beforeAngle = getGyroYaw();
+//            telemetry.addData("afterYawAngle", beforeAngle);
+//            telemetry.update();
+//        }
+//    }
 }

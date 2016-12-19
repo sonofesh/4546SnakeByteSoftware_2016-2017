@@ -13,7 +13,7 @@ public class TestCorrection extends AutoOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        initalize();
+        initialize();
         telemetry.addData("test1", "init");
         telemetry.update();
         waitForStart();

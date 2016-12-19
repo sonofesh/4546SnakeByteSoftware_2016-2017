@@ -15,9 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 /**
  * Created by sopa on 11/28/16.
  */
-public abstract class AutoOpMode extends LinearOpMode
-
-{
+public abstract class AutoOpMode extends LinearOpMode {
     DcMotor FR;
     DcMotor BR;
     DcMotor FL;
@@ -43,8 +41,7 @@ public abstract class AutoOpMode extends LinearOpMode
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
     ColorSensor colorSensorBeacon;
-    public void initalize() throws InterruptedException
-    {
+    public void initialize() throws InterruptedException {
         FR = hardwareMap.dcMotor.get("FR");
         BR = hardwareMap.dcMotor.get("BR");
         FL = hardwareMap.dcMotor.get("FL");
@@ -87,48 +84,41 @@ public abstract class AutoOpMode extends LinearOpMode
 
     }
     //movement methods
-    public void zero() throws InterruptedException
-    {
+    public void zero() throws InterruptedException {
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
     }
 
-    public void moveForward(double power) throws InterruptedException
-    {
+    public void moveForward(double power) throws InterruptedException {
         FR.setPower(power);
         BR.setPower(power);
         FL.setPower(-power);
         BL.setPower(-power);
     }
 
-    public void moveBackward(double power) throws InterruptedException
-    {
+    public void moveBackward(double power) throws InterruptedException {
         moveForward(-power);
     }
 
-    public void turnRight(double power) throws InterruptedException
-    {
+    public void turnRight(double power) throws InterruptedException {
         FR.setPower(power);
         BR.setPower(power);
         FL.setPower(power);
         BL.setPower(power);
     }
 
-    public void turnLeft(double power) throws InterruptedException
-    {
+    public void turnLeft(double power) throws InterruptedException {
         turnRight(-power);
     }
 
     //Shooter
-    public void bringDownShooter(double power, int distance) throws InterruptedException
-    {
+    public void bringDownShooter(double power, int distance) throws InterruptedException {
         int beforePos = Math.abs(ManLift.getCurrentPosition());
         telemetry.addData("ManLift", ManLift.getCurrentPosition());
         telemetry.update();
-        while (Math.abs(ManLift.getCurrentPosition() - beforePos) < distance)
-        {
+        while (Math.abs(ManLift.getCurrentPosition() - beforePos) < distance) {
             ManLift.setPower(power);
             idle();
         }
@@ -137,8 +127,7 @@ public abstract class AutoOpMode extends LinearOpMode
         telemetry.update();
     }
     //might want to add two servos so we can shoot faster. Ask Sachin
-    public void shoot(double power, int distance) throws InterruptedException
-    {
+    public void shoot(double power, int distance) throws InterruptedException {
         int beforeManLift = ManLift.getCurrentPosition();
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
@@ -160,30 +149,25 @@ public abstract class AutoOpMode extends LinearOpMode
     //Sensor methods
 
     //color sensor
-    public double colorSensorAverageValues(ColorSensor sensor) throws InterruptedException
-    {
+    public double colorSensorAverageValues(ColorSensor sensor) throws InterruptedException {
         double average = (sensor.red() + sensor.blue() + sensor.green())/3.0;
         return average;
     }
-    public double colorSensorRed(ColorSensor sensor) throws InterruptedException
-    {
+    public double colorSensorRed(ColorSensor sensor) throws InterruptedException {
         return colorSensorBeacon.red();
     }
-    public double colorSensorBlue(ColorSensor sensor) throws InterruptedException
-    {
+    public double colorSensorBlue(ColorSensor sensor) throws InterruptedException {
         return colorSensorBeacon.blue();
     }
 
     //gyro methods
-    public float getGyroYaw() throws InterruptedException
-    {
+    public float getGyroYaw() throws InterruptedException {
         Orientation angles = imu.getAngularOrientation();
         return angles.firstAngle;
     }
 
     //encoders
-    public int getAvg() throws InterruptedException
-    {
+    public int getAvg() throws InterruptedException {
         FRV = Math.abs(FR.getCurrentPosition());
         FLV = Math.abs(FL.getCurrentPosition());
         avg = Math.abs((FRV + FLV)/2);
@@ -193,15 +177,13 @@ public abstract class AutoOpMode extends LinearOpMode
     //Forwards, Backwards and Turning
 
     //forward
-    public void moveForwardWithEncoders(double power, int distance) throws InterruptedException
-    {
+    public void moveForwardWithEncoders(double power, int distance) throws InterruptedException {
         telemetry.addData("encodersR", getAvg());
         telemetry.update();
         beforeALV = getAvg();
         //original moveForward
 
-        while(Math.abs(getAvg() - beforeALV) < distance)
-        {
+        while(Math.abs(getAvg() - beforeALV) < distance) {
             moveForward(power);
             idle();
         }
@@ -213,19 +195,17 @@ public abstract class AutoOpMode extends LinearOpMode
         BL.setPower(0);
     }
 
-    public void moveBackWardWithEncoders(double power, int distance) throws InterruptedException
-    {
+    public void moveBackWardWithEncoders(double power, int distance) throws InterruptedException {
         moveForwardWithEncoders(-power, distance);
     }
 
     //turn right
-    public void turnRightWithGyro(double power, double angle) throws InterruptedException
-    {
+    public void turnRightWithGyro(double power, double angle) throws InterruptedException {
+        long lastTime = System.nanoTime();
         beforeAngle = getGyroYaw();
         telemetry.addData("beforeYawAngle", beforeAngle);
         telemetry.update();
-        while(Math.abs(getGyroYaw() - beforeAngle) < angle)
-        {
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle) {
             turnRight(power);
             idle();
         }
@@ -235,19 +215,22 @@ public abstract class AutoOpMode extends LinearOpMode
     }
 
     //turn left
-    public void turnLeftWithGyro(double power, double angle) throws InterruptedException
-    {
+    public void turnLeftWithGyro(double power, double angle) throws InterruptedException {
         turnRightWithGyro(-power, angle);
     }
 
     public void turnRightWithPID(double power, double angle) throws InterruptedException
     {
+        //constants
+        double p = .001; double i = 0; double d = 0;
+        double error = angle;
         beforeAngle = getGyroYaw();
         telemetry.addData("beforeYawAngle", beforeAngle);
         telemetry.update();
-        while(Math.abs(getGyroYaw() - beforeAngle) < angle)
-        {
+        long lastTime = System.nanoTime();
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle) {
             turnRight(power);
+            error = angle - (getGyroYaw() - beforeAngle);
             idle();
         }
         beforeAngle = getGyroYaw();
@@ -266,8 +249,7 @@ public abstract class AutoOpMode extends LinearOpMode
             FL.setPower(-power);
             BL.setPower(-power);
             double difference = Math.abs(getGyroYaw() - beforeAngle);
-            while (difference > 2)
-            {
+            while (difference > 2) {
                 FR.setPower(power * (1 + difference * correction));
                 BR.setPower(power * (1 + difference * correction));
                 FL.setPower(-power);
@@ -290,26 +272,22 @@ public abstract class AutoOpMode extends LinearOpMode
             telemetry.addData("success", "correction works");
             telemetry.update();
         }
-        else
-        {
+        else {
             telemetry.addData("success", "correction failed");
             telemetry.update();
         }
     }
 
-    public void moveBackWardWithCorrection(double power, int distance) throws InterruptedException
-    {
+    public void moveBackWardWithCorrection(double power, int distance) throws InterruptedException {
         moveForwardWithCorrection(-power, distance);
         idle();
     }
 
     //beacon pushing methods
-    public void moveToWhiteLine(double power, int distance) throws InterruptedException
-    {
+    public void moveToWhiteLine(double power, int distance) throws InterruptedException {
         beforeALV = getAvg();
         //barely move forward until white line is sensed
-        while (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10)
-        {
+        while (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
             moveForwardWithCorrection(.15, 400);
             idle();
         }
@@ -323,8 +301,7 @@ public abstract class AutoOpMode extends LinearOpMode
         sleep(1000);
     }
 
-    public void pushRedBeacon(double power, int distance) throws InterruptedException
-    {
+    public void pushRedBeacon(double power, int distance) throws InterruptedException {
         //power: .15
         //distance: 25
 
@@ -342,8 +319,7 @@ public abstract class AutoOpMode extends LinearOpMode
             moveForwardWithCorrection(power, distance);
             idle();
         }
-        else
-        {
+        else {
             Beacon.setPosition(.43);
             sleep(2000);
             moveBackWardWithCorrection(.15, 40);
@@ -357,8 +333,7 @@ public abstract class AutoOpMode extends LinearOpMode
         sleep(2000);
     }
 
-    public void pushBlueBeacon(double power, int distance) throws InterruptedException
-    {
+    public void pushBlueBeacon(double power, int distance) throws InterruptedException {
         //power: .15
         //distance: 25
 
@@ -376,8 +351,7 @@ public abstract class AutoOpMode extends LinearOpMode
             moveForwardWithCorrection(power, distance);
             idle();
         }
-        else
-        {
+        else {
             Beacon.setPosition(.43);
             sleep(2000);
             moveBackWardWithCorrection(.15, 40);
@@ -391,4 +365,22 @@ public abstract class AutoOpMode extends LinearOpMode
         sleep(2000);
     }
 
+    //test methods
+
+    //tests to see whether turning left or turning right is negative or postive
+    public void testTurningNegative(double power, int angle) throws InterruptedException
+    {
+        double beforeAngle = getGyroYaw();
+        turnRightWithGyro(power, angle);
+        sleep(500);
+        double finalAngle = getGyroYaw();
+        telemetry.addData("turnRightResults", (finalAngle - beforeAngle));
+        telemetry.update();
+        beforeAngle = getGyroYaw();
+        turnLeftWithGyro(power, angle);
+        sleep(500);
+        finalAngle = getGyroYaw();
+        telemetry.addData("turnRightResults", (finalAngle - beforeAngle));
+        telemetry.update();
+    }
 }

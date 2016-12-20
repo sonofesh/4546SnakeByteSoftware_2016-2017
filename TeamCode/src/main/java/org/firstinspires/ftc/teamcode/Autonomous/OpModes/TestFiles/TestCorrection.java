@@ -22,13 +22,13 @@ public class TestCorrection extends AutoOpMode
         double beforeAngle = getGyroYaw();
         telemetry.update();
         sleep(3000);
-        moveForwardWithCorrection(.15, 3000);
+        moveForwardWithCorrection(.15, 2000);
         telemetry.addData("after yaw forward", getGyroYaw());
         telemetry.update();
         sleep(5000);
         telemetry.addData("before yaw backward", getGyroYaw());
         telemetry.update();
-        moveBackWardWithCorrection(.15, 3000);
+        moveBackWardWithCorrection(.15, 2000);
         //hacked
         sleep(5000);
         telemetry.addData("after yaw backward", getGyroYaw());

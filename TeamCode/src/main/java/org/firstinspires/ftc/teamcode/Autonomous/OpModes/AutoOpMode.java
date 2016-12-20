@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * Created by sopa on 11/28/16.
+ * Information: turnRight is negative whereas turnLeft is positive
  */
 public abstract class AutoOpMode extends LinearOpMode {
     DcMotor FR;
@@ -27,9 +28,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     Servo Beacon;
     //average encoder value
     int beforeALV = 0;
-    int beforeMLV = 0;
     double beforeAngle = 2;
-    final double blackAVC = 2;
     final double whiteACV = 27;
     final double CORRECTION = .02;
     int FRV = 0;
@@ -70,17 +69,14 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initalized");
-        telemetry.update();
         colorSensorWL = hardwareMap.colorSensor.get("cSWL");
         colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
         telemetry.addData("colorSensorL", "initalized");
-        telemetry.update();
         colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensorB", "initalized");
         telemetry.update();
-        telemetry.addData("test1", "initalized");
-        telemetry.update();
+        //telemetry.addData("test1", "initalized");
 
     }
     //movement methods
@@ -201,7 +197,6 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     //turn right
     public void turnRightWithGyro(double power, double angle) throws InterruptedException {
-        long lastTime = System.nanoTime();
         beforeAngle = getGyroYaw();
         telemetry.addData("beforeYawAngle", beforeAngle);
         telemetry.update();
@@ -212,6 +207,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         telemetry.addData("afterYawAngle", beforeAngle);
         telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
     //turn left
@@ -219,23 +218,52 @@ public abstract class AutoOpMode extends LinearOpMode {
         turnRightWithGyro(-power, angle);
     }
 
-    public void turnRightWithPID(double power, double angle) throws InterruptedException
+    public void turnRightWithPID(double angle) throws InterruptedException
     {
-        //constants
-        double p = .001; double i = 0; double d = 0;
+        //calibration constants. Is it even possible to manually calibrate???
+        double p = .0015; double i = 0; double d = 0;
         double error = angle;
+        double pastError = 0.0;
+        double output;
+        double proportional = 0.0;
+        double reset = 0.0;
+        double derivative = 0.0;
+        double deltaTime;
         beforeAngle = getGyroYaw();
         telemetry.addData("beforeYawAngle", beforeAngle);
         telemetry.update();
         long lastTime = System.nanoTime();
         while(Math.abs(getGyroYaw() - beforeAngle) < angle) {
-            turnRight(power);
-            error = angle - (getGyroYaw() - beforeAngle);
+            error = angle - Math.abs(getGyroYaw() - beforeAngle);
+            //proportional
+            proportional = error * p;
+            deltaTime = System.nanoTime() - lastTime;
+            //integral
+            reset += i * (error * deltaTime);
+            //derivative
+            derivative = d * (error - pastError)/deltaTime;
+            //output
+            output = proportional + reset + derivative;
+            turnRight(output);
+            telemetry.addData("output", output);
+            telemetry.addData("proportion", proportional);
+            telemetry.addData("reset", reset);
+            telemetry.addData("derivative", derivative);
+            telemetry.update();
+            pastError = error;
             idle();
         }
-        beforeAngle = getGyroYaw();
+        double afterAngle = getGyroYaw();
         telemetry.addData("afterYawAngle", beforeAngle);
+        if(Math.abs(afterAngle - beforeAngle) < 1)
+            telemetry.addData("turn", "success");
+        else
+            telemetry.addData("turn", "failure");
         telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
     //gyro stabilization
@@ -243,6 +271,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double correction = CORRECTION;
+        long lastTime = System.nanoTime();
+        double signedDifference;
         while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(power);
             BR.setPower(power);
@@ -250,10 +280,18 @@ public abstract class AutoOpMode extends LinearOpMode {
             BL.setPower(-power);
             double difference = Math.abs(getGyroYaw() - beforeAngle);
             while (difference > 2) {
-                FR.setPower(power * (1 + difference * correction));
-                BR.setPower(power * (1 + difference * correction));
-                FL.setPower(-power);
-                BL.setPower(-power);
+                if(getGyroYaw() > beforeAngle) {
+                    FR.setPower(power * (1 + difference * correction));
+                    BR.setPower(power * (1 + difference * correction));
+                    FL.setPower(-power);
+                    BL.setPower(-power);
+                }
+                else if(getGyroYaw() < beforeAngle) {
+                    FR.setPower(power);
+                    BR.setPower(power);
+                    FL.setPower(-power * (1 + difference * correction));
+                    BL.setPower(-power  * (1 + difference * correction));
+                }
                 telemetry.addData("LeftPower", FR.getPower());
                 telemetry.addData("RightPower", BR.getPower());
                 telemetry.update();
@@ -276,11 +314,85 @@ public abstract class AutoOpMode extends LinearOpMode {
             telemetry.addData("success", "correction failed");
             telemetry.update();
         }
+
     }
 
     public void moveBackWardWithCorrection(double power, int distance) throws InterruptedException {
         moveForwardWithCorrection(-power, distance);
-        idle();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    //gyro stabilization
+    public void moveForwardPID(double power, int distance) throws InterruptedException {
+        //calibration constants. Is it even possible to manually calibrate???
+        double p = .095; double i = .001; double d = .0001;
+        double error = distance;
+        double pastError = 0.0;
+        double output;
+        double proportional = 0.0;
+        double reset = 0.0;
+        double derivative = 0.0;
+        double deltaTime;
+        int angleError;
+        beforeALV = getAvg();
+        beforeAngle = getGyroYaw();
+        double correction = CORRECTION;
+        long lastTime = System.nanoTime();
+        while (Math.abs(getAvg() - beforeALV) < distance) {
+            error = distance - Math.abs(getAvg() - beforeALV);
+            //proportional
+            proportional = error * p;
+            //integral
+            deltaTime = System.nanoTime() - lastTime;
+            //integral
+            reset += i * (error * deltaTime);
+            //derivative
+            derivative = d * (error - pastError)/deltaTime;
+            //output
+            output = proportional + reset + derivative;
+            moveForward(output);
+            double difference = Math.abs(getGyroYaw() - beforeAngle);
+            while (difference > 2 && (Math.abs(getAvg() - beforeALV) < distance)) {
+//                error = distance - Math.abs(getAvg() - beforeALV);
+//                //proportional
+//                proportional = error * p;
+//                //integral
+//                deltaTime = System.nanoTime() - lastTime;
+//                //integral
+//                reset += i * (error * deltaTime);
+//                //derivative
+//                derivative = d * (error - pastError)/deltaTime;
+//                //output
+//                output = proportional + reset + derivative;
+                difference = Math.abs(getGyroYaw() - beforeAngle);
+                FR.setPower(output * (1 + difference * correction));
+                BR.setPower(output * (1 + difference * correction));
+                FL.setPower(-output);
+                BL.setPower(-output);
+                telemetry.addData("LeftPower", FR.getPower());
+                telemetry.addData("RightPower", BR.getPower());
+                telemetry.update();
+                idle();
+            }
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("EncoderMovement", Math.abs(getAvg() - beforeALV));
+        telemetry.update();
+        if (Math.abs(beforeAngle - getGyroYaw()) < 2) {
+            telemetry.addData("success", "correction works");
+            telemetry.update();
+        }
+        else {
+            telemetry.addData("success", "correction failed");
+            telemetry.update();
+        }
     }
 
     //beacon pushing methods
@@ -330,6 +442,10 @@ public abstract class AutoOpMode extends LinearOpMode {
             telemetry.addData("encodersA", getAvg());
             beforeALV = getAvg();
         }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
         sleep(2000);
     }
 
@@ -362,6 +478,10 @@ public abstract class AutoOpMode extends LinearOpMode {
             telemetry.addData("encodersA", getAvg());
             beforeALV = getAvg();
         }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
         sleep(2000);
     }
 
@@ -372,15 +492,17 @@ public abstract class AutoOpMode extends LinearOpMode {
     {
         double beforeAngle = getGyroYaw();
         turnRightWithGyro(power, angle);
-        sleep(500);
+        sleep(1000);
         double finalAngle = getGyroYaw();
         telemetry.addData("turnRightResults", (finalAngle - beforeAngle));
         telemetry.update();
+        sleep(5000);
         beforeAngle = getGyroYaw();
         turnLeftWithGyro(power, angle);
-        sleep(500);
+        sleep(1000);
         finalAngle = getGyroYaw();
         telemetry.addData("turnRightResults", (finalAngle - beforeAngle));
         telemetry.update();
+        sleep(5000);
     }
 }

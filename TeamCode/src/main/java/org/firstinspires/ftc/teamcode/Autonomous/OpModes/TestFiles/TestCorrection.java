@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by sopa on 12/7/16.
+ * Test log: 28 +
  */
 @Autonomous(name = "TestCorrection", group = "Autonomous")
 public class TestCorrection extends AutoOpMode
@@ -14,12 +15,11 @@ public class TestCorrection extends AutoOpMode
     public void runOpMode() throws InterruptedException
     {
         initialize();
-        telemetry.addData("test8", "init");
+        telemetry.addData("test11", "init");
         telemetry.update();
         waitForStart();
         telemetry.addData("before yaw forward", getGyroYaw());
         telemetry.update();
-        double beforeAngle = getGyroYaw();
         telemetry.update();
         sleep(3000);
         moveBackWardWithCorrection(.2, 2000);
@@ -27,6 +27,10 @@ public class TestCorrection extends AutoOpMode
         telemetry.update();
         sleep(5000);
         moveForwardPID(2000);
+        long lastTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - lastTime < 7000){
+        }
+
 //        telemetry.addData("before yaw backward", getGyroYaw());
 //        telemetry.update();
 //        moveBackWardWithCorrection(.15, 2000);

@@ -131,11 +131,11 @@ public abstract class AutoOpMode extends LinearOpMode {
         bringDownShooter((.21 * -1), (distance + (Math.abs(beforeManLift - 1100))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 3000)
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
             idle();
         ManIn.setPower(-.15);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2500)
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
             idle();
         ManIn.setPower(0);
         ShooterF.setPower(0);
@@ -222,7 +222,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void turnRightWithPID(double angle) throws InterruptedException
     {
         //calibration constants
-        double p = .004; double i = .00001; double d = 2.0;
+        double p = .004; double i = .000015; double d = 2.0;
         double error = angle;
         double pastError = 0.0;
         double output;
@@ -254,6 +254,59 @@ public abstract class AutoOpMode extends LinearOpMode {
             telemetry.addData("proportion", proportional);
             telemetry.addData("reset", reset * i);
             telemetry.addData("derivative", derivative * d);
+            telemetry.update();
+            pastError = error;
+            lastTime = System.currentTimeMillis();
+            idle();
+        }
+        double afterAngle = getGyroYaw();
+        telemetry.addData("afterYawAngle", beforeAngle);
+        if(Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
+            telemetry.addData("turn", "success");
+        else
+            telemetry.addData("turn", "failure");
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void turnLeftWithPID(double angle) throws InterruptedException
+    {
+        //calibration constants
+        double p = .004; double i = .000015; //double d = 2.0;
+        double error = angle;
+        double pastError = 0.0;
+        double output;
+        double proportional = 0.0;
+        double reset = 0.0;
+        double derivative = 0.0;
+        double deltaTime;
+        beforeAngle = getGyroYaw();
+        telemetry.addData("beforeYawAngle", beforeAngle);
+        telemetry.update();
+        long lastTime = System.currentTimeMillis();
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle) {
+            error = angle - Math.abs(getGyroYaw() - beforeAngle);
+            //proportional
+            proportional = error * p;
+            deltaTime = System.currentTimeMillis() - lastTime;
+            //integral
+            reset += (error * deltaTime);
+            //derivative
+            derivative = deltaTime/(error-pastError); //(error - pastError)/deltaTime;
+            //output
+            output = proportional + (reset * i);
+            //Range.clip(output, -1, 1);
+            if(output < .15)
+                output = 0;
+            //+ (reset * i) + derivative
+            turnLeft(output);
+            telemetry.addData("output", output);
+            telemetry.addData("proportion", proportional);
+            telemetry.addData("reset", reset * i);
+            telemetry.addData("derivative", derivative);
             telemetry.update();
             pastError = error;
             lastTime = System.currentTimeMillis();
@@ -334,7 +387,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     //gyro stabilization
     public void moveForwardPID(int distance) throws InterruptedException {
         //calibration constants
-        double p = .00015; double i = .00000025; //double d = 2.0;
+        double p = .00015; double i = .0000002; //double d = 2.0;
         double error = distance;
         double pastError = 0.0;
         double output;
@@ -370,7 +423,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 //                    FL.setPower(-output);
 //                    BL.setPower(-output);
 //                }
-//  
+//
 //                else if(getGyroYaw() < beforeAngle) {
 //                    FR.setPower(output);
 //                    BR.setPower(output);
@@ -411,7 +464,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveBackwardPID(int distance) throws InterruptedException
     {
         //calibration constants
-        double p = .0002; double i = .00000075; //double d = 2.0;
+        double p = .00015; double i = .0000002; //double d = 2.0;
         double error = distance;
         double pastError = 0.0;
         double output;
@@ -596,5 +649,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("turnRightResults", (finalAngle - beforeAngle));
         telemetry.update();
         sleep(5000);
+    }
+    public void correct(double angle) throws InterruptedException {
+        if(angle < getGyroYaw()){
+            turnLeftWithPID(Math.abs(getGyroYaw() - angle));
+        }
     }
 }

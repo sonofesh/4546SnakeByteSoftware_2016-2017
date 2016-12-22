@@ -15,6 +15,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * Created by sopa on 11/9/16.
+ * Does what the name says
+ * Will consistently score 40 points and is a good option
+ * if we're with a team that has an amazing auto(ex: Faltech)
  */
 @Autonomous(name = "ShootThenKnockBigBall", group = "Autonomous")
 public class ShootOnly extends LinearOpMode

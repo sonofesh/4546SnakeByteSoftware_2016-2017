@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 /**
  * Created by sopa on 12/21/16.
  * This auto will move forward, shoot, hit both beacons, then knock ball and park on center
+ * Goal 100 points
  */
 @Autonomous(name = "BlueIsTheWarmestColor", group = "Autonomous")
 public class BlueSideScore extends AutoOpMode {

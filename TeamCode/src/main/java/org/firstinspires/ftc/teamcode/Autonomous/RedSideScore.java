@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
- * Created by sopa on 12/19/16.
+ * Created by 4546 Snakebyte on 12/19/16.
+ * This will essentially be our red side auto, provided the first turn is reversed
+ * DELETE WHEN DONE.
  */
 @Autonomous(name = "BloodDiamond", group = "Autonomous")
 public class RedSideScore extends AutoOpMode {
@@ -34,7 +36,6 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         beaconValue();
         sleep(500);
-        //correct(perpendicular);
         moveToWhiteLine(300);
         sleep(1000);
         moveForwardPID(2000);

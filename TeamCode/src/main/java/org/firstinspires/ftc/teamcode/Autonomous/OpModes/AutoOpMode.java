@@ -124,7 +124,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
     }
 
-    //might want to add two servos so we can shoot faster. Ask Sachin
+    /**
+     * The entire shooting process can be hastened with the addition of two servos that
+     * would reduce the overall bringDownShooter() distance
+     * @param power
+     * @param distance
+     * @throws InterruptedException
+     */
     public void shoot(double power, int distance) throws InterruptedException {
         int beforeManLift = ManLift.getCurrentPosition();
         ShooterF.setPower(power);

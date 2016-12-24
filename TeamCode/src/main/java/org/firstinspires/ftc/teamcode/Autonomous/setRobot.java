@@ -25,7 +25,7 @@ public class setRobot extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        telemetry.addData("gyro", "initalizing");
+        telemetry.addData("gyro", "initializing");
         telemetry.update();
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -36,7 +36,7 @@ public class setRobot extends LinearOpMode
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
-        telemetry.addData("gyro", "initalized");
+        telemetry.addData("gyro", "initialized");
         telemetry.update();
         beforeAngle = getGryoYaw();
 //        while(Math.abs(getGryoYaw()-beforeAngle) != 15)

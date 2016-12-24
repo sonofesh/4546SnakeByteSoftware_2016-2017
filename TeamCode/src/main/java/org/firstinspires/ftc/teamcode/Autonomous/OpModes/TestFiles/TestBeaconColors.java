@@ -13,16 +13,13 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
  * Created by sopa on 11/18/16.
  */
 @Autonomous(name = "TestBeaconColors", group = "Autonomous")
-@Disabled
 public class TestBeaconColors extends LinearOpMode
 {
     ColorSensor colorSensorBeacon;
-    public double colorSensorRed() throws InterruptedException
-    {
+    public double colorSensorRed() throws InterruptedException {
         return colorSensorBeacon.red();
     }
-    public double colorSensorBlue() throws InterruptedException
-    {
+    public double colorSensorBlue() throws InterruptedException {
         return colorSensorBeacon.blue();
     }
     @Override
@@ -33,7 +30,7 @@ public class TestBeaconColors extends LinearOpMode
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         colorSensorBeacon.enableLed(true);
         telemetry.addData("colorSensor", "initialized");
-        telemetry.addData("test6", "initialized");
+        telemetry.addData("test1", "initialized");
         waitForStart();
             telemetry.addData("cRed", colorSensorRed());
             telemetry.update();

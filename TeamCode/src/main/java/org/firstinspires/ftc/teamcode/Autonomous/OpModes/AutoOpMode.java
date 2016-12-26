@@ -734,7 +734,7 @@ public abstract class AutoOpMode extends LinearOpMode {
                 if(output < .15)
                     output = 0;
                 //+ (reset * i) + derivative
-                turnLeft(output);
+                turnRight(output);
                 telemetry.addData("output", output);
                 telemetry.addData("proportion", proportional);
                 telemetry.addData("reset", reset * i);
@@ -786,7 +786,7 @@ public abstract class AutoOpMode extends LinearOpMode {
                 if (output < .15)
                     output = 0;
                 //+ (reset * i) + derivative
-                turnRight(output);
+                turnLeft(output);
                 telemetry.addData("output", output);
                 telemetry.addData("proportion", proportional);
                 telemetry.addData("reset", reset * i);

@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by 4546 Snakebyte on 12/19/16.
+ * Test count: 18 +
  * This will essentially be our red side auto, provided the first turn is reversed
  * DELETE WHEN DONE.
  */
@@ -17,7 +18,7 @@ public class RedSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        telemetry.addData("init", "test17");
+        telemetry.addData("init", "test3");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -26,7 +27,7 @@ public class RedSideScore extends AutoOpMode {
         bringDownShooter(.1, 1100);
         sleep(750);
         //shoot
-        shoot(.85, 400);
+        shoot(.85, 350);
         sleep(750);
         turnRightWithPID(50);
         sleep(500);
@@ -36,12 +37,13 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         beaconValue();
         sleep(500);
-        moveToWhiteLine(300);
+        moveBackwardsToWhiteLine(300);
         sleep(1000);
-        moveForwardPID(2000);
+        moveForwardPID(2300);
         sleep(1000);
-        moveToWhiteLine(600);
+        moveForwardsToWhiteLine(600);
         beaconValue();
-        moveBackwardsWithATiltRight(.4, 2500);
+        sleep(2000);
+        moveBackwardsWithATiltRight(.4, 3500);
     }
 }

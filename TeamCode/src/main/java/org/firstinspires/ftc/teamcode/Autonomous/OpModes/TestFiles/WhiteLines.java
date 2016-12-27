@@ -27,10 +27,10 @@ public class WhiteLines extends AutoOpMode
         telemetry.addData("test12", "init");
         telemetry.update();
         waitForStart();
-        moveToWhiteLine(300);
+        //moveToWhiteLine(300);
         sleep(5000);
         moveForwardPID(2000);
         sleep(1000);
-        moveToWhiteLine(300);
+        //moveToWhiteLine(300);
     }
 }

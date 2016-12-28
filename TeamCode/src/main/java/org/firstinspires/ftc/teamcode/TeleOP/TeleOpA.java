@@ -135,10 +135,7 @@ public class TeleOpA extends OpMode {
                 else
                     halfspeed = true;
             }
-            if (halfspeed)
-                speed = HALFSPEED;
-            else
-                speed = FULLSPEED;
+            speed = (halfspeed)? HALFSPEED:FULLSPEED;
             lastTime = System.currentTimeMillis();
         }
         //Reverse Macro

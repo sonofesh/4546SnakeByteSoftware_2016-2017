@@ -40,6 +40,8 @@ public class TeleOpA extends OpMode {
     DcMotor ManIn;
     DcMotor ManLift;
     Servo Beacon;
+    Servo ManBeaconL;
+    Servo ManBeaconR;
     //Servo Release;
     boolean shootfull;
     boolean shootpartial;
@@ -73,9 +75,11 @@ public class TeleOpA extends OpMode {
         ManIn = hardwareMap.dcMotor.get("ManIn");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         Beacon = hardwareMap.servo.get("Beacon");
-        //Release = hardwareMap.servo.get("Release");
-        //Release.setPosition(0);
+        ManBeaconL = hardwareMap.servo.get("ManBeaconL");
+        ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         Beacon.setPosition(1);
+        ManBeaconL.setPosition(.7);
+        ManBeaconR.setPosition(.7);
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
@@ -86,7 +90,7 @@ public class TeleOpA extends OpMode {
         ManIn.setPower(0);
         ManIn.setPower(0);
         //ManLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //ManLift.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        //ManLif0t.setMode(DcMotor.RunMode.RESET_ENCODERS);
         liftPosO = 0;
         liftPosCurrent = 0;
         shootfull = false;
@@ -165,6 +169,7 @@ public class TeleOpA extends OpMode {
         //Manipulator Control
         if (Math.abs(gamepad2.right_stick_y) > .1)
             ManIn.setPower(gamepad2.right_stick_y);
+
         //Half Power Manipulator
         else if (Math.abs(gamepad2.left_stick_y) > .1)
             ManIn.setPower(gamepad2.left_stick_y * .25);
@@ -177,5 +182,17 @@ public class TeleOpA extends OpMode {
             ManLift.setPower(gamepad2.right_trigger * .25);
         else
             ManLift.setPower(0);
+
+        //Beacon Pushers (TEST VALUES 4)
+        if (gamepad2.a)
+        {
+            ManBeaconL.setPosition(.3);
+            ManBeaconR.setPosition(.3);
+        }
+        else
+        {
+            ManBeaconL.setPosition(.7);
+            ManBeaconR.setPosition(.7);
+        }
     }
 }

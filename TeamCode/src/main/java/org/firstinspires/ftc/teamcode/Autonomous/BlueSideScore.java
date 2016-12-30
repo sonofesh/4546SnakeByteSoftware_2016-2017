@@ -6,8 +6,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by 4546 on 12/21/16.
- * This auto will move forward, shoot, hit both beacons, then knock ball and park on center
- * Goal 100 points
+ * This auto will move to the beacons, hit both, turn, shoot, and then knock the cap ball
  * Test Count: 12 +
  */
 @Autonomous(name = "BlueIsTheWarmestColor", group = "Autonomous")

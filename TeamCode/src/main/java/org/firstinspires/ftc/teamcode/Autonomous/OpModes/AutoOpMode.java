@@ -816,40 +816,26 @@ public abstract class AutoOpMode extends LinearOpMode {
         sleep(2000);
     }
 
-    public void pushBlueBeacon(double power, int distance) throws InterruptedException {
+    public int pushBlueBeacon(int distance) throws InterruptedException {
         //power: .15
         //distance: 25
-
+        int output;
         //move forward and push the correct beacon
-        if (colorSensorRed(colorSensorBlueBeacon) > colorSensorBlue(colorSensorBlueBeacon)) {
-            beforeALV = getAvg();
-            moveBackWardWithCorrection(power, distance);
-            Beacon.setPosition(.43);
-            beforeALV = getAvg();
-            moveForwardWithCorrection(power, distance);
-            telemetry.addData("hit1", "rip");
-            sleep(3000); //change sleep values when this part works
-            Beacon.setPosition(1);
-            beforeALV = getAvg();
-            moveForwardWithCorrection(power, distance);
-            idle();
+        if (beaconValue() == 1) {
+            moveBlueSideServo();
+            output = 0;
         }
         else {
-            Beacon.setPosition(.43);
-            sleep(2000);
-            moveBackWardWithCorrection(.15, 40);
-            moveForwardWithCorrection(.15, 40);
-            idle();
-            telemetry.addData("hit2", "rip");
-            Beacon.setPosition(1);
-            telemetry.addData("encodersA", getAvg());
-            beforeALV = getAvg();
+            moveForwardPID(.003, .0000002, 0.0, distance);
+            moveBlueSideServo();
+            output = 1;
         }
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
         sleep(2000);
+        return output;
     }
 
     //test methods
@@ -884,7 +870,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //miscellaneous
-    public void moveBackwardsWithATiltRight(double power, double distance) throws InterruptedException{
+    public void moveBackwardsWithATiltRight(double power, double distance) throws InterruptedException {
         beforeALV = getAvg();
         while(Math.abs(getAvg() - beforeALV) <  distance){
             FR.setPower(-power * .75);
@@ -912,4 +898,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         FL.setPower(0);
         BL.setPower(0);
     }
+
+    public void moveBlueSideServo() throws InterruptedException { }
+
+    public void moveRedSideServo() throws InterruptedException { }
 }

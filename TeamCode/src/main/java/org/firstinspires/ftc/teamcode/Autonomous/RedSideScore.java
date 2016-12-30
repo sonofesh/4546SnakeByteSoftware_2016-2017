@@ -31,8 +31,8 @@ public class RedSideScore extends AutoOpMode {
         //shoot
         shoot(.85, 350);
         sleep(750);
-        //turnRightWithPID(50);
-        turnLeftWithPID(50);
+        turnRightWithPID(50);
+        //turnLeftWithPID(50);
         sleep(500);
         moveForwardPID(3050);
         sleep(500);

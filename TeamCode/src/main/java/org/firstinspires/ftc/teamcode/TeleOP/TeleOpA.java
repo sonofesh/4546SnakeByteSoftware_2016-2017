@@ -80,8 +80,8 @@ public class TeleOpA extends OpMode {
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        ManBeaconL.setPosition(.5);
-        ManBeaconR.setPosition(.5);
+        ManBeaconL.setPosition(.2);
+        ManBeaconR.setPosition(.2);
         AutoBeaconL.setPosition(0);
         AutoBeaconR.setPosition(0);
         FL.setPower(0);
@@ -187,7 +187,16 @@ public class TeleOpA extends OpMode {
         else
             ManLift.setPower(0);
 
-        //BEACON PUSH TEST
+        //Back Beacon Control
+        if (gamepad2.a) {
+            ManBeaconL.setPosition(.8);
+            ManBeaconR.setPosition(.2);
+        }
+        else {
+            ManBeaconL.setPosition(.2);
+            ManBeaconR.setPosition(.8);
+        }
+        /* //BEACON PUSH TEST
         if (gamepad2.a) {
             if(Pos<1) {
                 Pos += .1;
@@ -200,6 +209,8 @@ public class TeleOpA extends OpMode {
         ManBeaconR.setPosition(1-Pos);
         telemetry.addData("Position", Pos);
         telemetry.update();
+
+           */
 
         //Side Beacon Control
         if (gamepad2.x) {

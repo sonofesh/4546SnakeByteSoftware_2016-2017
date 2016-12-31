@@ -51,7 +51,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-        Beacon = hardwareMap.servo.get("Beacon");
+        Beacon = hardwareMap.servo.get("AutoBeaconL");
         Beacon.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,7 +59,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        telemetry.addData("gyro", "initalizing");
+        telemetry.addData("gyro", "initializing");
         telemetry.update();
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;

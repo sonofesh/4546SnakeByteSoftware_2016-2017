@@ -24,6 +24,6 @@ public class Correct extends AutoOpMode {
         telemetry.addData("perpendicular", perpendicular);
         telemetry.update();
         waitForStart();
-        correct(perpendicular);
+        //correct(perpendicular);
     }
 }

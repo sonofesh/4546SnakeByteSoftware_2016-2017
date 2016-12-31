@@ -39,9 +39,10 @@ public class TeleOpA extends OpMode {
     DcMotor ShooterB;
     DcMotor ManIn;
     DcMotor ManLift;
-    Servo Beacon;
     Servo ManBeaconL;
     Servo ManBeaconR;
+    Servo AutoBeaconL;
+    Servo AutoBeaconR;
     //Servo Release;
     boolean shootfull;
     boolean shootpartial;
@@ -74,10 +75,10 @@ public class TeleOpA extends OpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManIn = hardwareMap.dcMotor.get("ManIn");
         ManLift = hardwareMap.dcMotor.get("ManLift");
-        Beacon = hardwareMap.servo.get("Beacon");
         ManBeaconL = hardwareMap.servo.get("ManBeaconL");
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
-        Beacon.setPosition(1);
+        AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
+        AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
         ManBeaconL.setPosition(0);
         ManBeaconR.setPosition(.7);
         FL.setPower(0);

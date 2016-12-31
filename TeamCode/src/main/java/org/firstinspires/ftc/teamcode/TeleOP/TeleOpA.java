@@ -80,8 +80,8 @@ public class TeleOpA extends OpMode {
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        ManBeaconL.setPosition(.3);
-        ManBeaconR.setPosition(.7);
+        ManBeaconL.setPosition(.5);
+        ManBeaconR.setPosition(.5);
         AutoBeaconL.setPosition(0);
         AutoBeaconR.setPosition(0);
         FL.setPower(0);
@@ -189,12 +189,12 @@ public class TeleOpA extends OpMode {
 
         //BEACON PUSH TEST
         if (gamepad2.a) {
-            if(Pos<.7) {
+            if(Pos<1) {
                 Pos += .1;
             }
         }
         else if (gamepad2.y) {
-            if (Pos>.2) Pos -= .1;
+            if (Pos>0) Pos -= .1;
         }
         ManBeaconL.setPosition(Pos);
         ManBeaconR.setPosition(1-Pos);

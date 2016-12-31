@@ -35,6 +35,8 @@ public class BlueSide100 extends AutoOpMode {
             power = .85;
         else if(voltage > 13.75 && voltage < 14)
             power = .8;
+        else if(voltage > 14)
+            power = .75;
         shoot(.8, 350);
         sleep(750);
         //turnRightWithPID(50);

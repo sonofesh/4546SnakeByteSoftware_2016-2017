@@ -25,7 +25,7 @@ public class BlueSideScore extends AutoOpMode {
         }
         waitForStart();
         moveBackwardPID(2500);
-        correct(beforeAngle);
+        //correct(beforeAngle);
         moveBackwardsToWhiteLine(300);
         beaconValue();
         moveForwardPID(2300);

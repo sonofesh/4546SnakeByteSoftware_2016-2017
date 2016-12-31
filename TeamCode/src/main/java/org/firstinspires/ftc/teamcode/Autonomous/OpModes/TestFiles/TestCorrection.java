@@ -14,6 +14,7 @@ public class TestCorrection extends AutoOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
+        telemetry.log();
         initialize();
         telemetry.addData("test1", "init");
         telemetry.update();
@@ -23,13 +24,12 @@ public class TestCorrection extends AutoOpMode
         telemetry.update();
         sleep(3000);
         //Standard constants: double p = .00015; double i = .00000015;
-        moveBackwardPID(.0003, .00000015, 0.0, 2000);
+        //moveBackwardPID(.0003, .0000003, 0.0, 2000);
         sleep(5000);
-        moveForwardPID(.0003, .00000015, 0.0, 2000);
-        long lastTime = System.currentTimeMillis();
-        while(System.currentTimeMillis() - lastTime < 7000){
-        }
-
+        moveForwardPID(.0003, .0000003, 0.0, 2000);
+        //long lastTime = System.currentTimeMillis();
+        sleep(2500);
+        moveBackwardPID(.0003, .0000003, 0.0, 500);
 //        telemetry.addData("before yaw backward", getGyroYaw());
 //        telemetry.update();
 //        moveBackWardWithCorrection(.15, 2000);

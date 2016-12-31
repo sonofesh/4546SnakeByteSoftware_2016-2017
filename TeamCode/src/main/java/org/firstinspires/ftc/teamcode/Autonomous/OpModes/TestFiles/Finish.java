@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by sopa on 12/26/16.
+ * test count; 8 +
  */
 @Autonomous(name = "Finish", group = "Autonomous")
 public class Finish extends AutoOpMode {
@@ -15,9 +16,9 @@ public class Finish extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        telemetry.addData("init", "test8");
+        telemetry.addData("init", "test3");
         telemetry.update();
         waitForStart();
-        moveBackwardsWithATiltRight(.4, 3500);
+        moveBackwardsWithATiltLeft(.4, 3800);
     }
 }

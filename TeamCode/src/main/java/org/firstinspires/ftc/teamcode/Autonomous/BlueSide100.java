@@ -1,21 +1,25 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by sopa on 12/31/16.
  * Test count:
  * Shoot first, hit beacons sequentially, hit cap ball, park
+ * test count: 7 +
  */
 
+@Autonomous(name = "BlueKrishna", group = "Autonomous")
 public class BlueSide100 extends AutoOpMode {
-    public BlueSide100() { super(); };
+    public BlueSide100() { super(); }
 
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        initialize();
-        telemetry.addData("init", "test7");
+        double power = .8;
+        telemetry.addData("init", "test2");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -27,31 +31,28 @@ public class BlueSide100 extends AutoOpMode {
         sleep(750);
         //shoot
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        if(voltage < 13.75 && voltage > 13.5)
+            power = .85;
+        else if(voltage > 13.75 && voltage < 14)
+            power = .8;
         shoot(.8, 350);
         sleep(750);
         //turnRightWithPID(50);
-        turnLeftWithPID(50);
+        turnRightWithPID(50);
         sleep(500);
-        moveForwardPID(.0002, .0000001, 0.0, 3250);
+        moveForwardPID(.0002, .0000001, 0.0, 3300);
         sleep(500);
-        correct(perpendicular, .004, .000015, 0.0);
+        correct(perpendicular, .0045, .00001, 0.0);
         sleep(500);
-        moveForwardsToWhiteLine(300);
-//        if(pushBlueBeacon(100) == 0)
-//            movement = 0;
-//        else
-//            movement = 100;
+        moveBackwardsToWhiteLine(300);
+        pushBlueBeacon();
         sleep(1000);
         correct(perpendicular, .04, .00015, 0.0);
-        moveForwardPID(2500 - movement);
+        moveForwardPID(2500);
         sleep(1000);
         movement = 0;
         moveForwardsToWhiteLine(600);
-        beaconValue();
-//        if(pushBlueBeacon(100) == 0)
-//            movement = 0;
-//        else
-//            movement = 100;
+        pushBlueBeacon();
         sleep(1000);
         moveBackwardsWithATiltLeft(.4, 3500 + movement);
     }

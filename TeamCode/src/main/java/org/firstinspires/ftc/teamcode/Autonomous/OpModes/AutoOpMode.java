@@ -26,7 +26,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     DcMotor ShooterF;
     DcMotor ManLift;
     DcMotor ManIn;
-    Servo Beacon;
+    Servo BlueBeaconPusher;
     //average encoder value
     int beforeALV = 0;
     double beforeAngle = 2;
@@ -51,8 +51,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-        Beacon = hardwareMap.servo.get("AutoBeaconL");
-        Beacon.setPosition(0);
+        BlueBeaconPusher= hardwareMap.servo.get("AutoBeaconL");
+        BlueBeaconPusher.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -73,7 +73,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("gyro", "initalized");
         colorSensorWL = hardwareMap.colorSensor.get("cSWL");
         colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
-        telemetry.addData("colorSensorL", "initalized");
+        telemetry.addData("colorSensorWL", "initalized");
         colorSensorBlueBeacon = hardwareMap.colorSensor.get("cSB");
         colorSensorBlueBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensorB", "initalized");
@@ -930,24 +930,24 @@ public abstract class AutoOpMode extends LinearOpMode {
         if (colorSensorRed(colorSensorBlueBeacon) < colorSensorBlue(colorSensorBlueBeacon)) {
             beforeALV = getAvg();
             moveBackWardWithCorrection(power, distance);
-            Beacon.setPosition(.43);
+            BlueBeaconPusher.setPosition(.43);
             beforeALV = getAvg();
             moveForwardWithCorrection(power, distance);
             telemetry.addData("hit1", "rip");
             sleep(3000); //change sleep values when this part works
-            Beacon.setPosition(1);
+            BlueBeaconPusher.setPosition(1);
             beforeALV = getAvg();
             moveForwardWithCorrection(power, distance);
             idle();
         }
         else {
-            Beacon.setPosition(.43);
+            BlueBeaconPusher.setPosition(.43);
             sleep(2000);
             moveBackWardWithCorrection(.15, 40);
             moveForwardWithCorrection(.15, 40);
             idle();
             telemetry.addData("hit2", "rip");
-            Beacon.setPosition(1);
+            BlueBeaconPusher.setPosition(1);
             telemetry.addData("encodersA", getAvg());
             beforeALV = getAvg();
         }
@@ -958,17 +958,17 @@ public abstract class AutoOpMode extends LinearOpMode {
         sleep(2000);
     }
 
-    public int pushBlueBeacon(int distance) throws InterruptedException {
+    public void pushBlueBeacon() throws InterruptedException {
         //power: .15
         //distance: 25
         int output;
         //move forward and push the correct beacon
         if (beaconValue() == 1) {
             moveBlueSideServo();
-            output = 0;
         }
         else {
-            moveForwardPID(.003, .0000002, 0.0, distance);
+            moveForward(.175, 50);
+            sleep(500);
             moveBlueSideServo();
             output = 1;
         }
@@ -976,8 +976,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
-        sleep(2000);
-        return output;
     }
 
     //test methods
@@ -1048,7 +1046,9 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.log().add("nestLine");
         telemetry.update();
     }
-    public void moveBlueSideServo() throws InterruptedException { }
+    public void moveBlueSideServo() throws InterruptedException {
+        BlueBeaconPusher.setPosition(1);
+    }
 
     public void moveRedSideServo() throws InterruptedException { }
 }

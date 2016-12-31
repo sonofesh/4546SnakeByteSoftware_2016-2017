@@ -11,6 +11,7 @@ import static java.lang.Thread.sleep;
  * Created by sopa on 11/22/16.
  */
 @TeleOp(name = "TestBeaconPusher", group = "Teleop")
+@Disabled
 public class TestBeaconPusher extends OpMode {
     //Servo ManBeaconL;
     //Servo ManBeaconR;

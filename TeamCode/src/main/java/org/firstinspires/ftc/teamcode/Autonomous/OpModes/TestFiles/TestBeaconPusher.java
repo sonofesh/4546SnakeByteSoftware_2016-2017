@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by sopa on 12/31/16.
+ * Test: 4
  */
 @Autonomous(name = "TestBeaconPusher", group = "Autonomous")
-@Disabled
 public class TestBeaconPusher extends LinearOpMode {
     Servo ManBeaconL;
     Servo ManBeaconR;
@@ -22,13 +22,10 @@ public class TestBeaconPusher extends LinearOpMode {
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         AutoBeaconB = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        telemetry.addData("test4", "init");
+        telemetry.addData("test1", "init");
         waitForStart();
-        telemetry.log().add("servoPos-AutoBlue", AutoBeaconB.getPosition());
-        telemetry.update();
+        AutoBeaconB.setPosition(0);
         sleep(5000);
-        telemetry.log().add("servoPos-AutoBlue", AutoBeaconB.getPosition());
-        telemetry.update();
-        sleep(5000);
+        AutoBeaconB.setPosition(1);
     }
 }

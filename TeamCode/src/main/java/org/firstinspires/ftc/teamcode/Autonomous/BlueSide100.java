@@ -41,7 +41,6 @@ public class BlueSide100 extends AutoOpMode {
             power = .75;
         shoot(power, 325);
         sleep(750);
-        //turnRightWithPID(50);
         turnRightWithPID(50, .0045, .00001, 0.0);
         sleep(500);
         moveForwardPID(.0003, .00000005, 0.0, 3300);

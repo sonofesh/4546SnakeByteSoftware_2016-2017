@@ -65,6 +65,7 @@ public class TeleOpA extends OpMode {
     double speed = 0;
     boolean liftUp;
     MotorScaling scale;
+    double Pos = 0; // REMOVE AFTER BEACON TESTING
     @Override
     public void init() {
         FR = hardwareMap.dcMotor.get("FR");
@@ -79,8 +80,10 @@ public class TeleOpA extends OpMode {
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        ManBeaconL.setPosition(0);
+        ManBeaconL.setPosition(.3);
         ManBeaconR.setPosition(.7);
+        AutoBeaconL.setPosition(0);
+        AutoBeaconR.setPosition(0);
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
@@ -184,14 +187,28 @@ public class TeleOpA extends OpMode {
         else
             ManLift.setPower(0);
 
-        //Beacon Pushers (TEST VALUES 4)
+        //BEACON PUSH TEST
         if (gamepad2.a) {
-            ManBeaconL.setPosition(.7);
-            ManBeaconR.setPosition(.3);
+            if(Pos<.7) {
+                Pos += .1;
+            }
+        }
+        else if (gamepad2.y) {
+            if (Pos>.2) Pos -= .1;
+        }
+        ManBeaconL.setPosition(Pos);
+        ManBeaconR.setPosition(1-Pos);
+        telemetry.addData("Position", Pos);
+        telemetry.update();
+
+        //Side Beacon Control
+        if (gamepad2.x) {
+            AutoBeaconL.setPosition(1);
+            AutoBeaconR.setPosition(1);
         }
         else {
-            ManBeaconL.setPosition(.3);
-            ManBeaconR.setPosition(.7);
+            AutoBeaconL.setPosition(0);
+            AutoBeaconR.setPosition(0);
         }
     }
 }

@@ -81,7 +81,7 @@ public class TeleOpA extends OpMode {
         AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
         ManBeaconL.setPosition(.2);
-        ManBeaconR.setPosition(.2);
+        ManBeaconR.setPosition(.8);
         AutoBeaconL.setPosition(0);
         AutoBeaconR.setPosition(0);
         FL.setPower(0);

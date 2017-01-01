@@ -37,7 +37,7 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         moveForwardPID(.0002, .0000001, 0.0, 3250);
         sleep(500);
-        correct(perpendicular, .004, .000015, 0.0);
+        correct(perpendicular, .004, .000015, 0.0, 0);
         sleep(500);
         moveForwardsToWhiteLine(300);
 //        if(pushBlueBeacon(100) == 0)
@@ -45,7 +45,7 @@ public class RedSideScore extends AutoOpMode {
 //        else
 //            movement = 100;
         sleep(1000);
-        correct(perpendicular, .04, .00015, 0.0);
+        correct(perpendicular, .04, .00015, 0.0, 0);
         moveForwardPID(2500 - movement);
         sleep(1000);
         movement = 0;

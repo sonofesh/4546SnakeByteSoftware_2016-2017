@@ -22,10 +22,13 @@ public class TestBeaconPusher extends LinearOpMode {
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         AutoBeaconB = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        telemetry.addData("test1", "init");
-        waitForStart();
+        ManBeaconL.setPosition(.2);
+        ManBeaconR.setPosition(.8);
         AutoBeaconB.setPosition(0);
-        sleep(5000);
+        telemetry.addData("test1", "init");
+        telemetry.update();
+        waitForStart();
         AutoBeaconB.setPosition(1);
+        Thread.sleep(1000);
     }
 }

@@ -5,6 +5,7 @@ import android.util.Range;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,6 +41,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     long beforeTime = 0;
     long currentTime = 0;
     public BNO055IMU imu;
+    ModernRoboticsI2cRangeSensor rangeSensorRed;
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
     ColorSensor colorSensorBlueBeacon;
@@ -183,6 +185,11 @@ public abstract class AutoOpMode extends LinearOpMode {
         FLV = Math.abs(FL.getCurrentPosition());
         avg = Math.abs((FRV + FLV)/2);
         return avg;
+    }
+
+    //range sensor
+    public double getDistance(ModernRoboticsI2cRangeSensor rangeSensor) throws InterruptedException {
+        return rangeSensor.cmOptical();
     }
 
     //Forwards, Backwards and Turning
@@ -1114,4 +1121,37 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     public void moveRedSideServo() throws InterruptedException { }
+
+    public void maintainWallDistance(double power, double distance) throws InterruptedException{
+//        FR.setPower(power);
+//        BR.setPower(power);
+//        FL.setPower(-power);
+//        BL.setPower(-power);
+        beforeALV = getAvg();
+        double beforeDistance = getDistance(rangeSensorRed);
+        double difference = 0;
+        while(Math.abs(getAvg() - beforeALV) < distance) {
+            if(getDistance(rangeSensorRed) - beforeDistance < -2) {
+                difference = Math.abs(getDistance(rangeSensorRed) - beforeDistance);
+                FR.setPower(power * (1 + .5 * difference));
+                BR.setPower(power * (1 + .5 * difference));
+                FL.setPower(-power);
+                BL.setPower(-power);
+            }
+            else if(getDistance(rangeSensorRed) - beforeDistance > 2) {
+                difference = Math.abs(getDistance(rangeSensorRed) - beforeDistance);
+                FR.setPower(power);
+                BR.setPower(power);
+                FL.setPower(-power * (1 + .5 * difference));
+                BL.setPower(-power * (1 + .5 * difference));
+            }
+            else {
+                FR.setPower(power);
+                BR.setPower(power);
+                FL.setPower(-power);
+                BL.setPower(-power);
+            }
+            idle();
+        }
+    }
 }

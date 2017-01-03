@@ -19,12 +19,12 @@ public class BlueSide100 extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .8;
-        telemetry.addData("init", "test1");
+        telemetry.addData("init", "test11");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
         int movement = 0;
-        moveForward(.175, 500);
+        moveForward(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.1, 1100);
@@ -38,20 +38,19 @@ public class BlueSide100 extends AutoOpMode {
         else if(voltage > 13.75 && voltage < 14)
             power = .8;
         else if(voltage > 14)
-            power = .7;
+            power = .65;
         shoot(power, 350);
         sleep(750);
-        turnRightWithPID(40, .006, .000045, 0.0);
+        turnRightWithPID(42, .006, .000045, 0.0);
         sleep(500);
-        moveForwardPID(.00025, .00000003, 0.0, 3600);
+        moveForwardPID(.00025, .00000003, 0.0, 3800);
         sleep(500);
         correctOneSide(perpendicular, .004, .00001, 0.0, 0.0);
         sleep(500);
-        moveBackwardsToWhiteLine(200);
+        moveBackwardsToWhiteLine(550);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
-        correct(perpendicular + 2, .02, .0002, 0.0, 0);
         moveForwardPID(2500);
         moveForwardsToWhiteLine(600);
         pushBlueBeacon();

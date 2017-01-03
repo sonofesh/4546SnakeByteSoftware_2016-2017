@@ -158,9 +158,6 @@ public class ShootOnly extends LinearOpMode
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-        Beacon = hardwareMap.servo.get("Beacon");
-        ManIn = hardwareMap.dcMotor.get("ManIn");
-        Beacon.setPosition(1);
         //Delayer.setPosition(.9);
         //Stopper.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

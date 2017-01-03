@@ -311,7 +311,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while(Math.abs(getGyroYaw() - beforeAngle) < angle && System.currentTimeMillis() - firstTime < 4000) {
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle && System.currentTimeMillis() - firstTime < 3000) {
             error = angle - Math.abs(getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;

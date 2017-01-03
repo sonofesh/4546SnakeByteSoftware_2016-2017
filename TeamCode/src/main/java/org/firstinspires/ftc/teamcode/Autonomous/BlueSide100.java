@@ -41,9 +41,9 @@ public class BlueSide100 extends AutoOpMode {
             power = .7;
         shoot(power, 350);
         sleep(750);
-        turnRightWithPID(45, .006, .000045, 0.0);
+        turnRightWithPID(40, .006, .000045, 0.0);
         sleep(500);
-        moveForwardPID(.00025, .00000003, 0.0, 3450);
+        moveForwardPID(.00025, .00000003, 0.0, 3500);
         sleep(500);
         correctOneSide(perpendicular, .004, .00001, 0.0, 0.0);
         sleep(500);
@@ -56,6 +56,6 @@ public class BlueSide100 extends AutoOpMode {
         moveForwardsToWhiteLine(600);
         pushBlueBeacon();
         sleep(1000);
-        moveBackwardsWithATiltRight(.4, 3600);
+        moveBackwardsWithATiltRight(.5, 3800);
     }
 }

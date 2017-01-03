@@ -996,11 +996,27 @@ public abstract class AutoOpMode extends LinearOpMode {
         return 1;
     }
 
-    public void pushRedBeacon(double power, int distance) throws InterruptedException {
+    public void pushRedBeacon() throws InterruptedException {
         //power: .15
         //distance: 25
         //move forward and push the correct beacon
-        if (colorSensorRed(colorSensorBlueBeacon) < colorSensorBlue(colorSensorBlueBeacon)) {
+        count += 1;
+        if (beaconValue() == 1) {
+            moveRedSideServo();
+        }
+        else {
+            moveForward(-.175, 200);
+            sleep(500);
+            if(beaconValue() == 1)
+                moveRedSideServo();
+            else if(count < 2)
+                pushRedBeacon();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        /*if (colorSensorRed(colorSensorBlueBeacon) < colorSensorBlue(colorSensorBlueBeacon)) {
             beforeALV = getAvg();
             moveBackWardWithCorrection(power, distance);
             BlueBeaconPusher.setPosition(.43);
@@ -1023,12 +1039,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             BlueBeaconPusher.setPosition(1);
             telemetry.addData("encodersA", getAvg());
             beforeALV = getAvg();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        sleep(2000);
+        } */
     }
 
     public void pushBlueBeacon() throws InterruptedException {

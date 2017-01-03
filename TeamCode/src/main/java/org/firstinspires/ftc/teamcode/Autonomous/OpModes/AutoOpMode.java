@@ -1106,8 +1106,8 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveBackwardsWithATiltRight(double power, double distance) throws InterruptedException {
         beforeALV = getAvg();
         while(Math.abs(getAvg() - beforeALV) <  distance){
-            FR.setPower(-power * .75);
-            BR.setPower(-power * .75);
+            FR.setPower(-power * .6);
+            BR.setPower(-power * .6);
             FL.setPower(power * 2.6);
             BL.setPower(power * 2.6);
             idle();

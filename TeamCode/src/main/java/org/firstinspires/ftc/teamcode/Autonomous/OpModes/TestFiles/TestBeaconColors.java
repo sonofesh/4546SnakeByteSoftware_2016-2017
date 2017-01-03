@@ -15,29 +15,38 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 @Autonomous(name = "TestBeaconColors", group = "Autonomous")
 public class TestBeaconColors extends LinearOpMode
 {
-    ColorSensor colorSensorBeacon;
-    public double colorSensorRed() throws InterruptedException {
-        return colorSensorBeacon.red();
+    ColorSensor colorSensorBeaconBlue;
+    ColorSensor colorSensorBeaconRed;
+    public double colorSensorRed(ColorSensor color) throws InterruptedException {
+        return color.red();
     }
-    public double colorSensorBlue() throws InterruptedException {
-        return colorSensorBeacon.blue();
+    public double colorSensorBlue(ColorSensor color) throws InterruptedException {
+        return color.blue();
     }
     @Override
     public void runOpMode() throws InterruptedException
     {
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
-        colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
-        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
-        colorSensorBeacon.enableLed(true);
+        colorSensorBeaconBlue = hardwareMap.colorSensor.get("cSB");
+        colorSensorBeaconRed = hardwareMap.colorSensor.get("cSR");
+        colorSensorBeaconBlue.setI2cAddress(I2cAddr.create8bit(0x2e));
+        colorSensorBeaconBlue.enableLed(false);
+        colorSensorBeaconRed.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensor", "initialized");
         telemetry.addData("test1", "initialized");
         waitForStart();
-            telemetry.addData("cRed", colorSensorRed());
-            telemetry.update();
-            sleep(1500);
-            telemetry.addData("cBlue", colorSensorBlue());
-            telemetry.update();
-            sleep(1500);
-            idle();
+        telemetry.addData("cRed", colorSensorRed(colorSensorBeaconBlue));
+        telemetry.update();
+        sleep(1500);
+        telemetry.addData("cBlue", colorSensorBlue(colorSensorBeaconBlue));
+        telemetry.update();
+        sleep(3000);
+        telemetry.addData("cRed", colorSensorRed(colorSensorBeaconRed));
+        telemetry.update();
+        sleep(1500);
+        telemetry.addData("cBlue", colorSensorBlue(colorSensorBeaconRed));
+        telemetry.update();
+        sleep(3000);
+        idle();
     }
 }

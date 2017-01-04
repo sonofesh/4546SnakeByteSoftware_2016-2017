@@ -59,8 +59,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         BlueBeaconPusher = hardwareMap.servo.get("AutoBeaconL");
         ManBeaconL = hardwareMap.servo.get("ManBeaconL");
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
-        ManBeaconL.setPosition(.2);
-        ManBeaconR.setPosition(.8);
+        ManBeaconL.setPosition(.3);
+        ManBeaconR.setPosition(.7);
         BlueBeaconPusher.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

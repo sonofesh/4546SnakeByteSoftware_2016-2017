@@ -31,11 +31,11 @@ public class BlueSide100 extends AutoOpMode {
         sleep(750);
         //shoot
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        if(voltage > 13 && voltage < 13.5)
+        if(voltage <= 13.5)
             power = .9;
-        else if(voltage < 13.75 && voltage > 13.5)
+        else if(voltage <= 13.75 && voltage > 13.5)
             power = .85;
-        else if(voltage > 13.75 && voltage < 14)
+        else if(voltage > 13.75 && voltage <= 14)
             power = .8;
         else if(voltage > 14)
             power = .65;

@@ -52,9 +52,9 @@ public class BlueSide100 extends AutoOpMode {
         pushBlueBeacon();
         sleep(1000);
         moveForwardPID(2500);
-        moveForwardsToWhiteLine(600);
+        moveForwardsToWhiteLine(300);
         pushBlueBeacon();
         sleep(1000);
-        moveBackwardsWithATiltRight(.5, 4000);
+        moveBackwardsWithATiltRight(.5, 4200);
     }
 }

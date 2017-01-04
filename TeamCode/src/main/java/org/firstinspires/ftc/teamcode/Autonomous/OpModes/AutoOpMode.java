@@ -688,6 +688,9 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double correction = CORRECTION;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double change = (14 - voltageAverage) * 200;
+        distance += change;
         long lastTime = System.currentTimeMillis();
         while (Math.abs(getAvg() - beforeALV) < distance) {
             error = distance - Math.abs(getAvg() - beforeALV);
@@ -1051,7 +1054,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             moveBlueSideServo();
         }
         else {
-            moveForward(-.175, 200);
+            moveForward(-.175, 150);
             sleep(500);
             if(beaconValue() == 0)
                 moveBlueSideServo();
@@ -1099,7 +1102,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void correctOneSide(double perpendicular, double p, double i, double d, double underShoot) throws InterruptedException {
         //double p = .004; double i = .000015; //double d = 2.0;
         double angle = Math.abs(perpendicular - getGyroYaw());
-        turnLeftWithPIDOneSide(angle - 7, p, i, d);
+        turnLeftWithPIDOneSide(angle, p, i, d);
     }
 
     //miscellaneous

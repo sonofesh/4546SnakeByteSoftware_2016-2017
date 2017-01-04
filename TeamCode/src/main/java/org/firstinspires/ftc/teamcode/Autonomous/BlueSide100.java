@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Created by sopa on 12/31/16.
  * Test count:
  * Shoot first, hit beacons sequentially, hit cap ball, park
- * test count: 7 + 12 + 12
+ * test count: 7 + 12 + 12 + 11
  */
 
 @Autonomous(name = "BlueKrishna", group = "Autonomous")
@@ -19,7 +19,7 @@ public class BlueSide100 extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .8;
-        telemetry.addData("init", "test11");
+        telemetry.addData("init", "test4");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -45,7 +45,7 @@ public class BlueSide100 extends AutoOpMode {
         sleep(500);
         moveForwardPID(.00025, .00000003, 0.0, 3800);
         sleep(500);
-        correctOneSide(perpendicular, .004, .00001, 0.0, 0.0);
+        correctOneSide(perpendicular, .006, .000015, 0.0, 0.0);
         sleep(500);
         moveBackwardsToWhiteLine(550);
         sleep(500);

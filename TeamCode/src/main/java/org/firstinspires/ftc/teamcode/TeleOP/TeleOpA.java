@@ -43,27 +43,20 @@ public class TeleOpA extends OpMode {
     Servo ManBeaconR;
     Servo AutoBeaconL;
     Servo AutoBeaconR;
-    //Servo Release;
-    boolean shootfull;
-    boolean shootpartial;
-    boolean harvest;
     boolean stop;
     boolean gate;
     int direction = 1;
-    int liftPosO;
-    int liftPosCurrent;
-    long shoottime;
-    long harvesttime;
+    long shootTimeSTART;
+    long shootTimeEND;
+    long shootTimeDURATION;
     long currentTime;
     long lastTime;
     //Since Toggle A activates halfspeed AND Start A starts robot, halfspeed starts true to it's immediately deactivated
     boolean halfspeed = true;
     final double HALFSPEED = .25;
     final double FULLSPEED = 1;
-    final long DURATION = 500;
-    final int UPDISTANCE = 30;
+    final long DURATION = 250;
     double speed = 0;
-    boolean liftUp;
     MotorScaling scale;
     @Override
     public void init() {
@@ -92,19 +85,11 @@ public class TeleOpA extends OpMode {
         ManLift.setPower(0);
         ManIn.setPower(0);
         ManIn.setPower(0);
-        //ManLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //ManLif0t.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        liftPosO = 0;
-        liftPosCurrent = 0;
-        shootfull = false;
-        shootpartial = false;
-        harvest = false;
-        liftUp = false;
-        shoottime = 0;
-        harvesttime = 0;
+        shootTimeSTART = 0;
+        shootTimeEND = 0;
+        shootTimeDURATION = 500;
         currentTime = 0;
         lastTime = 0;
-        liftUp = false;
         stop = false;
         gate = false;
         scale = new MotorScaling();
@@ -159,8 +144,14 @@ public class TeleOpA extends OpMode {
         if (gamepad2.right_bumper) {
             ManBeaconL.setPosition(.85);
             ManBeaconR.setPosition(.25);
-            ShooterF.setPower(1);
-            ShooterB.setPower(-1);
+            shootTimeSTART = System.currentTimeMillis();
+            if (currentTime > shootTimeEND + shootTimeDURATION)
+            {
+                ShooterF.setPower(1);
+                ShooterB.setPower(-1);
+            }
+            shootTimeEND = System.currentTimeMillis();
+
         }
         else if (gamepad2.left_bumper) {
             ManBeaconL.setPosition(.85);
@@ -195,9 +186,14 @@ public class TeleOpA extends OpMode {
             ManBeaconL.setPosition(.85);
             ManBeaconR.setPosition(.25);
         }
-        else {
-            ManBeaconL.setPosition(.3);
-            ManBeaconR.setPosition(.7);
+        else if (!gamepad2.right_bumper && !gamepad2.left_bumper){
+            shootTimeSTART = System.currentTimeMillis();
+            if (currentTime > shootTimeEND + shootTimeDURATION)
+            {
+                ManBeaconL.setPosition(.3);
+                ManBeaconR.setPosition(.7);
+            }
+            shootTimeEND = System.currentTimeMillis();
         }
         /* //BEACON PUSH TEST
         if (gamepad2.a) {

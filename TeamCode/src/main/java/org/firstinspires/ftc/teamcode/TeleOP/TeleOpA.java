@@ -140,30 +140,6 @@ public class TeleOpA extends OpMode {
 
         //CONTROLLER 2
 
-        //Shooter Controls
-        if (gamepad2.right_bumper) {
-            ManBeaconL.setPosition(.85);
-            ManBeaconR.setPosition(.25);
-            shootTimeSTART = System.currentTimeMillis();
-            if (currentTime > shootTimeEND + shootTimeDURATION)
-            {
-                ShooterF.setPower(1);
-                ShooterB.setPower(-1);
-            }
-            shootTimeEND = System.currentTimeMillis();
-
-        }
-        else if (gamepad2.left_bumper) {
-            ManBeaconL.setPosition(.85);
-            ManBeaconR.setPosition(.25);
-            ShooterF.setPower(.9);
-            ShooterB.setPower(-.9);
-        }
-        else {
-            ShooterF.setPower(0);
-            ShooterB.setPower(0);
-        }
-
         //Manipulator Control
         if (Math.abs(gamepad2.right_stick_y) > .1)
             ManIn.setPower(gamepad2.right_stick_y);
@@ -182,19 +158,34 @@ public class TeleOpA extends OpMode {
             ManLift.setPower(0);
 
         //Back Beacon Control
-        if (gamepad2.a) {
+        if (gamepad2.a || gamepad2.right_bumper || gamepad2.left_bumper) {
             ManBeaconL.setPosition(.85);
             ManBeaconR.setPosition(.25);
-        }
-        else if (!gamepad2.right_bumper && !gamepad2.left_bumper){
-            shootTimeSTART = System.currentTimeMillis();
-            if (currentTime > shootTimeEND + shootTimeDURATION)
-            {
-                ManBeaconL.setPosition(.3);
-                ManBeaconR.setPosition(.7);
-            }
             shootTimeEND = System.currentTimeMillis();
+            while (shootTimeEND > System.currentTimeMillis() + shootTimeDURATION) {}
         }
+        else {
+            ManBeaconL.setPosition(.3);
+            ManBeaconR.setPosition(.7);
+        }
+
+        //Shooter Controls
+        if (gamepad2.right_bumper) {
+            while (System.currentTimeMillis() < shootTimeSTART + DURATION ) {}
+            ShooterF.setPower(1);
+            ShooterB.setPower(-1);
+
+        }
+        else if (gamepad2.left_bumper) {
+            while (System.currentTimeMillis() < shootTimeSTART + DURATION ) {}
+            ShooterF.setPower(.9);
+            ShooterB.setPower(-.9);
+        }
+        else {
+            ShooterF.setPower(0);
+            ShooterB.setPower(0);
+        }
+
         /* //BEACON PUSH TEST
         if (gamepad2.a) {
             if(Pos<1) {

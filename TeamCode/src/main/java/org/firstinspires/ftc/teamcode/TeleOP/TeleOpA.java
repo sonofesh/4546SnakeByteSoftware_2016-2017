@@ -58,6 +58,7 @@ public class TeleOpA extends OpMode {
     final long DURATION = 250;
     double speed = 0;
     MotorScaling scale;
+    double voltage;
     @Override
     public void init() {
         FR = hardwareMap.dcMotor.get("FR");
@@ -93,6 +94,18 @@ public class TeleOpA extends OpMode {
         stop = false;
         gate = false;
         scale = new MotorScaling();
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+    }
+
+    public double getShootingPower() throws InterruptedException{
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        if(voltage > 13.5) {
+            return (1 - ((voltage - 13.5) * .25));
+        }
+        else if (voltage < 13.5) {
+            return (1 + ((13.5 - voltage)) * .15);
+        }
+        return 1;
     }
 
     @Override

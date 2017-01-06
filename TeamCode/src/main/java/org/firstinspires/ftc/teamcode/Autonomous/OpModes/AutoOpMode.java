@@ -519,6 +519,27 @@ public abstract class AutoOpMode extends LinearOpMode {
             BR.setPower(power);
             FL.setPower(-power);
             BL.setPower(-power);
+            double difference = Math.abs(getGyroYaw() - beforeAngle);
+            while (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
+                difference = Math.abs(getGyroYaw() - beforeAngle);
+                if(getGyroYaw() < beforeAngle) {
+                    FR.setPower(power * (1 + difference * correction));
+                    BR.setPower(power * (1 + difference * correction));
+                    FL.setPower(-power * ((1 + difference * correction) - 1));
+                    BL.setPower(-power * ((1 + difference * correction) - 1));
+                }
+                else if(getGyroYaw() > beforeAngle) {
+                    FR.setPower(power * ((1 + difference * correction) - 1));
+                    BR.setPower(power * ((1 + difference * correction) - 1));
+                    FL.setPower(-power * (1 + difference * correction));
+                    BL.setPower(-power  * (1 + difference * correction));
+                }
+                telemetry.addData("LeftPower", FR.getPower());
+                telemetry.addData("RightPower", BR.getPower());
+                telemetry.update();
+                difference = Math.abs(getGyroYaw() - beforeAngle);
+                idle();
+            }
             idle();
         }
         FR.setPower(0);
@@ -611,7 +632,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         int angleError;
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
-        double correction = .25;
+        double correction = .23;
         long lastTime = System.currentTimeMillis();
         while (Math.abs(getAvg() - beforeALV) < distance) {
             error = distance - Math.abs(getAvg() - beforeALV);
@@ -766,7 +787,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double correction = CORRECTION;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
-        double change = (14 - voltageAverage) * 200;
+        double change = (10 - voltageAverage) * 200;
         distance += change;
         long lastTime = System.currentTimeMillis();
         while (Math.abs(getAvg() - beforeALV) < distance) {
@@ -887,11 +908,11 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //this contains adjustable constants
-    public void moveBackwardPID(double p, double i, double d, int distance) throws InterruptedException{
+    public void moveBackwardPID(double p, double i, double d, int distance) throws InterruptedException {
         //calibration constants
         double error = distance;
         double pastError = 0.0;
-        double output;
+        double output = 0;
         double proportional = 0.0;
         double reset = 0.0;
         double derivative = 0.0;
@@ -901,6 +922,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double correction = CORRECTION;
         long lastTime = System.currentTimeMillis();
+        double difference = Math.abs(getGyroYaw() - beforeAngle);
         while (Math.abs(getAvg() - beforeALV) < distance) {
             error = distance - Math.abs(getAvg() - beforeALV);
             //proportional
@@ -916,15 +938,35 @@ public abstract class AutoOpMode extends LinearOpMode {
             if(output < .05)
                 output = 0;
             moveBackward(output);
-            telemetry.addData("output", output);
-            telemetry.addData("proportion", proportional);
-            telemetry.addData("reset", reset * i);
-            //telemetry.addData("derivative", derivative * d);
-            telemetry.update();
-            pastError = error;
-            lastTime = System.currentTimeMillis();
-            idle();
+            difference = Math.abs(getGyroYaw() - beforeAngle);
+            while(difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
+                if (getGyroYaw() > beforeAngle) {
+                    FR.setPower(output * (1 + difference * correction));
+                    BR.setPower(output * (1 + difference * correction));
+                    FL.setPower(-output * ((1 + difference * correction) - 1));
+                    BL.setPower(-output * ((1 + difference * correction) - 1));
+                }
+                else if (getGyroYaw() < beforeAngle) {
+                    FR.setPower(output * ((1 + difference * correction) - 1));
+                    BR.setPower(output * ((1 + difference * correction) - 1));
+                    FL.setPower(-output * (1 + difference * correction));
+                    BL.setPower(-output * (1 + difference * correction));
+                }
+                telemetry.addData("LeftPower", FR.getPower());
+                telemetry.addData("RightPower", BR.getPower());
+                telemetry.update();
+                difference = Math.abs(getGyroYaw() - beforeAngle);
+                idle();
+            }
         }
+        telemetry.addData("output", output);
+        telemetry.addData("proportion", proportional);
+        telemetry.addData("reset", reset * i);
+        //telemetry.addData("derivative", derivative * d);
+        telemetry.update();
+        pastError = error;
+        lastTime = System.currentTimeMillis();
+        idle();
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);

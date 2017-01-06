@@ -21,11 +21,9 @@ public class TestCorrection extends AutoOpMode
         waitForStart();
         telemetry.addData("before yaw forward", getGyroYaw());
         telemetry.update();
-        telemetry.update();
-        sleep(3000);
         //Standard constants: double p = .00015; double i = .00000015;
         //moveBackwardPID(.0003, .0000003, 0.0, 2000);
-        sleep(5000);
+        sleep(3000);
         moveForwardPID(2000);
         //long lastTime = System.currentTimeMillis();
         sleep(2500);

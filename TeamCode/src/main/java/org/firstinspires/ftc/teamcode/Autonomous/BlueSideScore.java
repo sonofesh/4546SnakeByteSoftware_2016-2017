@@ -15,29 +15,30 @@ public class BlueSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        telemetry.addData("init", "test1");
-        telemetry.update();
-        long beforeTime = System.currentTimeMillis();
-        double beforeAngle = getGyroYaw();
-        while(System.currentTimeMillis() - beforeTime < 15000) {
-            telemetry.addData("angle", Math.abs(getGyroYaw() - beforeAngle));
-            telemetry.update();
-        }
-        waitForStart();
-        moveBackwardPID(2500);
-        //correct(beforeAngle);
-        moveBackwardsToWhiteLine(300);
-        beaconValue();
-        moveForwardPID(2300);
-        moveForwardsToWhiteLine(600);
-        turnLeftWithPID(15);
-        moveForwardWithEncoders(.25, 1000);
-        //bring down shooter
-        bringDownShooter(.1, 1100);
-        sleep(750);
-        //shoot
-        shoot(.85, 350);
-        moveForwardWithEncoders(.4, 3000);
+//        telemetry.addData("init", "test1");
+//        telemetry.update();
+//        long beforeTime = System.currentTimeMillis();
+//        double beforeAngle = getGyroYaw();
+//        while(System.currentTimeMillis() - beforeTime < 15000) {
+//            telemetry.addData("angle", Math.abs(getGyroYaw() - beforeAngle));
+//            telemetry.update();
+//        }
+//        waitForStart();
+//        moveBackwardPID(2500);
+//
+//        //correct(beforeAngle);
+//        moveBackwardsToWhiteLine(300, .175, perpen);
+//        beaconValue();
+//        moveForwardPID(2300);
+//        moveForwardsToWhiteLine(600);
+//        turnLeftWithPID(15);
+//        moveForwardWithEncoders(.25, 1000);
+//        //bring down shooter
+//        bringDownShooter(.1, 1100);
+//        sleep(750);
+//        //shoot
+//        shoot(.85, 350);
+//        moveForwardWithEncoders(.4, 3000);
 //        moveForwardPID(500);
 //        //bring down shooter
 //        bringDownShooter(.1, 1100);

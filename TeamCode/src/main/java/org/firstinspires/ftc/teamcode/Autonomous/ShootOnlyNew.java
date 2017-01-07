@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Does what the name says
  * Will consistently score 40 points and is a good option
  * if we're with a team that has an amazing auto(ex: Faltech)
- * As Other ShootOnly but written as extending AutOpMode
+ * Same as other ShootOnly but written by extending AutOpMode
  */
 
 @Autonomous(name = "ShootOnlyNew", group = "Autonomous")
@@ -25,9 +25,8 @@ public class ShootOnlyNew extends AutoOpMode {
         waitForStart();
         moveForward(.15, 1100);
         sleep(1000);
-        bringDownShooter(.1,900);
+        bringDownShooter(.1, 900);
         sleep(1000);
-
         //Voltage Scaling
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if(voltage <= 13.5)
@@ -38,9 +37,8 @@ public class ShootOnlyNew extends AutoOpMode {
             power = .9;
         else if(voltage > 14)
             power = .85;
-
         shoot(power, 400);
-        sleep(250);
+        sleep(500);
         moveForward(.4, 3000);
     }
 }

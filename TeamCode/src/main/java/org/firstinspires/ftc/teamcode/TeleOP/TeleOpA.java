@@ -73,8 +73,8 @@ public class TeleOpA extends OpMode {
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
         AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        ManBeaconL.setPosition(.3);
-        ManBeaconR.setPosition(.7);
+        ManBeaconL.setPosition(.85);
+        ManBeaconR.setPosition(.25);
         AutoBeaconL.setPosition(0);
         AutoBeaconR.setPosition(0);
         FL.setPower(0);
@@ -110,26 +110,39 @@ public class TeleOpA extends OpMode {
 
     @Override
     public void loop() {
-
         //CONTROLLER 1
-
         //Tank Drive
         if (Math.abs(gamepad1.left_stick_y) > .1) {
-            FL.setPower(scale.scaleSimple(gamepad1.left_stick_y) * direction * -1 * speed);
-            BL.setPower(scale.scaleSimple(gamepad1.left_stick_y) * direction * -1 * speed);
+            FL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
+            BL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
         }
         else {
             FL.setPower(0);
             BL.setPower(0);
         }
         if (Math.abs(gamepad1.right_stick_y) > .1) {
-            FR.setPower(scale.scaleSimple(gamepad1.right_stick_y) * direction * speed);
-            BR.setPower(scale.scaleSimple(gamepad1.right_stick_y) * direction * speed);
+            FR.setPower(gamepad1.right_stick_y * direction * speed);
+            BR.setPower(gamepad1.right_stick_y * direction * speed);
         }
         else {
             FR.setPower(0);
             BR.setPower(0);
         }
+
+//        if (Math.abs(gamepad1.left_stick_y) > .1) {
+//            FL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
+//            BL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
+//        } else {
+//            FL.setPower(0);
+//            BL.setPower(0);
+//        }
+//        if (Math.abs(gamepad1.right_stick_y) > .1) {
+//            FR.setPower(gamepad1.right_stick_y * direction * speed);
+//            BR.setPower(gamepad1.right_stick_y * direction * speed);
+//        } else {
+//            FR.setPower(0);
+//            BR.setPower(0);
+//        }
 
         //HalfSpeed Macro
         if (gamepad1.a) {
@@ -171,32 +184,27 @@ public class TeleOpA extends OpMode {
             ManLift.setPower(0);
 
         //Back Beacon Control
-        if (gamepad2.a || gamepad2.right_bumper || gamepad2.left_bumper) {
+        if (gamepad2.a) {
+            ManBeaconL.setPosition(.3);
+            ManBeaconR.setPosition(.7);
+        }
+        else {
             ManBeaconL.setPosition(.85);
             ManBeaconR.setPosition(.25);
         }
 
         //Shooter Controls
         if (gamepad2.right_bumper) {
-            shootTimeSTART = System.currentTimeMillis();
-            while (System.currentTimeMillis() - shootTimeSTART < DURATION) { }
             ShooterF.setPower(1);
             ShooterB.setPower(-1);
         }
         else if (gamepad2.left_bumper) {
-            shootTimeSTART = System.currentTimeMillis();
-            while (System.currentTimeMillis() - shootTimeSTART < DURATION) { }
             ShooterF.setPower(.9);
             ShooterB.setPower(-.9);
         }
         else {
             ShooterF.setPower(0);
             ShooterB.setPower(0);
-            while (System.currentTimeMillis() - shootTimeSTART < DURATION) { }
-            if (!gamepad2.a) {
-                ManBeaconL.setPosition(.3);
-                ManBeaconR.setPosition(.7);
-            }
         }
 
         /* //BEACON PUSH TEST
@@ -214,7 +222,6 @@ public class TeleOpA extends OpMode {
         telemetry.update();
 
            */
-
         //Side Beacon Control
         if (gamepad2.x) {
             AutoBeaconL.setPosition(1);

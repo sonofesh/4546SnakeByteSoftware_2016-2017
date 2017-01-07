@@ -19,7 +19,7 @@ public class BlueSide100 extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .8;
-        telemetry.addData("init", "test1");
+        telemetry.addData("init", "test3");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -41,20 +41,20 @@ public class BlueSide100 extends AutoOpMode {
             power = .65;
         shoot(power, 350);
         sleep(750);
-        turnRightWithPID(42, .006, .000045, 0.0);
+        turnRightWithPID(43, .006, .000045, 0.0);
+        double angle43 = getGyroYaw();
         sleep(500);
-        moveForwardPID(.00025, .00000003, 0.0, 3800);
+        moveForwardPID(4000, angle43);
         sleep(500);
         correctOneSide(perpendicular, .006, .000015, 0.0, 0.0);
         sleep(500);
-        moveBackwardsToWhiteLine(550);
+        moveBackwardsToWhiteLine(1200, .175, perpendicular);
         sleep(500);
-        pushBlueBeacon();
+        pushBlueBeacon(perpendicular);
         sleep(1000);
+        correct(perpendicular, .04, .00015, 0.0, 0);
         moveForwardPID(2500, perpendicular);
-        moveForwardsToWhiteLine(300);
-        pushBlueBeacon();
-        sleep(1000);
-        moveBackwardsWithATiltRight(.6, 4200);
+        moveForwardsToWhiteLine(300, .175, perpendicular);
+        pushBlueBeacon(perpendicular);
     }
 }

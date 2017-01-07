@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Will consistently score 40 points and is a good option
  * if we're with a team that has an amazing auto(ex: Faltech)
  */
-@Autonomous(name = "ShootThenKnockBigBall", group = "Autonomous")
+@Autonomous(name = "BackupAuto", group = "Autonomous")
 public class ShootOnly extends LinearOpMode
 {
     DcMotor FR;

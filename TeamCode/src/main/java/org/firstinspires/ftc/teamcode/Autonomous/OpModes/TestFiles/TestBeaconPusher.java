@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Test: 4
  */
 @Autonomous(name = "TestBeaconPusher", group = "Autonomous")
+@Disabled
 public class TestBeaconPusher extends LinearOpMode {
     Servo ManBeaconL;
     Servo ManBeaconR;

@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Created by sopa on 11/23/16.
  */
 @Autonomous(name = "Cocaine", group = "Autonomous")
+@Disabled
 public class WhiteLines extends AutoOpMode
 {
     public WhiteLines(){ super(); }

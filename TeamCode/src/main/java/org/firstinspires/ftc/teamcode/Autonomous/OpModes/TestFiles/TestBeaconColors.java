@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
  * Created by sopa on 11/18/16.
  */
 @Autonomous(name = "TestBeaconColors", group = "Autonomous")
+@Disabled
 public class TestBeaconColors extends LinearOpMode
 {
     ColorSensor colorSensorBeaconBlue;

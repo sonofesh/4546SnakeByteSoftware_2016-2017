@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * test count: 7 + 12 + 12 + 11 + 4
  */
 
-@Autonomous(name = "BlueKrishna", group = "Autonomous")
+@Autonomous(name = "BlueSide90", group = "Autonomous")
 public class BlueSide100 extends AutoOpMode {
     public BlueSide100() { super(); }
 

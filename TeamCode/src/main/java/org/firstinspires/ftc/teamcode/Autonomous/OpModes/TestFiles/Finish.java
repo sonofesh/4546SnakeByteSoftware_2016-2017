@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous.OpModes.TestFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * test count; 8 +
  */
 @Autonomous(name = "Finish", group = "Autonomous")
+@Disabled
 public class Finish extends AutoOpMode {
     public Finish() {
         super();

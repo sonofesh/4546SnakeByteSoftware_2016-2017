@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * DELETE WHEN DONE.
  * Shoot first auto, configured for red side
  */
-@Autonomous(name = "BloodDiamond", group = "Autonomous")
+@Autonomous(name = "RedSide90", group = "Autonomous")
 public class RedSideScore extends AutoOpMode {
     public RedSideScore() {
         super();

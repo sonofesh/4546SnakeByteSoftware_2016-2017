@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous.OpModes.TestFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Notes: For 90˚ proportion of .005 is perfect but doesn't work for smaller turns
  */
 @Autonomous(name = "PID turning", group = "Autonomous")
+@Disabled
 public class PIDTurning extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

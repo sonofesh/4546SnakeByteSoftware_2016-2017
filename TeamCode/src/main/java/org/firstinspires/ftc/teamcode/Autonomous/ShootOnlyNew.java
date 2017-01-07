@@ -12,12 +12,11 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Same as other ShootOnly but written by extending AutOpMode
  */
 
-@Autonomous(name = "ShootOnlyNew", group = "Autonomous")
+@Autonomous(name = "40PointAuto", group = "Autonomous")
 public class ShootOnlyNew extends AutoOpMode {
     public ShootOnlyNew() {
         super();
     }
-
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();

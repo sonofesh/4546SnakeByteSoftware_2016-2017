@@ -41,9 +41,10 @@ public class BlueSide100 extends AutoOpMode {
             power = .65;
         shoot(power, 350);
         sleep(750);
-        turnRightWithPID(43, .006, .000045, 0.0);
         double angle43 = getGyroYaw();
+        turnRightWithPID(43, .006, .000045, 0.0);
         sleep(500);
+        angle43 -= 43;
         moveForwardPID(4000, angle43);
         sleep(500);
         correctOneSide(perpendicular, .006, .000015, 0.0, 0.0);

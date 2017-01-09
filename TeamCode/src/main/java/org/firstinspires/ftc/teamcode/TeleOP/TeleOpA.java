@@ -59,6 +59,7 @@ public class TeleOpA extends OpMode {
     double speed = 0;
     MotorScaling scale;
     double voltage;
+
     @Override
     public void init() {
         FR = hardwareMap.dcMotor.get("FR");
@@ -115,16 +116,14 @@ public class TeleOpA extends OpMode {
         if (Math.abs(gamepad1.left_stick_y) > .1) {
             FL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
             BL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
-        }
-        else {
+        } else {
             FL.setPower(0);
             BL.setPower(0);
         }
         if (Math.abs(gamepad1.right_stick_y) > .1) {
             FR.setPower(gamepad1.right_stick_y * direction * speed);
             BR.setPower(gamepad1.right_stick_y * direction * speed);
-        }
-        else {
+        } else {
             FR.setPower(0);
             BR.setPower(0);
         }
@@ -138,7 +137,7 @@ public class TeleOpA extends OpMode {
                 else
                     halfspeed = true;
             }
-            speed = (halfspeed)? HALFSPEED:FULLSPEED;
+            speed = (halfspeed) ? HALFSPEED : FULLSPEED;
             lastTime = System.currentTimeMillis();
         }
         //Reverse Macro
@@ -155,7 +154,7 @@ public class TeleOpA extends OpMode {
         if (Math.abs(gamepad2.right_stick_y) > .1)
             ManIn.setPower(gamepad2.right_stick_y);
 
-        //Half Power Manipulator
+            //Half Power Manipulator
         else if (Math.abs(gamepad2.left_stick_y) > .1)
             ManIn.setPower(gamepad2.left_stick_y * .25);
         else
@@ -172,8 +171,7 @@ public class TeleOpA extends OpMode {
         if (gamepad2.a) {
             ManBeaconL.setPosition(.3);
             ManBeaconR.setPosition(.7);
-        }
-        else {
+        } else {
             ManBeaconL.setPosition(.85);
             ManBeaconR.setPosition(.25);
         }
@@ -182,28 +180,14 @@ public class TeleOpA extends OpMode {
         if (gamepad2.right_bumper) {
             ShooterF.setPower(1);
             ShooterB.setPower(-1);
-        }
-        else if (gamepad2.left_bumper) {
+        } else if (gamepad2.left_bumper) {
             ShooterF.setPower(.9);
             ShooterB.setPower(-.9);
-        }
-        else {
+        } else {
             ShooterF.setPower(0);
             ShooterB.setPower(0);
         }
-
-        /* //BEACON PUSH TEST
-        if (gamepad2.a) {
-            if(Pos<1) {
-                Pos += .1;
-            }
-        }
-        else if (gamepad2.y) {
-            if (Pos>0) Pos -= .1;
-        }
-        ManBeaconL.setPosition(Pos);
-        ManBeaconR.setPosition(1-Pos);
-        telemetry.addData("Position", Pos);
-        telemetry.update();
     }
 }
+
+       

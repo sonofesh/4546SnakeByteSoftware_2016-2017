@@ -1009,12 +1009,12 @@ public abstract class AutoOpMode extends LinearOpMode {
                 if (getGyroYaw() > beforeAngle) {
                     FR.setPower(output * (1 + difference * correction));
                     BR.setPower(output * (1 + difference * correction));
-                    FL.setPower(-output * ((1 + difference * correction) - 1));
-                    BL.setPower(-output * ((1 + difference * correction) - 1));
+                    FL.setPower(-output * ((1 - (1 + difference * correction))));
+                    BL.setPower(-output * ((1 - (1 + difference * correction))));
                 }
                 else if (getGyroYaw() < beforeAngle) {
-                    FR.setPower(output * ((1 + difference * correction) - 1));
-                    BR.setPower(output * ((1 + difference * correction) - 1));
+                    FR.setPower(output * ((1 - (1 + difference * correction))));
+                    BR.setPower(output * ((1 - (1 + difference * correction))));
                     FL.setPower(-output * (1 + difference * correction));
                     BL.setPower(-output * (1 + difference * correction));
                 }
@@ -1073,12 +1073,12 @@ public abstract class AutoOpMode extends LinearOpMode {
                 if(getGyroYaw() > beforeAngle) {
                     FR.setPower(output * (1 + difference * correction));
                     BR.setPower(output * (1 + difference * correction));
-                    FL.setPower(-output * ((1 + difference * correction) - 1));
-                    BL.setPower(-output * ((1 + difference * correction) - 1));
+                    FL.setPower(-output * (1 - (1 + difference * correction)));
+                    BL.setPower(-output * (1 - (1 + difference * correction)));
                 }
                 else if(getGyroYaw() < beforeAngle) {
-                    FR.setPower(output * ((1 + difference * correction) - 1));
-                    BR.setPower(output * ((1 + difference * correction) - 1));
+                    FR.setPower(output * (1 - (1 + difference * correction)));
+                    BR.setPower(output * (1 - (1 + difference * correction)));
                     FL.setPower(-output * (1 + difference * correction));
                     BL.setPower(-output  * (1 + difference * correction));
                 }
@@ -1113,12 +1113,12 @@ public abstract class AutoOpMode extends LinearOpMode {
                 if(getGyroYaw() > beforeAngle) {
                     FR.setPower(-output * (1 + difference * correction));
                     BR.setPower(-output * (1 + difference * correction));
-                    FL.setPower(output * ((1 + difference * correction) - 1));
-                    BL.setPower(output * ((1 + difference * correction) - 1));
+                    FL.setPower(output * (1 - (1 + difference * correction)));
+                    BL.setPower(output * (1 - (1 + difference * correction)));
                 }
                 else if(getGyroYaw() < beforeAngle) {
-                    FR.setPower(-output * ((1 + difference * correction) - 1));
-                    BR.setPower(-output * ((1 + difference * correction) - 1));
+                    FR.setPower(-output * (1 - (1 + difference * correction)));
+                    BR.setPower(-output * (1 - (1 + difference * correction)));
                     FL.setPower(output * (1 + difference * correction));
                     BL.setPower(output  * (1 + difference * correction));
                 }

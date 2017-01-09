@@ -97,16 +97,16 @@ public class TeleOpA extends OpMode {
         voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
     }
 
-    public double getShootingPower() throws InterruptedException {
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        if(voltage > 13.5) {
-            return (1 - ((voltage - 13.5) * .25));
-        }
-        else if (voltage < 13.5) {
-            return (1 + ((13.5 - voltage)) * .15);
-        }
-        return 1;
-    }
+//    public double getShootingPower() throws InterruptedException {
+//        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+//        if(voltage > 13.5) {
+//            return (1 - ((voltage - 13.5) * .25));
+//        }
+//        else if (voltage < 13.5) {
+//            return (1 + ((13.5 - voltage)) * .15);
+//        }
+//        return 1;
+//    }
 
     @Override
     public void loop() {
@@ -128,21 +128,6 @@ public class TeleOpA extends OpMode {
             FR.setPower(0);
             BR.setPower(0);
         }
-
-//        if (Math.abs(gamepad1.left_stick_y) > .1) {
-//            FL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
-//            BL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
-//        } else {
-//            FL.setPower(0);
-//            BL.setPower(0);
-//        }
-//        if (Math.abs(gamepad1.right_stick_y) > .1) {
-//            FR.setPower(gamepad1.right_stick_y * direction * speed);
-//            BR.setPower(gamepad1.right_stick_y * direction * speed);
-//        } else {
-//            FR.setPower(0);
-//            BR.setPower(0);
-//        }
 
         //HalfSpeed Macro
         if (gamepad1.a) {
@@ -220,16 +205,5 @@ public class TeleOpA extends OpMode {
         ManBeaconR.setPosition(1-Pos);
         telemetry.addData("Position", Pos);
         telemetry.update();
-
-           */
-        //Side Beacon Control
-        if (gamepad2.x) {
-            AutoBeaconL.setPosition(1);
-            AutoBeaconR.setPosition(1);
-        }
-        else {
-            AutoBeaconL.setPosition(0);
-            AutoBeaconR.setPosition(0);
-        }
     }
 }

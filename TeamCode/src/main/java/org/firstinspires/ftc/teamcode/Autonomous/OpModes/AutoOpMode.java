@@ -6,6 +6,7 @@ import android.util.Range;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -1422,10 +1423,71 @@ public abstract class AutoOpMode extends LinearOpMode {
         ManBeaconR.setPosition(.7);
     }
 
-    public void keepWallDistance(double distance) throws InterruptedException {
-
-
-
+    public void keepWallDistanceBlue(double distance, double wallDistance) throws InterruptedException {
+        //calibration constaints
+        double p = .00015; double i = .00000015; //double d = 2.0;
+        double error = distance;
+        double pastError = 0.0;
+        double output;
+        double proportional = 0.0;
+        double reset = 0.0;
+        double derivative = 0.0;
+        double deltaTime;
+        beforeALV = getAvg();
+        double correction = .02;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double change = (13.5 - voltageAverage) * 150;
+        distance += change;
+        long lastTime = System.currentTimeMillis();
+        while (Math.abs(getAvg() - beforeALV) < distance) {
+            error = distance - Math.abs(getAvg() - beforeALV);
+            //proportional
+            proportional = error * p;
+            //integral
+            deltaTime = System.currentTimeMillis() - lastTime;
+            //integral
+            reset += (error * deltaTime);
+            //derivative
+            //derivative = d * (error - pastError)/deltaTime;
+            //output
+            output = proportional + (reset * i);
+            if(output < .05)
+                output = 0;
+            moveForward(output);
+            double difference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM));
+            while (difference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
+                difference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM));
+                if(wallDistance < wallSensor.getDistance(DistanceUnit.CM)) {
+                    FR.setPower(output * (1 + difference * correction));
+                    BR.setPower(output * (1 + difference * correction));
+                    FL.setPower(output * (1 - (1 + difference * correction)));
+                    BL.setPower(output * (1 - (1 + difference * correction)));
+                }
+                else if(wallDistance > wallSensor.getDistance(DistanceUnit.CM)) {
+                    FR.setPower(-output * (1 - (1 + difference * correction)));
+                    BR.setPower(-output * (1 - (1 + difference * correction)));
+                    FL.setPower(-output * (1 + difference * correction));
+                    BL.setPower(-output  * (1 + difference * correction));
+                }
+                telemetry.addData("LeftPower", FR.getPower());
+                telemetry.addData("RightPower", BR.getPower());
+                telemetry.update();
+                difference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM));
+                idle();
+            }
+            telemetry.addData("output", output);
+            telemetry.addData("proportion", proportional);
+            telemetry.addData("reset", reset * i);
+            //telemetry.addData("derivative", derivative * d);
+            telemetry.update();
+            pastError = error;
+            lastTime = System.currentTimeMillis();
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
 //    public void maintainWallDistance(double power, double distance) throws InterruptedException{

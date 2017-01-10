@@ -55,7 +55,7 @@ public class BlueSide100 extends AutoOpMode {
         sleep(1000);
         correct(perpendicular, .04, .00015, 0.0, 0);
         moveForwardPID(2500, perpendicular);
-        moveForwardsToWhiteLine(300, .175, perpendicular);
+        moveForwardsToWhiteLine(300, perpendicular);
         pushBlueBeacon(perpendicular);
     }
 }

@@ -58,8 +58,9 @@ public class RangeSensor extends LinearOpMode {
             telemetry.addData("raw optical", rangeSensor.rawOptical());
             telemetry.addData("cm optical", "%.2f cm", rangeSensor.cmOptical());
             telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
+            wait(5000);
             telemetry.update();
-            idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
+            idle();
         }
     }
 }

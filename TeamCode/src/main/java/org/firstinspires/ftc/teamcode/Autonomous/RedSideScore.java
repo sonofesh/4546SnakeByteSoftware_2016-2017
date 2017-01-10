@@ -58,7 +58,7 @@ public class RedSideScore extends AutoOpMode {
         moveForwardPID(2500, perpendicular);
         sleep(1000);
         movement = 0;
-        moveForwardsToWhiteLine(300, .175, perpendicular);
+        moveForwardsToWhiteLine(300 ,perpendicular);
         pushRedBeacon(perpendicular);
         sleep(1000);
         moveBackwardsWithATiltRight(.4, 4200);

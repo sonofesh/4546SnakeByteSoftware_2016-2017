@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Autonomous.OpModes.TestFiles.RangeSensor;
 
 /**
  * Created by sopa on 11/28/16.
@@ -46,9 +47,10 @@ public abstract class AutoOpMode extends LinearOpMode {
     //ModernRoboticsI2cRangeSensor rangeSensorRed;
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
-    ColorSensor getColorSensorWLA;
+    ColorSensor colorSensorWLA;
     ColorSensor colorSensorBlueBeacon;
     ColorSensor colorSensorRedBeacon;
+    ModernRoboticsI2cRangeSensor wallSensor;
     int count = 0;
     ModernRoboticsI2cRangeSensor rangeSensor;
     public void initialize() throws InterruptedException {
@@ -86,7 +88,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initialized");
-        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
+        colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
         colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
         telemetry.addData("colorSensorWL", "initialized");
         colorSensorBlueBeacon = hardwareMap.colorSensor.get("cSB");
@@ -96,7 +98,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         colorSensorRedBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         telemetry.addData("colorSensorR", "initialized");
         telemetry.update();
-        //telemetry.addData("test1", "initialized");
+        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangesensor");
 
     }
     //movement methods
@@ -1127,7 +1129,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < angle && Math.abs(colorSensorAverageValues(getColorSensorWLA) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 4000) {
+        while (Math.abs(getGyroYaw() - beforeAngle) < angle && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 4000) {
             error = angle - Math.abs(getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;
@@ -1418,6 +1420,12 @@ public abstract class AutoOpMode extends LinearOpMode {
         ManBeaconR.setPosition(.25);
         Thread.sleep(1000);
         ManBeaconR.setPosition(.7);
+    }
+
+    public void keepWallDistance(double distance) throws InterruptedException {
+
+
+
     }
 
 //    public void maintainWallDistance(double power, double distance) throws InterruptedException{

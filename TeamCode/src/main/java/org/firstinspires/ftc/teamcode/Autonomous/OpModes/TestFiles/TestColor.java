@@ -41,9 +41,15 @@ public class TestColor extends LinearOpMode
         waitForStart();
         while(true)
         {
-            telemetry.addData("cAverage", colorSensorAverageValues());
+            telemetry.addData("cWL", colorSensorAverageValues(colorSensorWL));
             telemetry.update();
-            sleep(500);
+            sleep(1000);
+            telemetry.addData("cBeacon", colorSensorAverageValues(colorSensorBeacon));
+            telemetry.update();
+            sleep(1000);
+            telemetry.addData("cWLA", colorSensorAverageValues(colorSensorWLA));
+            telemetry.update();
+            sleep(1000);
             idle();
         }
     }

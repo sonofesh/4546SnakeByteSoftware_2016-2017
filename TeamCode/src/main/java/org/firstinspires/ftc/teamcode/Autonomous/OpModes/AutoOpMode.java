@@ -1424,7 +1424,28 @@ public abstract class AutoOpMode extends LinearOpMode {
         ManBeaconR.setPosition(.7);
     }
 
-    public void keepWallDistanceBlue(double distance, double wallDistance) throws InterruptedException {
+    //Uses gryo to calculate distance from the robot to Perpendicular
+    //Returns negative value if angled clockwise, positive if angled counterclockwise
+    public double getTrigDistance(double perpendicular) throws InterruptedException {
+        double angle = Math.abs(perpendicular - getGyroYaw());
+        if (perpendicular > getGyroYaw()) {
+            return Math.sin(angle) * 42.72; /* 42.72 = length of robot in cm */
+        }
+        if (perpendicular < getGyroYaw()) {
+            return Math.sin(angle) * -42.72;
+        }
+        return 0;
+    }
+
+    public double getPerpDistance(double perpendicular) throws InterruptedException {
+        return Math.abs(wallSensor.getDistance(DistanceUnit.CM)-getTrigDistance(perpendicular));
+    }
+
+    public double getRawDistance() throws InterruptedException {
+        return wallSensor.getDistance(DistanceUnit.CM);
+    }
+
+    public void followWallBlue(double distance, double wallDistance, double perpendicular) throws InterruptedException {
         //calibration constaints
         double p = .00015; double i = .00000015; //double d = 2.0;
         double error = distance;
@@ -1435,7 +1456,9 @@ public abstract class AutoOpMode extends LinearOpMode {
         double derivative = 0.0;
         double deltaTime;
         beforeALV = getAvg();
-        double correction = .02;
+        beforeAngle = getGyroYaw();
+        double wallCorrection = .02;
+        double angleCorrection = .2;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 150;
         distance += change;
@@ -1455,25 +1478,39 @@ public abstract class AutoOpMode extends LinearOpMode {
             if(output < .05)
                 output = 0;
             moveForward(output);
-            double difference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM));
-            while (difference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
-                difference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM));
-                if(wallDistance < wallSensor.getDistance(DistanceUnit.CM)) {
-                    FR.setPower(output * (1 + difference * correction));
-                    BR.setPower(output * (1 + difference * correction));
-                    FL.setPower(output * (1 - (1 + difference * correction)));
-                    BL.setPower(output * (1 - (1 + difference * correction)));
-                }
-                else if(wallDistance > wallSensor.getDistance(DistanceUnit.CM)) {
-                    FR.setPower(-output * (1 - (1 + difference * correction)));
-                    BR.setPower(-output * (1 - (1 + difference * correction)));
-                    FL.setPower(-output * (1 + difference * correction));
-                    BL.setPower(-output  * (1 + difference * correction));
+            double wallDifference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular));
+            double angleDifference = Math.abs(perpendicular - getGyroYaw());
+            while (wallDifference > 4 || angleDifference < 4 && Math.abs(getAvg() - beforeALV) < distance) {
+                if (wallDifference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
+                    if (wallDistance < Math.abs(wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular))) {
+                        FR.setPower(output * (1 + wallDifference * wallCorrection));
+                        BR.setPower(output * (1 + wallDifference * wallCorrection));
+                        FL.setPower(output * (1 - (1 + wallDifference * wallCorrection)));
+                        BL.setPower(output * (1 - (1 + wallDifference * wallCorrection)));
+                    } else if (wallDistance > Math.abs(wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular))) {
+                        FR.setPower(-output * (1 - (1 + wallDifference * wallCorrection)));
+                        BR.setPower(-output * (1 - (1 + wallDifference * wallCorrection)));
+                        FL.setPower(-output * (1 + wallDifference * wallCorrection));
+                        BL.setPower(-output * (1 + wallDifference * wallCorrection));
+                    }
+                    wallDifference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular));
+                } else if (angleDifference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
+                    if (getGyroYaw() < beforeAngle) {
+                        FR.setPower(output * (1 + angleDifference * angleCorrection));
+                        BR.setPower(output * (1 + angleDifference * angleCorrection));
+                        FL.setPower(output * (1 - (1 + angleDifference * angleCorrection)));
+                        BL.setPower(output * (1 - (1 + angleDifference * angleCorrection)));
+                    } else if (getGyroYaw() > beforeAngle) {
+                        FR.setPower(-output * (1 - (1 + angleDifference * angleCorrection)));
+                        BR.setPower(-output * (1 - (1 + angleDifference * angleCorrection)));
+                        FL.setPower(-output * (1 + angleDifference * angleCorrection));
+                        BL.setPower(-output * (1 + angleDifference * angleCorrection));
+                    }
+                    angleDifference = Math.abs(perpendicular -getGyroYaw());
                 }
                 telemetry.addData("LeftPower", FR.getPower());
                 telemetry.addData("RightPower", BR.getPower());
                 telemetry.update();
-                difference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM));
                 idle();
             }
             telemetry.addData("output", output);

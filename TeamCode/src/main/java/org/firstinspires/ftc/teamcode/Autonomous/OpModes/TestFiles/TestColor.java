@@ -27,27 +27,26 @@ public class TestColor extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
-        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
-        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
-        colorSensorWL.enableLed(true);
-        telemetry.addData("colorSensorWL", "initialized");
-
+//        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
+//        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x3c));
+//        colorSensorWL.enableLed(true);
+//        telemetry.addData("colorSensorWL", "initialized");
+//
         colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
-        colorSensorWLA.setI2cAddress(I2cAddr.create8bit(0x2e));
+        colorSensorWLA.setI2cAddress(I2cAddr.create8bit(0x2a));
         colorSensorWLA.enableLed(true);
-        telemetry.addData("colorSensorWLA", "initialized");
-
+//        telemetry.addData("colorSensorWLA", "initialized");
         colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
-        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
+        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         telemetry.addData("colorSensorB", "initialized");
 
         telemetry.update();
         waitForStart();
         while(true)
         {
-            telemetry.addData("cWL", colorSensorAverageValues(colorSensorWL));
-            telemetry.update();
-            sleep(1000);
+//            telemetry.addData("cWL", colorSensorAverageValues(colorSensorWL));
+//            telemetry.update();
+//            sleep(1000);
             telemetry.addData("cBeaconBlue", colorSensorBeacon.blue());
             telemetry.update();
             sleep(1000);

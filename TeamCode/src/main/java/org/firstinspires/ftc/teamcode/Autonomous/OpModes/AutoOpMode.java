@@ -50,7 +50,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     ColorSensor colorSensorWL;
     ColorSensor colorSensorWLA;
     ColorSensor colorSensorBlueBeacon;
-    ColorSensor colorSensorRedBeacon;
+    ColorSensor colorSensorBeacon;
     ModernRoboticsI2cRangeSensor wallSensor;
     int count = 0;
     ModernRoboticsI2cRangeSensor rangeSensor;
@@ -89,15 +89,16 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initialized");
-        colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
+        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
         colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
+        colorSensorWL.enableLed(true);
         telemetry.addData("colorSensorWL", "initialized");
-        colorSensorBlueBeacon = hardwareMap.colorSensor.get("cSB");
-        colorSensorBlueBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
+        colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
+        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2e));
+        telemetry.addData("colorSensorWLA", "initialized");
+        colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
+        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensorB", "initialized");
-        colorSensorRedBeacon = hardwareMap.colorSensor.get("cSR");
-        colorSensorRedBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
-        telemetry.addData("colorSensorR", "initialized");
         telemetry.update();
         wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangesensor");
 
@@ -1228,13 +1229,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         //distance: 25
         count += 1;
         //move forward and push the correct beacon
-        if (beaconValue(colorSensorRedBeacon) == 1) {
+        if (beaconValue(colorSensorBeacon) == 1) {
             moveRedSideServo();
         }
         else {
             moveForward(-.175, 150, angle);
             sleep(500);
-            if(beaconValue(colorSensorRedBeacon) == 1)
+            if(beaconValue(colorSensorBeacon) == 1)
                 moveRedSideServo();
             else if(count < 2)
                 pushRedBeacon(angle);
@@ -1274,11 +1275,11 @@ public abstract class AutoOpMode extends LinearOpMode {
             if (rangeSensor.getDistance(DistanceUnit.CM) > 8)
                 moveForward(.175);
         }
-        if(beaconValue(colorSensorRedBeacon) == 1)
+        if(beaconValue(colorSensorBeacon) == 1)
             moveManBeaconL();
         else
             moveManBeaconR();
-        if(beaconValue(colorSensorRedBeacon) != 1) {
+        if(beaconValue(colorSensorBeacon) != 1) {
             Thread.sleep(5000);
             moveManBeaconL();
         }
@@ -1291,11 +1292,11 @@ public abstract class AutoOpMode extends LinearOpMode {
             if (rangeSensor.getDistance(DistanceUnit.CM) > 8)
                 moveForward(.175);
         }
-        if(beaconValue(colorSensorRedBeacon) == 0)
+        if(beaconValue(colorSensorBeacon) == 0)
             moveManBeaconL();
         else
             moveManBeaconR();
-        if(beaconValue(colorSensorRedBeacon) != 0) {
+        if(beaconValue(colorSensorBeacon) != 0) {
             Thread.sleep(5000);
             moveManBeaconL();
         }

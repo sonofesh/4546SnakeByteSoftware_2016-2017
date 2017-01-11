@@ -31,12 +31,16 @@ public class TestColor extends LinearOpMode
         colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2a));
         colorSensorWL.enableLed(true);
         telemetry.addData("colorSensorWL", "initialized");
+
         colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
-        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x2e));
+        colorSensorWLA.setI2cAddress(I2cAddr.create8bit(0x2e));
+        colorSensorWLA.enableLed(true);
         telemetry.addData("colorSensorWLA", "initialized");
+
         colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         telemetry.addData("colorSensorB", "initialized");
+
         telemetry.update();
         waitForStart();
         while(true)
@@ -44,7 +48,10 @@ public class TestColor extends LinearOpMode
             telemetry.addData("cWL", colorSensorAverageValues(colorSensorWL));
             telemetry.update();
             sleep(1000);
-            telemetry.addData("cBeacon", colorSensorAverageValues(colorSensorBeacon));
+            telemetry.addData("cBeaconBlue", colorSensorBeacon.blue());
+            telemetry.update();
+            sleep(1000);
+            telemetry.addData("cBeaconRed", colorSensorBeacon.red());
             telemetry.update();
             sleep(1000);
             telemetry.addData("cWLA", colorSensorAverageValues(colorSensorWLA));

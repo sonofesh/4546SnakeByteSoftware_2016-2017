@@ -26,12 +26,10 @@ public class TestColor extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        //final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(com.qualcomm.ftcrobotcontroller.R.id.RelativeLayout);
-//        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
-//        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x3c));
-//        colorSensorWL.enableLed(true);
-//        telemetry.addData("colorSensorWL", "initialized");
-//
+        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
+        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x3c));
+        colorSensorWL.enableLed(true);
+        telemetry.addData("colorSensorWL", "initialized");
         colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
         colorSensorWLA.setI2cAddress(I2cAddr.create8bit(0x2a));
         colorSensorWLA.enableLed(true);

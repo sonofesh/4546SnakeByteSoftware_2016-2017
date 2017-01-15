@@ -168,13 +168,18 @@ public class TeleOpA extends OpMode {
             ManLift.setPower(0);
 
         //Back Beacon Control
-        if (gamepad2.a) {
-            ManBeaconL.setPosition(.3);
+        if (gamepad2.b) {
             ManBeaconR.setPosition(.7);
-        } else {
-            ManBeaconL.setPosition(.85);
+        }
+        else {
             ManBeaconR.setPosition(.25);
         }
+
+        if (gamepad2.x)
+            ManBeaconL.setPosition(.3);
+        else
+            ManBeaconL.setPosition(.85);
+
 
         //Shooter Controls
         if (gamepad2.right_bumper) {

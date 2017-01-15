@@ -7,10 +7,9 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by sopa on 12/7/16.
- * Test log: 28 + 25 + 32 +
+ * Test log: 28 + 25 + 32 + 3
  */
 @Autonomous(name = "TestCorrection", group = "Autonomous")
-@Disabled
 public class TestCorrection extends AutoOpMode
 {
     @Override
@@ -18,18 +17,19 @@ public class TestCorrection extends AutoOpMode
     {
         telemetry.log();
         initialize();
-        telemetry.addData("test2", "init");
+        telemetry.addData("test5", "init");
         telemetry.update();
         waitForStart();
-        telemetry.addData("before yaw forward", getGyroYaw());
-        telemetry.update();
         //Standard constants: double p = .00015; double i = .00000015;
         //moveBackwardPID(.0003, .0000003, 0.0, 2000);
+        double angle = getGyroYaw();
+        telemetry.addData("before yaw forward", getGyroYaw());
+        telemetry.update();
         sleep(3000);
-        moveForwardPID(2000);
+        moveForwardsToWhiteLine(1250, angle);
         //long lastTime = System.currentTimeMillis();
         sleep(2500);
-        moveBackwardPID(.0003, .0000003, 0.0, 2000);
+//        moveBackwardPID(.0003, .0000003, 0.0, 2000);
 //        telemetry.addData("before yaw backward", getGyroYaw());
 //        telemetry.update();
 //        moveBackWardWithCorrection(.15, 2000);

@@ -40,7 +40,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "Sensor: MR range sensor", group = "Autonomous")
-@Disabled
 public class RangeSensor extends LinearOpMode {
 
     ModernRoboticsI2cRangeSensor rangeSensor;
@@ -48,18 +47,19 @@ public class RangeSensor extends LinearOpMode {
     @Override public void runOpMode() throws InterruptedException {
 
         // get a reference to our compass
-        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range sensor");
+        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangesensor");
+        telemetry.addData("init", "test1");
+        telemetry.update();
 
-        // wait for the start button to be pressed
         waitForStart();
 
-        while (opModeIsActive()) {
+        while (true) {
             telemetry.addData("raw ultrasonic", rangeSensor.rawUltrasonic());
             telemetry.addData("raw optical", rangeSensor.rawOptical());
             telemetry.addData("cm optical", "%.2f cm", rangeSensor.cmOptical());
             telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
-            wait(5000);
             telemetry.update();
+            wait(5000);
             idle();
         }
     }

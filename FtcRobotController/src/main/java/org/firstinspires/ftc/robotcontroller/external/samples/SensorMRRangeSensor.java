@@ -59,7 +59,7 @@ public class SensorMRRangeSensor extends LinearOpMode {
     @Override public void runOpMode() throws InterruptedException {
 
         // get a reference to our compass
-        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range sensor");
+        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangesensor"));
 
         // wait for the start button to be pressed
         waitForStart();

@@ -44,7 +44,7 @@ public class setRobot extends LinearOpMode
         {
 //            telemetry.addData("angle", (Math.abs(getGryoYaw()-beforeAngle)));
 //            telemetry.update();
-            telemetry.addData("angle", getGryoYaw());
+            telemetry.addData("angle", getGryoYaw() * -1);
             telemetry.update();
             idle();
         }

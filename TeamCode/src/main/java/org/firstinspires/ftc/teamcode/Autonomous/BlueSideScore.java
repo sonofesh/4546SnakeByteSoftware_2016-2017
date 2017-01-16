@@ -56,13 +56,16 @@ public class BlueSideScore extends AutoOpMode {
         moveForwardsToWhiteLine(2850, angle43);
         //double p = .004; double i = .000015;
         turnIntoWhiteLine(Math.abs((getGyroYaw() - perpendicular)) + 5);
-        pushFrontBlue();
-//        moveForward(-.175, 400);
+        pushFrontBlue(perpendicular + 90);
+//        moveBackWardWithEncoders(.175, 400);
 //        turnLeftWithPID(90);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
 //        turnIntoWhiteLine(getGyroYaw() - perpendicular);
-
+//        pushBlueBeacon(perpendicular + 90);
+//        moveBackWardWithEncoders(.175, 400);
+//        turnLeftWithGyro(.3, 15);
+//        moveBackWardWithEncoders(.5, 3000);
 //        double p = .004; double i = .000015; //double d = 2.0;
 //        correct(perpendicular, .004, .000015, 0, 0);
 //        moveForwardPID(2500, perpendicular);

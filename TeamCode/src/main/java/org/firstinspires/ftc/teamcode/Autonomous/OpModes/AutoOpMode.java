@@ -42,6 +42,8 @@ public abstract class AutoOpMode extends LinearOpMode {
     long beforeTime = 0;
     long currentTime = 0;
     public BNO055IMU imu;
+    public ModernRoboticsI2cRangeSensor rangeSensor;
+    double ultraDistance;
     //ModernRoboticsI2cRangeSensor rangeSensorRed;
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
@@ -50,7 +52,6 @@ public abstract class AutoOpMode extends LinearOpMode {
     ColorSensor colorSensorBeacon;
     ModernRoboticsI2cRangeSensor wallSensor;
     int count = 0;
-    ModernRoboticsI2cRangeSensor rangeSensor;
     public void initialize() throws InterruptedException {
         FR = hardwareMap.dcMotor.get("FR");
         BR = hardwareMap.dcMotor.get("BR");
@@ -97,7 +98,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         telemetry.addData("colorSensorB", "initialized");
-        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangesensor"));
+        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("wall"));
         telemetry.update();
         //wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
 
@@ -202,8 +203,11 @@ public abstract class AutoOpMode extends LinearOpMode {
 
 
     //range sensor
-    public double getDist(ModernRoboticsI2cRangeSensor rangeSensor) throws InterruptedException {
-        return rangeSensor.getDistance(DistanceUnit.CM);
+    public double getDist(ModernRoboticsI2cRangeSensor range) throws InterruptedException {
+        double value = range.getDistance(DistanceUnit.CM);
+        if(value != 255)
+            ultraDistance = value;
+        return ultraDistance;
     }
 
     //Forwards, Backwards and Turning
@@ -626,8 +630,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     //gyro stabilization
     public void moveForward(double power, int distance, double angle) throws InterruptedException {
         beforeALV = getAvg();
-        beforeAngle = angle;
-        double correction = .5;
+        double correction = CORRECTION;
         long lastTime = System.nanoTime();
         double signedDifference;
         while (Math.abs(getAvg() - beforeALV) < distance) {
@@ -635,27 +638,25 @@ public abstract class AutoOpMode extends LinearOpMode {
             BR.setPower(power);
             FL.setPower(-power);
             BL.setPower(-power);
-            double difference = Math.abs(getGyroYaw() - beforeAngle);
-            while (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
-                if(getGyroYaw() < beforeAngle) {
+            double difference = Math.abs(getGyroYaw() - angle);
+            if (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
+                if(getGyroYaw() < angle) {
                     FR.setPower(power * (1 + difference * correction));
                     BR.setPower(power * (1 + difference * correction));
-                    FL.setPower(-power);
-                    BL.setPower(-power);
+                    FL.setPower(-power * (1 - difference * correction));
+                    BL.setPower(-power * (1 - difference * correction));
                 }
-                else if(getGyroYaw() > beforeAngle) {
-                    FR.setPower(power);
-                    BR.setPower(power);
+                else if(getGyroYaw() > angle) {
+                    FR.setPower(power * (1 - (difference * correction)));
+                    BR.setPower(power * (1 - (difference * correction)));
                     FL.setPower(-power * (1 + difference * correction));
                     BL.setPower(-power  * (1 + difference * correction));
                 }
-                telemetry.addData("LeftPower", FR.getPower());
-                telemetry.addData("RightPower", BR.getPower());
+                telemetry.addData("LeftPower", FL.getPower());
+                telemetry.addData("RightPower", FR.getPower());
                 telemetry.update();
-                difference = Math.abs(getGyroYaw() - beforeAngle);
                 idle();
             }
-            idle();
         }
         FR.setPower(0);
         BR.setPower(0);
@@ -674,8 +675,8 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     }
 
-    public void moveBackWardWithCorrection(double power, int distance) throws InterruptedException {
-        moveForward(-power, distance);
+    public void moveBackWardWithCorrection(double power, int distance, double angle) throws InterruptedException {
+        moveForward(-power, distance, angle);
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
@@ -1314,11 +1315,14 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void pushFrontRed() throws InterruptedException {
         double dist = getDist(rangeSensor);
-        while (dist > 13 || dist < 6) {
-            if (dist  < 6)
+        while (opModeIsActive() && (dist > 13 || dist < 6)) {
+            if (dist < 6)
                 moveBackward(.15);
-            if (dist  > 13)
+            else if (dist > 13)
                 moveForward(.15);
+            else{
+
+            }
             dist = getDist(rangeSensor);
         }
         if(beaconValue(colorSensorBeacon) == 1)
@@ -1332,41 +1336,33 @@ public abstract class AutoOpMode extends LinearOpMode {
         }
     }
 
-    public void pushFrontBlue() throws InterruptedException {
+    public void pushFrontBlue(double angle) throws InterruptedException {
 //        double dist = getDist(rangeSensor);
-//        while (dist > 17 || dist < 12) {
-//            if (dist < 12)
-//                moveBackward(.15);
-//            else if (dist > 17)
-//                moveForward(.15);
-//            else {
-//                FR.setPower(0);
-//                BR.setPower(0);
-//                FL.setPower(0);
-//                BL.setPower(0);
-//            }
-//            dist = getDist(rangeSensor);
-//        }
-        moveForward(.175, 600);
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
+//        int movement = (int) Math.round((dist - 14) * 50);
+//        if(movement > 0)
+//            moveForward(.175, movement, angle);
+//        else if(movement < 0)
+//            moveBackWardWithCorrection(.175, -movement, angle);
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
         if(beaconValue(colorSensorBeacon) == 0) {
             ManBeaconL.setPosition(.85);
             sleep(1000);
             ManBeaconL.setPosition(.3);
         }
-        else
+        else {
             ManBeaconR.setPosition(.25);
             sleep(1000);
             ManBeaconR.setPosition(.7);
-        if(beaconValue(colorSensorBeacon) != 0) {
-            sleep(5000);
-            ManBeaconL.setPosition(.85);
-            sleep(1000);
-            ManBeaconL.setPosition(.3);
         }
+//        if(beaconValue(colorSensorBeacon) != 0) {
+//            sleep(5000);
+//            ManBeaconL.setPosition(.85);
+//            sleep(1000);
+//            ManBeaconL.setPosition(.3);
+//        }
     }
 
     //test methods
@@ -1393,7 +1389,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void correct(double perpendicular, double p, double i, double d, double underShoot) throws InterruptedException {
         //double p = .004; double i = .000015; //double d = 2.0;
         double angle = Math.abs(perpendicular - getGyroYaw());
-        if(perpendicular > getGyroYaw()) {
+        if (perpendicular > getGyroYaw()) {
             turnRightWithPID(angle - underShoot, p, i, d);
         }
         else if(perpendicular < getGyroYaw()) {
@@ -1554,26 +1550,29 @@ public abstract class AutoOpMode extends LinearOpMode {
                         BR.setPower(output * (1 + wallDifference * wallCorrection));
                         FL.setPower(output * (1 - (1 + wallDifference * wallCorrection)));
                         BL.setPower(output * (1 - (1 + wallDifference * wallCorrection)));
-                    } else if (wallDistance > Math.abs(wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular))) {
+                    }
+                    else if (wallDistance > Math.abs(wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular))) {
                         FR.setPower(-output * (1 - (1 + wallDifference * wallCorrection)));
                         BR.setPower(-output * (1 - (1 + wallDifference * wallCorrection)));
                         FL.setPower(-output * (1 + wallDifference * wallCorrection));
                         BL.setPower(-output * (1 + wallDifference * wallCorrection));
                     }
                     wallDifference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular));
-                } else if (angleDifference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
+                }
+                else if (angleDifference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
                     if (getGyroYaw() < beforeAngle) {
                         FR.setPower(output * (1 + angleDifference * angleCorrection));
                         BR.setPower(output * (1 + angleDifference * angleCorrection));
                         FL.setPower(output * (1 - (1 + angleDifference * angleCorrection)));
                         BL.setPower(output * (1 - (1 + angleDifference * angleCorrection)));
-                    } else if (getGyroYaw() > beforeAngle) {
+                    }
+                    else if (getGyroYaw() > beforeAngle) {
                         FR.setPower(-output * (1 - (1 + angleDifference * angleCorrection)));
                         BR.setPower(-output * (1 - (1 + angleDifference * angleCorrection)));
                         FL.setPower(-output * (1 + angleDifference * angleCorrection));
                         BL.setPower(-output * (1 + angleDifference * angleCorrection));
                     }
-                    angleDifference = Math.abs(perpendicular -getGyroYaw());
+                    angleDifference = Math.abs(perpendicular - getGyroYaw());
                 }
                 telemetry.addData("LeftPower", FR.getPower());
                 telemetry.addData("RightPower", BR.getPower());

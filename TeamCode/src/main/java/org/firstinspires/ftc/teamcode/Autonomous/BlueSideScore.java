@@ -48,9 +48,11 @@ public class BlueSideScore extends AutoOpMode {
         sleep(500);
         pushFrontBlue(perpendicular + 90);
         sleep(1000);
+
+
         moveBackWardWithEncoders(.175, 400);
-        turnLeftWithPID(80);
-        moveForwardsToWhiteLine(2800, perpendicular);
+        turnLeftWithPID(75);
+        moveForwardsToWhiteLine(2800, getGyroYaw());
         if(getGyroYaw() < perpendicular)
             turnIntoWhiteLine(perpendicular - getGyroYaw() + 90);
         else if(getGyroYaw() > perpendicular)

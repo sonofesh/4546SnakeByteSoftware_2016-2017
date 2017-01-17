@@ -1357,6 +1357,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         while (dist > 10 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 600) {
             moveForward(.145);
             dist = getDist(rangeSensor);
+            idle();
         }
         FR.setPower(0);
         BR.setPower(0);

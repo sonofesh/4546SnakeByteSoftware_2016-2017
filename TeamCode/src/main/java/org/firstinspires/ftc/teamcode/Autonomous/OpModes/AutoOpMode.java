@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -42,16 +43,16 @@ public abstract class AutoOpMode extends LinearOpMode {
     long beforeTime = 0;
     long currentTime = 0;
     public BNO055IMU imu;
-    public ModernRoboticsI2cRangeSensor rangeSensor;
     double ultraDistance;
-    //ModernRoboticsI2cRangeSensor rangeSensorRed;
+    ModernRoboticsI2cRangeSensor rangeSensorRed;
     BNO055IMU.Parameters parameters;
     ColorSensor colorSensorWL;
     ColorSensor colorSensorWLA;
-    ColorSensor colorSensorBlueBeacon;
+    //ColorSensor colorSensorBlueBeacon;
     ColorSensor colorSensorBeacon;
     ModernRoboticsI2cRangeSensor wallSensor;
     int count = 0;
+    ModernRoboticsI2cRangeSensor rangeSensor;
     public void initialize() throws InterruptedException {
         FR = hardwareMap.dcMotor.get("FR");
         BR = hardwareMap.dcMotor.get("BR");
@@ -80,7 +81,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode0
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
@@ -98,9 +99,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
         colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         telemetry.addData("colorSensorB", "initialized");
-        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("wall"));
+        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
+        telemetry.addData("range", getDist(rangeSensor));
         telemetry.update();
-        //wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
+//        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
 
     }
     //movement methods
@@ -181,10 +183,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         return average;
     }
     public double colorSensorRed(ColorSensor sensor) throws InterruptedException {
-        return colorSensorBlueBeacon.red();
+        return sensor.red();
     }
     public double colorSensorBlue(ColorSensor sensor) throws InterruptedException {
-        return colorSensorBlueBeacon.blue();
+        return sensor.blue();
     }
 
     //gyro methods
@@ -366,7 +368,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void turnLeftWithPID(double angle) throws InterruptedException
     {
         //calibration constants
-        double p = .004; double i = .000015; //double d = 2.0;
+        double p = .004; double i = .000035; //double d = 2.0;
         double error = angle;
         double pastError = 0.0;
         double output;
@@ -1060,7 +1062,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     //beacon pushing methods
     public void moveForwardsToWhiteLine(int distance, double angle) throws InterruptedException {
         //calibration constants
-        double p = .0000065; double i = .0000000035; //double d = .00000000002;
+        double p = .000006; double i = .0000000035; //double d = .00000000002;
         double error = distance;
         double pastError = 0.0;
         double proportional = 0.0;
@@ -1104,9 +1106,10 @@ public abstract class AutoOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-            else if(output < .05)
+            else if(output < .05) {
                 output = 0;
-            moveForward(output);
+            }
+                moveForward(output);
             idle();
         }
         FR.setPower(0);
@@ -1163,7 +1166,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void turnIntoWhiteLine(double angle) throws InterruptedException {
         //calibration constants
-        double p = .0065; double i = .000045; double d = 0.0;
+        double p = .00625; double i = .000045; double d = 0.0;
         //double p = .004; double i = .000015;
         double error = angle;
         double pastError = 0.0;
@@ -1177,7 +1180,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < angle && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 4000) {
+        while (Math.abs(getGyroYaw() - beforeAngle) < angle && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
             error = angle - Math.abs(getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;
@@ -1296,15 +1299,15 @@ public abstract class AutoOpMode extends LinearOpMode {
         //distance: 25
         count += 1;
         //move forward and push the correct beacon
-        if (beaconValue(colorSensorBlueBeacon) == 0) {
+        if (beaconValue(colorSensorBeacon) == 0) {
             moveBlueSideServo();
         }
         else {
             moveForward(-.175, 150, angle);
             sleep(500);
-            if(beaconValue(colorSensorBlueBeacon) == 0)
+            if(beaconValue(colorSensorBeacon) == 0)
                 moveBlueSideServo();
-            else if(count < 2)
+            else if (count < 2)
                 pushBlueBeacon(angle);
             }
         FR.setPower(0);
@@ -1313,48 +1316,66 @@ public abstract class AutoOpMode extends LinearOpMode {
         BL.setPower(0);
     }
 
-    public void pushFrontRed() throws InterruptedException {
-        double dist = getDist(rangeSensor);
-        while (opModeIsActive() && (dist > 13 || dist < 6)) {
-            if (dist < 6)
-                moveBackward(.15);
-            else if (dist > 13)
-                moveForward(.15);
-            else{
+    public void pushFrontRed(double angle) throws InterruptedException {
+//        double dist = getDist(rangeSensor);
+//        while (opModeIsActive() && (dist > 13 || dist < 6)) {
+//            if (dist < 6)
+//                moveBackward(.15);
+//            else if (dist > 13)
+//                moveForward(.15);
+//            else{
+//
+//            }
+//            dist = getDist(rangeSensor);
+//        }
+//        if(beaconValue(colorSensorBeacon) == 1)
+//            moveManBeaconR();
+//        else
+//            moveManBeaconL();
+//        Thread.sleep(500);
+//        if(beaconValue(colorSensorBeacon) != 1) {
+//            Thread.sleep(5000);
+//            moveManBeaconR();
+//        }
 
-            }
-            dist = getDist(rangeSensor);
-        }
-        if(beaconValue(colorSensorBeacon) == 1)
-            moveManBeaconR();
-        else
-            moveManBeaconL();
-        Thread.sleep(500);
-        if(beaconValue(colorSensorBeacon) != 1) {
-            Thread.sleep(5000);
-            moveManBeaconR();
-        }
     }
 
     public void pushFrontBlue(double angle) throws InterruptedException {
-//        double dist = getDist(rangeSensor);
-//        int movement = (int) Math.round((dist - 14) * 50);
+        //double p = .004; double i = .000015; //double d = 2.0;
+        correct(angle, .004, .000015, 0, 0);
+        //double dist = getDist(rangeSensor);
+
+//        int movement = (int) Math.round(dist - 6) * 30;
 //        if(movement > 0)
 //            moveForward(.175, movement, angle);
 //        else if(movement < 0)
 //            moveBackWardWithCorrection(.175, -movement, angle);
-//        FR.setPower(0);
-//        BR.setPower(0);
-//        FL.setPower(0);
-//        BL.setPower(0);
-        if(beaconValue(colorSensorBeacon) == 0) {
-            ManBeaconL.setPosition(.85);
-            sleep(1000);
-            ManBeaconL.setPosition(.3);
+
+        double dist = getDist(rangeSensor);
+        telemetry.addData("distance", dist);
+        telemetry.update();
+        beforeALV = getAvg();
+        while (dist > 10 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 600) {
+            moveForward(.145);
+            dist = getDist(rangeSensor);
         }
-        else {
-            ManBeaconR.setPosition(.25);
+        telemetry.addData("distance", dist);
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        sleep(500);
+        //moveForward(.175, 450, angle);
+        if(beaconValue(colorSensorBeacon) == 0) {
+            ManBeaconL.setPosition(1);
             sleep(1000);
+            //moveForwardWithEncoders(.14, 100);
+            ManBeaconL.setPosition(.3);
+        } else {
+            ManBeaconR.setPosition(.15);
+            sleep(1000);
+            //moveForwardWithEncoders(.14, 100);
             ManBeaconR.setPosition(.7);
         }
 //        if(beaconValue(colorSensorBeacon) != 0) {

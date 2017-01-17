@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Test log: 28 + 25 + 32 + 3
  */
 @Autonomous(name = "TestCorrection", group = "Autonomous")
+@Disabled
 public class TestCorrection extends AutoOpMode
 {
     @Override

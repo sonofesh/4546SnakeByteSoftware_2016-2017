@@ -14,6 +14,10 @@ public class FrontPusher extends AutoOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initialize();
+        telemetry.addData("test1", "init");
+        telemetry.update();
+        waitForStart();
         double perpendicular = getGyroYaw();
         pushFrontBlue(perpendicular);
         //pushFrontBlue(perpendicular);

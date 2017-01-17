@@ -1342,7 +1342,6 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void pushFrontBlue(double angle) throws InterruptedException {
         //double p = .004; double i = .000015; //double d = 2.0;
-        correct(angle, .004, .000015, 0, 0);
         //double dist = getDist(rangeSensor);
 
 //        int movement = (int) Math.round(dist - 6) * 30;
@@ -1350,7 +1349,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            moveForward(.175, movement, angle);
 //        else if(movement < 0)
 //            moveBackWardWithCorrection(.175, -movement, angle);
-
+        correct(angle, .008, .0001, 0, 0);
         double dist = getDist(rangeSensor);
         telemetry.addData("distance", dist);
         telemetry.update();
@@ -1359,12 +1358,12 @@ public abstract class AutoOpMode extends LinearOpMode {
             moveForward(.145);
             dist = getDist(rangeSensor);
         }
-        telemetry.addData("distance", dist);
-        telemetry.update();
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
+        telemetry.addData("distance", dist);
+        telemetry.update();
         sleep(500);
         //moveForward(.175, 450, angle);
         if(beaconValue(colorSensorBeacon) == 0) {
@@ -1372,18 +1371,19 @@ public abstract class AutoOpMode extends LinearOpMode {
             sleep(1000);
             //moveForwardWithEncoders(.14, 100);
             ManBeaconL.setPosition(.3);
-        } else {
+        }
+        else {
             ManBeaconR.setPosition(.15);
             sleep(1000);
             //moveForwardWithEncoders(.14, 100);
             ManBeaconR.setPosition(.7);
         }
-//        if(beaconValue(colorSensorBeacon) != 0) {
-//            sleep(5000);
-//            ManBeaconL.setPosition(.85);
-//            sleep(1000);
-//            ManBeaconL.setPosition(.3);
-//        }
+        if(beaconValue(colorSensorBeacon) != 0) {
+            sleep(5000);
+            ManBeaconL.setPosition(1);
+            sleep(1000);
+            ManBeaconL.setPosition(.3);
+        }
     }
 
     //test methods

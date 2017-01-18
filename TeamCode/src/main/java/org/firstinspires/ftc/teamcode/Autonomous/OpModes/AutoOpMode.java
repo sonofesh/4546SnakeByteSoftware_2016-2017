@@ -208,7 +208,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public double getDist(ModernRoboticsI2cRangeSensor range) throws InterruptedException {
         double value = range.getDistance(DistanceUnit.CM);
         if(value == 255 && value == 0) {
-            sleep(125);
+            sleep(62);
             getDist(range);
         }
         return value;

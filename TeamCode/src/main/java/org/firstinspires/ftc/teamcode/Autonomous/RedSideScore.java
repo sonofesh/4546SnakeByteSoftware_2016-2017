@@ -24,16 +24,15 @@ public class RedSideScore extends AutoOpMode {
         waitForStart();
         double perpendicular = getGyroYaw();
         double angle43 = perpendicular;
-        int movement = 0;
+        //int movement = 0;
         moveForward(.175, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.1, 1100);
         sleep(750);
         //shoot
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         double power = .8;
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if(voltage <= 13.5)
             power = .8;
         else if(voltage <= 13.75 && voltage > 13.5)

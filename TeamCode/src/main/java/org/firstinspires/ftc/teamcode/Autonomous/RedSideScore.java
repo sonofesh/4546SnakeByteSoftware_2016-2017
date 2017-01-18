@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * DELETE WHEN DONE.
  * Shoot first auto, configured for red side
  */
-@Autonomous(name = "RedSide90", group = "Autonomous")
+@Autonomous(name = "RedSide70", group = "Autonomous")
 public class RedSideScore extends AutoOpMode {
     public RedSideScore() {
         super();
@@ -32,19 +32,19 @@ public class RedSideScore extends AutoOpMode {
         sleep(750);
         //shoot
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        double power;
+        double power = .8;
         voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if(voltage <= 13.5)
-            power = .9;
-        else if(voltage <= 13.75 && voltage > 13.5)
-            power = .85;
-        else if(voltage > 13.75 && voltage <= 14)
             power = .8;
+        else if(voltage <= 13.75 && voltage > 13.5)
+            power = .77;
+        else if(voltage > 13.75 && voltage <= 14)
+            power = .73;
         else if(voltage > 14)
-            power = .65;
-        shoot(.8, 350);
+            power = .6;
+        shoot(power, 350);
         sleep(750);
-        turnLeftWithPID(43, .006, .000045, 0.0);
+        turnLeftWithPID(43, .006, .00004, 0.0);
         sleep(500);
         angle43 -= 43;
         moveForwardsToWhiteLine(2850, angle43);
@@ -52,8 +52,9 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         turnIntoWhiteLine(Math.abs((getGyroYaw() - perpendicular)) + 5);
         sleep(500);
-        moveBackwardsToWhiteLine(600, .175, perpendicular);
         pushFrontRed(perpendicular - 90);
+        sleep(500);
+        moveBackWardWithEncoders(.6, 3000);
     }
 
     /*

@@ -7,16 +7,16 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 /**
  * Created by 4546 on 12/21/16.
  * This auto will move to the beacons, hit both, turn, shoot, and then knock the cap ball
- * Test Count: 12 + 3 + 22
+ * Test Count: 12 + 3 + 22 + 12 + 4 +
  */
-@Autonomous(name = "BlueIsTheWarmestColor", group = "Autonomous")
+@Autonomous(name = "BlueSide70", group = "Autonomous")
 public class BlueSideScore extends AutoOpMode {
     public BlueSideScore() { super(); }
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .8;
-        telemetry.addData("init", "test12");
+        telemetry.addData("init", "test1");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -31,8 +31,10 @@ public class BlueSideScore extends AutoOpMode {
             power = .8;
         else if(voltage <= 13.75 && voltage > 13.5)
             power = .78;
-        else if(voltage > 13.75 && voltage <= 14)
-            power = .75;
+        else if(voltage > 13.75 && voltage <= 13.9)
+            power = .72;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .67;
         else if(voltage > 14)
             power = .6;
         shoot(power, 350);
@@ -44,22 +46,24 @@ public class BlueSideScore extends AutoOpMode {
         angle43 += 43;
         moveForwardsToWhiteLine(2850, angle43);
         //double p = .004; double i = .000015;
+        sleep(500);
         turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 2);
         sleep(500);
         pushFrontBlue(perpendicular + 90);
-        sleep(1000);
+        sleep(500);
+        moveBackWardWithEncoders(.6, 3000);
 
 
-        moveBackWardWithEncoders(.175, 400);
-        turnLeftWithPID(75);
-        moveForwardsToWhiteLine(2800, getGyroYaw());
-        if(getGyroYaw() < perpendicular)
-            turnIntoWhiteLine(perpendicular - getGyroYaw() + 90);
-        else if(getGyroYaw() > perpendicular)
-            turnIntoWhiteLine(90 + (getGyroYaw() - perpendicular));
-        else
-            turnIntoWhiteLine(90);
-        pushFrontBlue(perpendicular + 90);
+//        moveBackWardWithEncoders(.175, 400);
+//        turnLeftWithPID(75);
+//        moveForwardsToWhiteLine(2800, getGyroYaw());
+//        if(getGyroYaw() < perpendicular)
+//            turnIntoWhiteLine(perpendicular - getGyroYaw() + 90);
+//        else if(getGyroYaw() > perpendicular)
+//            turnIntoWhiteLine(90 + (getGyroYaw() - perpendicular));
+//        else
+//            turnIntoWhiteLine(90);
+//        pushFrontBlue(perpendicular + 90);
 //        moveBackWardWithEncoders(.175, 400);
 //        turnLeftWithGyro(.3, 15);
 //        moveBackWardWithEncoders(.5, 3000);

@@ -1449,6 +1449,8 @@ public abstract class AutoOpMode extends LinearOpMode {
             sleep(1000);
             ManBeaconL.setPosition(.3);
         }
+        telemetry.addData("distance", dist);
+        telemetry.update();
     }
 
     //test methods

@@ -19,7 +19,7 @@ public class RedSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        telemetry.addData("init", "test1");
+        telemetry.addData("init", "test8");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -28,32 +28,38 @@ public class RedSideScore extends AutoOpMode {
         moveForward(.175, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.1, 1100);
-        sleep(750);
+        bringDownShooter(.1, 1200);
+        sleep(1000);
         //shoot
         double power = .8;
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        if(voltage <= 13.5)
+        if (voltage <= 13.5)
+            power = .85;
+        else if (voltage <= 13.75 && voltage > 13.5)
             power = .8;
-        else if(voltage <= 13.75 && voltage > 13.5)
-            power = .77;
-        else if(voltage > 13.75 && voltage <= 14)
-            power = .73;
-        else if(voltage > 14)
-            power = .6;
+        else if (voltage > 13.75 && voltage <= 13.9)
+            power = .75;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .68;
+        else if (voltage > 14)
+            power = .65;
         shoot(power, 350);
         sleep(750);
-        turnLeftWithPID(43, .006, .00004, 0.0);
+        turnLeftWithPID(43, .005, .00003, 0.0);
         sleep(500);
         angle43 -= 43;
         moveForwardsToWhiteLine(2850, angle43);
+        moveForwardWithEncoders(.15, 150);
         //double p = .0002; double i = .00000015; //double d = 2.0;
         sleep(500);
-        turnIntoWhiteLine(Math.abs((getGyroYaw() - perpendicular)) + 5);
+        turnIntoWhiteLineRed(Math.abs((getGyroYaw() - perpendicular)));
         sleep(500);
         pushFrontRed(perpendicular - 90);
         sleep(500);
-        moveBackWardWithEncoders(.6, 3000);
+        //turnRightWithGyro(.3, 5);
+        sleep(500);
+        bringDownShooter(-.4, 800);
+        moveBackWardWithEncoders(.6, 2800);
     }
 
     /*

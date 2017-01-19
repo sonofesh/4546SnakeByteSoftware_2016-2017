@@ -160,7 +160,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         int beforeManLift = ManLift.getCurrentPosition();
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
-        bringDownShooter((.3 * -1), (distance + (Math.abs(beforeManLift - 1100))));
+        bringDownShooter((.3 * -1), (distance + (Math.abs(beforeManLift - 1200))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
@@ -1084,7 +1084,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     //beacon pushing methods
     public void moveForwardsToWhiteLine(int distance, double angle) throws InterruptedException {
         //calibration constants
-        double p = .000006; double i = .0000000035; //double d = .00000000002;
+        double p = .000006; double i = .000000003; //double d = .00000000002;
         double error = distance;
         double pastError = 0.0;
         double proportional = 0.0;
@@ -1188,7 +1188,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void turnIntoWhiteLine(double angle) throws InterruptedException {
         //calibration constants
-        double p = .00625; double i = .000045; double d = 0.0;
+        double p = .00625; double i = .00004; double d = 0.0;
         //double p = .004; double i = .000015;
         double error = angle;
         double pastError = 0.0;
@@ -1220,6 +1220,62 @@ public abstract class AutoOpMode extends LinearOpMode {
                 output = 1;
             //+ (reset * i) + derivative
             turnRight(output);
+            telemetry.log().add("output", output);
+            telemetry.log().add("proportion", proportional);
+            telemetry.log().add("reset", reset * i);
+            telemetry.log().add("derivative", derivative * d);
+            telemetry.update();
+            pastError = error;
+            lastTime = System.currentTimeMillis();
+            idle();
+        }
+        double afterAngle = getGyroYaw();
+        telemetry.log().add("afterYawAngle", beforeAngle);
+        if (Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
+            telemetry.log().add("turn", "success");
+        else
+            telemetry.log().add("turn", "failure");
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void turnIntoWhiteLineRed(double angle) throws InterruptedException {
+        //calibration constants
+        double p = .004; double i = .00002; double d = 0.0;
+        //double p = .004; double i = .000015;
+        double error = angle;
+        double pastError = 0.0;
+        double output;
+        double proportional = 0.0;
+        double reset = 0.0;
+        double derivative = 0.0;
+        double deltaTime;
+        beforeAngle = getGyroYaw();
+        telemetry.addData("beforeYawAngle", beforeAngle);
+        telemetry.update();
+        long firstTime = System.currentTimeMillis();
+        long lastTime = System.currentTimeMillis();
+        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 2) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
+            error = angle - Math.abs(getGyroYaw() - beforeAngle);
+            //proportional
+            proportional = error * p;
+            deltaTime = System.currentTimeMillis() - lastTime;
+            //integral
+            reset += (error * deltaTime);
+            //derivative
+            derivative = deltaTime / (error - pastError); //(error - pastError)/deltaTime;
+            //output
+            output = proportional + (reset * i);
+            //Range.clip(output, -1, 1);
+            if (output < .15)
+                output = 0;
+            else if(output > 1)
+                output = 1;
+            //+ (reset * i) + derivative
+            turnLeft(output);
             telemetry.log().add("output", output);
             telemetry.log().add("proportion", proportional);
             telemetry.log().add("reset", reset * i);
@@ -1360,12 +1416,16 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            moveManBeaconR();
 //        }
 //        correct(angle, .01, .00025, 0, 0);
-        correct(angle, .008, .000125, 0, 0);
         double dist = getDist(rangeSensor);
+        if(dist > 8)
+            moveForward(.175, 20, angle);
+        dist = getDist(rangeSensor);
         telemetry.addData("distance", dist);
         telemetry.update();
         beforeALV = getAvg();
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 550) {
+        //REMOVE AFTER TESTING
+        sleep(5000);
+        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
             moveForward(.14);
             dist = getDist(rangeSensor);
             idle();
@@ -1395,8 +1455,10 @@ public abstract class AutoOpMode extends LinearOpMode {
             ManBeaconR.setPosition(.7);
         }
         if(beaconValue(colorSensorBeacon) != 1) {
+            moveBackWardWithEncoders(.14, 20);
             sleep(5000);
             ManBeaconL.setPosition(1);
+            mashBeacons(.14, 20);
             sleep(1000);
             ManBeaconL.setPosition(.3);
         }
@@ -1411,12 +1473,17 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            moveForward(.175, movement, angle);
 //        else if(movement < 0)
 //            moveBackWardWithCorrection(.175, -movement, angle);
-        correct(angle, .008, .000125, 0, 0);
         double dist = getDist(rangeSensor);
+        if(dist > 8)
+            moveForward(.175, 20, angle);
+        dist = getDist(rangeSensor);
         telemetry.addData("distance", dist);
         telemetry.update();
+        //REMOVE AFTER TESTING
+        sleep(5000);
         beforeALV = getAvg();
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 550) {
+        dist = getDist(rangeSensor);
+        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
             moveForward(.14);
             dist = getDist(rangeSensor);
             idle();
@@ -1432,7 +1499,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         if(beaconValue(colorSensorBeacon) == 0) {
             ManBeaconL.setPosition(1);
             sleep(1000);
-            if(getDist(rangeSensor) > 6)
+            if(getDist(rangeSensor) > 7)
                 mashBeacons(.12, 100);
             ManBeaconL.setPosition(.3);
         }
@@ -1444,10 +1511,12 @@ public abstract class AutoOpMode extends LinearOpMode {
             ManBeaconR.setPosition(.7);
         }
         if(beaconValue(colorSensorBeacon) != 0) {
+            moveBackWardWithEncoders(.14, 20);
             sleep(5000);
-            ManBeaconL.setPosition(1);
+            ManBeaconR.setPosition(1);
+            mashBeacons(.14, 20);
             sleep(1000);
-            ManBeaconL.setPosition(.3);
+            ManBeaconR.setPosition(.3);
         }
         telemetry.addData("distance", dist);
         telemetry.update();

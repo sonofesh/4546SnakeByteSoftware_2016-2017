@@ -160,7 +160,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         int beforeManLift = ManLift.getCurrentPosition();
         ShooterF.setPower(power);
         ShooterB.setPower(-power);
-        bringDownShooter((.3 * -1), (distance + (Math.abs(beforeManLift - 1200))));
+        bringDownShooter((.3 * -1), (distance + (Math.abs(beforeManLift - 1150))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
@@ -1188,7 +1188,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void turnIntoWhiteLine(double angle) throws InterruptedException {
         //calibration constants
-        double p = .00625; double i = .00004; double d = 0.0;
+        double p = .006; double i = .00004; double d = 0.0;
         //double p = .004; double i = .000015;
         double error = angle;
         double pastError = 0.0;
@@ -1424,7 +1424,86 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         beforeALV = getAvg();
         //REMOVE AFTER TESTING
-        sleep(5000);
+        //sleep(5000);
+        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
+            moveForward(.14);
+            dist = getDist(rangeSensor);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("distance", dist);
+        telemetry.update();
+        sleep(500);
+        //moveForward(.175, 450, angle);
+        if(beaconValue(colorSensorBeacon) == 1) {
+            ManBeaconL.setPosition(1);
+            sleep(1000);
+            //moveForwardWithEncoders(.14, 100);
+            if(getDist(rangeSensor) > 6)
+                mashBeacons(.12, 100);
+            ManBeaconL.setPosition(.3);
+        }
+        else {
+            ManBeaconR.setPosition(.15);
+            sleep(1000);
+            //moveForwardWithEncoders(.14, 100);
+            if(getDist(rangeSensor) > 6)
+                mashBeacons(.12, 100);
+            ManBeaconR.setPosition(.7);
+        }
+        if(beaconValue(colorSensorBeacon) != 1) {
+            moveBackWardWithEncoders(.14, 20);
+            sleep(5000);
+            ManBeaconL.setPosition(1);
+            mashBeacons(.14, 20);
+            sleep(1000);
+            ManBeaconL.setPosition(.3);
+            bringDownShooter(-.4, 800);
+            moveBackWardWithEncoders(.6, 2800);
+            sleep(30000);
+        }
+    }
+
+//    bringDownShooter(-.4, 800);
+//    moveBackWardWithEncoders(.4, 500);
+//    turnRightWithPID(45, .004, .000015, 0.0);
+//    //double p = .004; double i = .000015;
+//    moveBackWardWithEncoders(.6, 2800);
+//    sleep(30000);
+    public void pushSecondRed(double angle) throws InterruptedException {
+//        double dist = getDist(rangeSensor);
+//        while (opModeIsActive() && (dist > 13 || dist < 6)) {
+//            if (dist < 6)
+//                moveBackward(.15);
+//            else if (dist > 13)
+//                moveForward(.15);
+//            else{
+//
+//            }
+//            dist = getDist(rangeSensor);
+//        }
+//        if(beaconValue(colorSensorBeacon) == 1)
+//            moveManBeaconR();
+//        else
+//            moveManBeaconL();
+//        Thread.sleep(500);
+//        if(beaconValue(colorSensorBeacon) != 1) {
+//            Thread.sleep(5000);
+//            moveManBeaconR();
+//        }
+//        correct(angle, .01, .00025, 0, 0);
+        double dist = getDist(rangeSensor);
+        if(dist > 8)
+            moveForward(.175, 50, angle);
+        dist = getDist(rangeSensor);
+        telemetry.addData("distance", dist);
+        telemetry.update();
+        beforeALV = getAvg();
+        //REMOVE AFTER TESTING
+        sleep(500);
         while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
             moveForward(.14);
             dist = getDist(rangeSensor);
@@ -1480,7 +1559,73 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("distance", dist);
         telemetry.update();
         //REMOVE AFTER TESTING
-        sleep(5000);
+        sleep(500);
+        beforeALV = getAvg();
+        dist = getDist(rangeSensor);
+        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
+            moveForward(.14);
+            dist = getDist(rangeSensor);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("distance", dist);
+        telemetry.update();
+        //sleep(500);
+        //moveForward(.175, 450, angle);
+        if(beaconValue(colorSensorBeacon) == 0) {
+            ManBeaconL.setPosition(.85);
+            sleep(1000);
+            if(getDist(rangeSensor) > 7)
+                mashBeacons(.12, 100);
+            ManBeaconL.setPosition(.3);
+        }
+        else {
+            ManBeaconR.setPosition(.25);
+            sleep(1000);
+            if(getDist(rangeSensor) > 6)
+                mashBeacons(.12, 100);
+            ManBeaconR.setPosition(.7);
+        }
+        if(beaconValue(colorSensorBeacon) != 0) {
+            moveBackWardWithEncoders(.14, 20);
+            sleep(5000);
+            ManBeaconR.setPosition(.25);
+            mashBeacons(.14, 20);
+            sleep(500);
+            ManBeaconR.setPosition(.7);
+            sleep(500);
+//            bringDownShooter(-.4, 800);
+//            moveBackWardWithEncoders(.6, 3000);
+//            sleep(30000);
+        }
+        telemetry.addData("distance", dist);
+        telemetry.update();
+    }
+//    bringDownShooter(-.4, 800);
+//    moveBackWardWithEncoders(.4, 500);
+//    turnLeftWithPID(45, .004, .000015, 0.0);
+//    moveBackWardWithEncoders(.6, 3000);
+//    sleep(30000);
+    public void pushSecondBlue(double angle) throws InterruptedException {
+        //double p = .004; double i = .000015; //double d = 2.0;
+        //double dist = getDist(rangeSensor);
+
+//        int movement = (int) Math.round(dist - 6) * 30;
+//        if(movement > 0)
+//            moveForward(.175, movement, angle);
+//        else if(movement < 0)
+//            moveBackWardWithCorrection(.175, -movement, angle);
+        double dist = getDist(rangeSensor);
+        if(dist > 8)
+            moveForward(.175, 50, angle);
+        dist = getDist(rangeSensor);
+        telemetry.addData("distance", dist);
+        telemetry.update();
+        //REMOVE AFTER TESTING
+        sleep(500);
         beforeALV = getAvg();
         dist = getDist(rangeSensor);
         while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
@@ -1517,10 +1662,12 @@ public abstract class AutoOpMode extends LinearOpMode {
             mashBeacons(.14, 20);
             sleep(1000);
             ManBeaconR.setPosition(.3);
+            sleep(500);
         }
         telemetry.addData("distance", dist);
         telemetry.update();
     }
+
 
     //test methods
 

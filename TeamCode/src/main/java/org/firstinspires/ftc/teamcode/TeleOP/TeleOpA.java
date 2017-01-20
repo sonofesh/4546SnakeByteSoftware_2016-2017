@@ -16,6 +16,7 @@
 
 package org.firstinspires.ftc.teamcode.TeleOP;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -109,6 +110,7 @@ public class TeleOpA extends OpMode {
 //        return 1;
 //    }
 
+
     @Override
     public void loop() {
         //CONTROLLER 1
@@ -136,16 +138,17 @@ public class TeleOpA extends OpMode {
                     halfspeed = false;
                 else
                     halfspeed = true;
+                lastTime = System.currentTimeMillis();
             }
             speed = (halfspeed) ? HALFSPEED : FULLSPEED;
-            lastTime = System.currentTimeMillis();
         }
         //Reverse Macro
         if (gamepad1.y) {
             currentTime = System.currentTimeMillis();
-            if (currentTime > lastTime + DURATION)
+            if (currentTime > lastTime + DURATION) {
                 direction *= -1;
-            lastTime = System.currentTimeMillis();
+                lastTime = System.currentTimeMillis();
+            }
         }
 
         //CONTROLLER 2

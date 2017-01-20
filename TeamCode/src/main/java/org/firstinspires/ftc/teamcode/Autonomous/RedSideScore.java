@@ -28,7 +28,7 @@ public class RedSideScore extends AutoOpMode {
         moveForward(.175, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.1, 1200);
+        bringDownShooter(.1, 1150);
         sleep(1000);
         //shoot
         double power = .8;

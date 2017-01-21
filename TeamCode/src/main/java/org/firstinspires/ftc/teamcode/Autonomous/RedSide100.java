@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 
 @Autonomous(name = "RedSide100", group = "Autonomous")
+@Disabled
 public class RedSide100 extends AutoOpMode{
         public RedSide100() { super(); }
 
@@ -56,7 +58,7 @@ public class RedSide100 extends AutoOpMode{
         pushFrontRed(perpendicular - 90);
         sleep(500);
         //
-        moveBackWardWithEncoders(.4,400);
+        moveBackWardWithEncoders(.4, 400);
         turnRightWithPID(Math.abs(getGyroYaw() - perpendicular));
         sleep(500);
         moveForwardsToWhiteLine(2500, perpendicular);

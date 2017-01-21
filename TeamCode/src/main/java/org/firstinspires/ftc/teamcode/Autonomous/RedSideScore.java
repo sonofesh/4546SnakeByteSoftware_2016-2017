@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by 4546 Snakebyte on 12/19/16.
- * Test count: 18 + 3 + 7 + 18 +
+ * Test count: 18 + 3 + 7 + 18 + 8 + 5 + 11
  * This will essentially be our red side auto, provided the first turn is reversed
  * DELETE WHEN DONE.
  * Shoot first auto, configured for red side
  */
 @Autonomous(name = "RedSide70", group = "Autonomous")
+@Disabled
 public class RedSideScore extends AutoOpMode {
     public RedSideScore() {
         super();
@@ -19,13 +21,13 @@ public class RedSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        telemetry.addData("init", "test8");
+        telemetry.addData("init", "final");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
-        double angle43 = perpendicular;
+        double angle42 = perpendicular;
         //int movement = 0;
-        moveForward(.175, 500);
+        moveForward(.15, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.1, 1150);
@@ -34,21 +36,21 @@ public class RedSideScore extends AutoOpMode {
         double power = .8;
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
-            power = .85;
+            power = .95;
         else if (voltage <= 13.75 && voltage > 13.5)
-            power = .8;
+            power = .925;
         else if (voltage > 13.75 && voltage <= 13.9)
-            power = .75;
+            power = .875;
         else if (voltage > 13.9 && voltage <= 14)
-            power = .68;
+            power = .85;
         else if (voltage > 14)
-            power = .65;
-        shoot(power, 350);
+            power = .8;
+        shoot(power, 360);
         sleep(750);
-        turnLeftWithPID(43, .005, .00003, 0.0);
+        turnLeftWithPID(42, .005, .00003, 0.0);
         sleep(500);
-        angle43 -= 43;
-        moveForwardsToWhiteLine(2850, angle43);
+        angle42 -= 42;
+        moveForwardsToWhiteLine(2850, angle42);
         moveForwardWithEncoders(.15, 150);
         //double p = .0002; double i = .00000015; //double d = 2.0;
         sleep(500);
@@ -59,7 +61,8 @@ public class RedSideScore extends AutoOpMode {
         //turnRightWithGyro(.3, 5);
         sleep(500);
         bringDownShooter(-.4, 800);
-        moveBackWardWithEncoders(.6, 2800);
+        moveBackWardWithEncoders(.6, 2700);
+        turnRightWithGyro(.3, 30);
     }
 
     /*

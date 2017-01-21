@@ -62,14 +62,14 @@ public abstract class AutoOpMode extends LinearOpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-        BlueBeaconPusher = hardwareMap.servo.get("AutoBeaconL");
-        RedBeaconPusher = hardwareMap.servo.get("AutoBeaconR");
+//        BlueBeaconPusher = hardwareMap.servo.get("AutoBeaconL");
+//        RedBeaconPusher = hardwareMap.servo.get("AutoBeaconR");
         ManBeaconL = hardwareMap.servo.get("ManBeaconL");
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
         ManBeaconL.setPosition(.3);
         ManBeaconR.setPosition(.7);
-        BlueBeaconPusher.setPosition(0);
-        RedBeaconPusher.setPosition(0);
+//        BlueBeaconPusher.setPosition(0);
+//        RedBeaconPusher.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ManLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -167,7 +167,30 @@ public abstract class AutoOpMode extends LinearOpMode {
             idle();
         ManIn.setPower(-.25);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 1500)
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2500)
+            idle();
+        ManIn.setPower(0);
+        ShooterF.setPower(0);
+        ShooterB.setPower(0);
+        ManIn.setPower(0);
+    }
+
+    public void shootSlow(double power, int distance) throws InterruptedException
+    {
+        int beforeManLift = ManLift.getCurrentPosition();
+        ShooterF.setPower(power);
+        ShooterB.setPower(-power);
+        bringDownShooter((.2 * -1), (distance + (Math.abs(beforeManLift - 1100))));
+        sleep(1000);
+        beforeTime = System.currentTimeMillis();
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 3000)
+            idle();
+        ManIn.setPower(-.175);
+        beforeTime = System.currentTimeMillis();
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 500)
+            idle();
+        beforeTime = System.currentTimeMillis();
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2000)
             idle();
         ManIn.setPower(0);
         ShooterF.setPower(0);
@@ -654,7 +677,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     //gyro stabilization
     public void moveForward(double power, int distance, double angle) throws InterruptedException {
         beforeALV = getAvg();
-        double correction = CORRECTION;
+        double correction = .17;
         long lastTime = System.nanoTime();
         double signedDifference;
         while (Math.abs(getAvg() - beforeALV) < distance) {
@@ -1084,7 +1107,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     //beacon pushing methods
     public void moveForwardsToWhiteLine(int distance, double angle) throws InterruptedException {
         //calibration constants
-        double p = .000006; double i = .000000003; //double d = .00000000002;
+        double p = .00000625; double i = .0000000031; //double d = .00000000002;
         double error = distance;
         double pastError = 0.0;
         double proportional = 0.0;
@@ -1097,7 +1120,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         double correction = CORRECTION;
         long lastTime = System.currentTimeMillis();
         long firstTime =  System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 4000) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 8 && System.currentTimeMillis() - firstTime < 4000) {
             error = distance - Math.abs(getAvg() - beforeALV);
             //proportional
             proportional = error * p;
@@ -1186,6 +1209,12 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            idle();
     }
 
+    public void moveExtra(double power, double distance) throws InterruptedException{
+        if (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 8) {
+            moveForwardPID(20);
+        }
+    }
+
     public void turnIntoWhiteLine(double angle) throws InterruptedException {
         //calibration constants
         double p = .006; double i = .00004; double d = 0.0;
@@ -1202,7 +1231,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < angle && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
+        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 2) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
             error = angle - Math.abs(getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;
@@ -1244,7 +1273,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void turnIntoWhiteLineRed(double angle) throws InterruptedException {
         //calibration constants
-        double p = .004; double i = .00002; double d = 0.0;
+        double p = .00375; double i = .000018; double d = 0.0;
         //double p = .004; double i = .000015;
         double error = angle;
         double pastError = 0.0;
@@ -1258,7 +1287,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 2) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
+        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 6) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
             error = angle - Math.abs(getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;
@@ -1417,15 +1446,15 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        }
 //        correct(angle, .01, .00025, 0, 0);
         double dist = getDist(rangeSensor);
-        if(dist > 8)
-            moveForward(.175, 20, angle);
+        if(dist > 10.5)
+            moveForward(.175, 8, angle);
         dist = getDist(rangeSensor);
         telemetry.addData("distance", dist);
         telemetry.update();
         beforeALV = getAvg();
         //REMOVE AFTER TESTING
         //sleep(5000);
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
+        while (dist > 9.5 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 415) {
             moveForward(.14);
             dist = getDist(rangeSensor);
             idle();
@@ -1442,7 +1471,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             ManBeaconL.setPosition(1);
             sleep(1000);
             //moveForwardWithEncoders(.14, 100);
-            if(getDist(rangeSensor) > 6)
+            if(getDist(rangeSensor) > 7)
                 mashBeacons(.12, 100);
             ManBeaconL.setPosition(.3);
         }
@@ -1450,7 +1479,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             ManBeaconR.setPosition(.15);
             sleep(1000);
             //moveForwardWithEncoders(.14, 100);
-            if(getDist(rangeSensor) > 6)
+            if(getDist(rangeSensor) > 7)
                 mashBeacons(.12, 100);
             ManBeaconR.setPosition(.7);
         }
@@ -1463,6 +1492,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             ManBeaconL.setPosition(.3);
             bringDownShooter(-.4, 800);
             moveBackWardWithEncoders(.6, 2800);
+            turnRightWithGyro(.3, 30);
             sleep(30000);
         }
     }
@@ -1554,7 +1584,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            moveBackWardWithCorrection(.175, -movement, angle);
         double dist = getDist(rangeSensor);
         if(dist > 8)
-            moveForward(.175, 20, angle);
+            moveForward(.175, 25, angle);
         dist = getDist(rangeSensor);
         telemetry.addData("distance", dist);
         telemetry.update();
@@ -1562,7 +1592,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         sleep(500);
         beforeALV = getAvg();
         dist = getDist(rangeSensor);
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
+        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 515) {
             moveForward(.14);
             dist = getDist(rangeSensor);
             idle();
@@ -1578,15 +1608,15 @@ public abstract class AutoOpMode extends LinearOpMode {
         if(beaconValue(colorSensorBeacon) == 0) {
             ManBeaconL.setPosition(.85);
             sleep(1000);
-            if(getDist(rangeSensor) > 7)
-                mashBeacons(.12, 100);
+            if(getDist(rangeSensor) > 6)
+                mashBeacons(.12, 110);
             ManBeaconL.setPosition(.3);
         }
         else {
             ManBeaconR.setPosition(.25);
             sleep(1000);
             if(getDist(rangeSensor) > 6)
-                mashBeacons(.12, 100);
+                mashBeacons(.12, 110);
             ManBeaconR.setPosition(.7);
         }
         if(beaconValue(colorSensorBeacon) != 0) {

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 
 @Autonomous(name = "BlueSide100", group = "Autonomous")
+@Disabled
 public class BlueSide100 extends AutoOpMode {
     public BlueSide100() { super(); }
 

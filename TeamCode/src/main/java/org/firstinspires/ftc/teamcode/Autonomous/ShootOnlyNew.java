@@ -20,9 +20,11 @@ public class ShootOnlyNew extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
+        telemetry.addData("final", "init");
+        telemetry.update();
         double power = .9;
         waitForStart();
-        moveForward(.15, 1100);
+        moveForward(.15, 1100, getGyroYaw());
         sleep(1000);
         bringDownShooter(.1, 900);
         sleep(1000);
@@ -36,8 +38,8 @@ public class ShootOnlyNew extends AutoOpMode {
             power = .9;
         else if(voltage > 14)
             power = .85;
-        shoot(power, 400);
+        shootSlow(power, 400);
         sleep(500);
-        moveForward(.4, 3000);
+        moveForwardWithEncoders(.4, 3000);
     }
 }

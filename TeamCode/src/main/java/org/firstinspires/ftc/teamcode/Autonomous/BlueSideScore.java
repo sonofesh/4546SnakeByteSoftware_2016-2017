@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 /**
  * Created by 4546 on 12/21/16.
  * This auto will move to the beacons, hit both, turn, shoot, and then knock the cap ball
- * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5
+ * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 = 77 tests
  */
 @Autonomous(name = "BlueSide70", group = "Autonomous")
 public class BlueSideScore extends AutoOpMode {
@@ -16,7 +16,7 @@ public class BlueSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .8;
-        telemetry.addData("init", "test3");
+        telemetry.addData("init", "final");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -26,33 +26,48 @@ public class BlueSideScore extends AutoOpMode {
         bringDownShooter(.1, 1150);
         sleep(1000);
         //shoot
+//        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+//        if (voltage <= 13.5)
+//            power = .9;
+//        else if (voltage <= 13.75 && voltage > 13.5)
+//            power = .85;
+//        else if (voltage > 13.75 && voltage <= 13.9)
+//            power = .78;
+//        else if (voltage > 13.9 && voltage <= 14)
+//            power = .72;
+//        else if (voltage > 14)
+//            power = .7;
+//        shoot(power, 350);
+//        sleep(750);
+        //shoot
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
-            power = .9;
+            power = .96;
         else if (voltage <= 13.75 && voltage > 13.5)
-            power = .85;
+            power = .93;
         else if (voltage > 13.75 && voltage <= 13.9)
-            power = .78;
+            power = .88;
         else if (voltage > 13.9 && voltage <= 14)
-            power = .72;
+            power = .86;
         else if (voltage > 14)
-            power = .7;
-        shoot(power, 350);
-        sleep(750);
+            power = .81;
+        shoot(power, 360);
         double angle43 = perpendicular;
         //double p = .004; double i = .000015;
         turnRightWithPID(43, .006, .00004, 0.0);
         sleep(500);
         angle43 += 43;
-        moveForwardsToWhiteLine(2900, angle43);
+        moveForwardsToWhiteLine(2950, angle43);
         //double p = .004; double i = .000015;
         sleep(500);
         turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 5);
+        moveExtra(.2, 20);
         sleep(500);
         pushFrontBlue(perpendicular + 90);
         sleep(1000);
         bringDownShooter(-.4, 800);
         moveBackWardWithEncoders(.6, 3000);
+        turnLeftWithGyro(.3, 30);
     }
 
 //        moveBackWardWithEncoders(.175, 400);

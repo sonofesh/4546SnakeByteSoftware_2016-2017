@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous.OpModes.TestFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 
 @Autonomous(name = "FrontPusher", group = "Autonomous")
+@Disabled
 public class FrontPusher extends AutoOpMode {
     public FrontPusher() { super();}
 
@@ -20,6 +22,5 @@ public class FrontPusher extends AutoOpMode {
         waitForStart();
         double perpendicular = getGyroYaw();
         pushFrontBlue(perpendicular);
-        //pushFrontBlue(perpendicular);
     }
 }

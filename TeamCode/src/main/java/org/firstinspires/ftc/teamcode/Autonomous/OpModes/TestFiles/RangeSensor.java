@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "Sensor: MR range sensor", group = "Autonomous")
+@Disabled
 public class RangeSensor extends LinearOpMode {
 
     ModernRoboticsI2cRangeSensor rangeSensor;

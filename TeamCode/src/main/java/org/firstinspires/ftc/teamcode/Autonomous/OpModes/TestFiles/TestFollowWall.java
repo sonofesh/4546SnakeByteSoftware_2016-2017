@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 
 @Autonomous(name = "TestCorrection", group = "Autonomous")
-
+@Disabled
 public class TestFollowWall extends AutoOpMode{
 
     @Override

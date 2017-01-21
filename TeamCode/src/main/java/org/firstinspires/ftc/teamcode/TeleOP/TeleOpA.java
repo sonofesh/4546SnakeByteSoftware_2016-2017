@@ -29,6 +29,22 @@ import javax.xml.datatype.Duration;
  * The major change with this TeleOp is that it contains motor scaling for more accurate and precise driving
  */
 
+/** CONTROLS
+ *      Controller 1 - Drive
+ *          Right Stick Y Axis : Right Wheel Power          Left Stick Y Axis : Left Wheel Power
+ *          Y : Reverse Drive Toggle                        A : Half Speed Toggle
+ *
+ *      Controller 2 - Scoring
+ *          Right Stick Y Axis : Manipulator High Power     Left Stick Y Axis : Manipulator Low Power
+ *          Right Trigger : Ramp Down                       Left Trigger : Ramp Uo
+ *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
+ *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
+ *          Y : Deploy Stopper Toggle                       A : Deploy Lift Gate
+ *
+ * VHS ROBOTICS 4546
+ * 10/17/16
+ */
+
 //TeleOp Version A
 @TeleOp(name = "TeleOpA", group = "TeleOp")
 public class TeleOpA extends OpMode {
@@ -42,8 +58,8 @@ public class TeleOpA extends OpMode {
     DcMotor ManLift;
     Servo ManBeaconL;
     Servo ManBeaconR;
-    Servo AutoBeaconL;
-    Servo AutoBeaconR;
+//    Servo AutoBeaconL;
+//    Servo AutoBeaconR;
     boolean stop;
     boolean gate;
     int direction = 1;
@@ -73,12 +89,12 @@ public class TeleOpA extends OpMode {
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManBeaconL = hardwareMap.servo.get("ManBeaconL");
         ManBeaconR = hardwareMap.servo.get("ManBeaconR");
-        AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
-        AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
+//        AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
+//        AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
         ManBeaconL.setPosition(.85);
         ManBeaconR.setPosition(.25);
-        AutoBeaconL.setPosition(0);
-        AutoBeaconR.setPosition(0);
+//        AutoBeaconL.setPosition(0);
+//        AutoBeaconR.setPosition(0);
         FL.setPower(0);
         FR.setPower(0);
         BL.setPower(0);
@@ -171,14 +187,14 @@ public class TeleOpA extends OpMode {
             ManLift.setPower(0);
 
         //Back Beacon Control
-        if (gamepad2.b) {
+        if (gamepad2.x) {
             ManBeaconR.setPosition(.7);
         }
         else {
             ManBeaconR.setPosition(.25);
         }
 
-        if (gamepad2.x)
+        if (gamepad2.b)
             ManBeaconL.setPosition(.3);
         else
             ManBeaconL.setPosition(.85);
@@ -188,10 +204,12 @@ public class TeleOpA extends OpMode {
         if (gamepad2.right_bumper) {
             ShooterF.setPower(1);
             ShooterB.setPower(-1);
-        } else if (gamepad2.left_bumper) {
+        }
+        else if (gamepad2.left_bumper) {
             ShooterF.setPower(.9);
             ShooterB.setPower(-.9);
-        } else {
+        }
+        else {
             ShooterF.setPower(0);
             ShooterB.setPower(0);
         }

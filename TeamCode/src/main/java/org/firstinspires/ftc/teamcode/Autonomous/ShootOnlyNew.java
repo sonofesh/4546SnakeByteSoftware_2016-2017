@@ -22,24 +22,24 @@ public class ShootOnlyNew extends AutoOpMode {
         initialize();
         telemetry.addData("final", "init");
         telemetry.update();
-        double power = .9;
+        double power = .85;
         waitForStart();
-        moveForward(.15, 1100, getGyroYaw());
+        moveForward(.175, 1100, getGyroYaw());
         sleep(1000);
         bringDownShooter(.1, 900);
         sleep(1000);
         //Voltage Scaling
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if(voltage <= 13.5)
-            power = 1;
-        else if(voltage <= 13.75 && voltage > 13.5)
             power = .95;
-        else if(voltage > 13.75 && voltage <= 14)
+        else if(voltage <= 13.75 && voltage > 13.5)
             power = .9;
-        else if(voltage > 14)
+        else if(voltage > 13.75 && voltage <= 14)
             power = .85;
-        shootSlow(power, 400);
+        else if(voltage > 14)
+            power = .8;
+        shootSlow(power, 390);
         sleep(500);
-        moveForwardWithEncoders(.4, 3000);
+        moveForwardWithEncoders(.4, 2500);
     }
 }

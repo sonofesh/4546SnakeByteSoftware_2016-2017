@@ -15,12 +15,12 @@ public class BlueSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        double power = .8;
-        telemetry.addData("init", "final");
+        double power = .88;
+        telemetry.addData("init", "test9");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
-        moveForward(.16, 500);
+        moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.1, 1150);
@@ -42,15 +42,15 @@ public class BlueSideScore extends AutoOpMode {
         //shoot
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
-            power = .96;
+            power = .97;
         else if (voltage <= 13.75 && voltage > 13.5)
-            power = .93;
+            power = .94;
         else if (voltage > 13.75 && voltage <= 13.9)
-            power = .88;
+            power = .9;
         else if (voltage > 13.9 && voltage <= 14)
-            power = .86;
+            power = .88;
         else if (voltage > 14)
-            power = .81;
+            power = .83;
         shoot(power, 360);
         double angle43 = perpendicular;
         //double p = .004; double i = .000015;
@@ -58,14 +58,14 @@ public class BlueSideScore extends AutoOpMode {
         sleep(500);
         angle43 += 43;
         moveForwardsToWhiteLine(2950, angle43);
+//        moveExtra(.2, 20);
         //double p = .004; double i = .000015;
         sleep(500);
-        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 5);
-        moveExtra(.2, 20);
+        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 2);
         sleep(500);
         pushFrontBlue(perpendicular + 90);
         sleep(1000);
-        bringDownShooter(-.4, 800);
+        bringDownShooter(-.4, 400);
         moveBackWardWithEncoders(.6, 3000);
         turnLeftWithGyro(.3, 30);
     }

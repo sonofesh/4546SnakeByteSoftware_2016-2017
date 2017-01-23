@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Shoot first auto, configured for red side
  */
 @Autonomous(name = "RedSide70", group = "Autonomous")
-@Disabled
 public class RedSideScore extends AutoOpMode {
     public RedSideScore() {
         super();
@@ -21,7 +20,7 @@ public class RedSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        telemetry.addData("init", "final");
+        telemetry.addData("init", "test1");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();

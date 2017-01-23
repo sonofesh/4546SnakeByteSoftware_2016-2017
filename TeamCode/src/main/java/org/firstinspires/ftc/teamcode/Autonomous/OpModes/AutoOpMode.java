@@ -178,14 +178,23 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void shootSlow(double power, int distance) throws InterruptedException
     {
         int beforeManLift = ManLift.getCurrentPosition();
-        ShooterF.setPower(power);
-        ShooterB.setPower(-power);
+        if(power < .8) {
+            ShooterF.setPower(power * 1.25);
+            ShooterB.setPower(-power * 1.25);
+        }
+        else {
+            ShooterF.setPower(power);
+            ShooterB.setPower(-power);
+        }
+
         bringDownShooter((.2 * -1), (distance + (Math.abs(beforeManLift - 1100))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 3000)
             idle();
-        ManIn.setPower(-.175);
+        ManIn.setPower(-.125);
+        ShooterF.setPower(power);
+        ShooterB.setPower(-power);
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 500)
             idle();
@@ -677,7 +686,54 @@ public abstract class AutoOpMode extends LinearOpMode {
     //gyro stabilization
     public void moveForward(double power, int distance, double angle) throws InterruptedException {
         beforeALV = getAvg();
-        double correction = .17;
+        double correction = .14;
+        long lastTime = System.nanoTime();
+        double signedDifference;
+        while (Math.abs(getAvg() - beforeALV) < distance) {
+            FR.setPower(power);
+            BR.setPower(power);
+            FL.setPower(-power);
+            BL.setPower(-power);
+            double difference = Math.abs(getGyroYaw() - angle);
+            if (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
+                if(getGyroYaw() < angle) {
+                    FR.setPower(power * (1 + difference * correction));
+                    BR.setPower(power * (1 + difference * correction));
+                    FL.setPower(-power * (1 - difference * correction));
+                    BL.setPower(-power * (1 - difference * correction));
+                }
+                else if(getGyroYaw() > angle) {
+                    FR.setPower(power * (1 - (difference * correction)));
+                    BR.setPower(power * (1 - (difference * correction)));
+                    FL.setPower(-power * (1 + difference * correction));
+                    BL.setPower(-power  * (1 + difference * correction));
+                }
+                telemetry.addData("LeftPower", FL.getPower());
+                telemetry.addData("RightPower", FR.getPower());
+                telemetry.update();
+                idle();
+            }
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        telemetry.addData("EncoderMovement", Math.abs(getAvg() - beforeALV));
+        telemetry.update();
+        if (Math.abs(beforeAngle - getGyroYaw()) < 2) {
+            telemetry.addData("success", "correction works");
+            telemetry.update();
+        }
+        else {
+            telemetry.addData("success", "correction failed");
+            telemetry.update();
+        }
+
+    }
+
+    public void moveForwardToPush(double power, int distance, double angle) throws InterruptedException {
+        beforeALV = getAvg();
+        double correction = .25;
         long lastTime = System.nanoTime();
         double signedDifference;
         while (Math.abs(getAvg() - beforeALV) < distance) {
@@ -1209,9 +1265,9 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            idle();
     }
 
-    public void moveExtra(double power, double distance) throws InterruptedException{
+    public void moveExtra(double power, int distance) throws InterruptedException{
         if (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 8) {
-            moveForwardPID(20);
+            moveForwardWithEncoders(power, distance);
         }
     }
 
@@ -1231,7 +1287,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 2) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
+        while (Math.abs(getGyroYaw() - beforeAngle) < (angle) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
             error = angle - Math.abs(getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;
@@ -1584,7 +1640,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            moveBackWardWithCorrection(.175, -movement, angle);
         double dist = getDist(rangeSensor);
         if(dist > 8)
-            moveForward(.175, 25, angle);
+            moveForwardToPush(.175, 35, angle);
         dist = getDist(rangeSensor);
         telemetry.addData("distance", dist);
         telemetry.update();
@@ -1608,22 +1664,22 @@ public abstract class AutoOpMode extends LinearOpMode {
         if(beaconValue(colorSensorBeacon) == 0) {
             ManBeaconL.setPosition(.85);
             sleep(1000);
-            if(getDist(rangeSensor) > 6)
-                mashBeacons(.12, 110);
+            if(getDist(rangeSensor) > 5.5)
+                mashBeacons(.12, 150);
             ManBeaconL.setPosition(.3);
         }
         else {
             ManBeaconR.setPosition(.25);
             sleep(1000);
-            if(getDist(rangeSensor) > 6)
-                mashBeacons(.12, 110);
+            if(getDist(rangeSensor) > 5.5)
+                mashBeacons(.12, 150);
             ManBeaconR.setPosition(.7);
         }
         if(beaconValue(colorSensorBeacon) != 0) {
             moveBackWardWithEncoders(.14, 20);
             sleep(5000);
             ManBeaconR.setPosition(.25);
-            mashBeacons(.14, 20);
+            mashBeacons(.14, 100);
             sleep(500);
             ManBeaconR.setPosition(.7);
             sleep(500);

@@ -11,7 +11,10 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 @Autonomous(name = "BlueSide70", group = "Autonomous")
 public class BlueSideScore extends AutoOpMode {
-    public BlueSideScore() { super(); }
+    public BlueSideScore() {
+        super();
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
@@ -25,21 +28,6 @@ public class BlueSideScore extends AutoOpMode {
         //bring down shooter
         bringDownShooter(.1, 1150);
         sleep(1000);
-        //shoot
-//        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-//        if (voltage <= 13.5)
-//            power = .9;
-//        else if (voltage <= 13.75 && voltage > 13.5)
-//            power = .85;
-//        else if (voltage > 13.75 && voltage <= 13.9)
-//            power = .78;
-//        else if (voltage > 13.9 && voltage <= 14)
-//            power = .72;
-//        else if (voltage > 14)
-//            power = .7;
-//        shoot(power, 350);
-//        sleep(750);
-        //shoot
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
             power = .97;
@@ -52,23 +40,24 @@ public class BlueSideScore extends AutoOpMode {
         else if (voltage > 14)
             power = .83;
         shoot(power, 360);
-        double angle43 = perpendicular;
-        //double p = .004; double i = .000015;
-        turnRightWithPID(43, .006, .00004, 0.0);
+        double angle36 = getGyroYaw();
+        turnRightWithPID(46, .006, .000045, 0.0);
         sleep(500);
-        angle43 += 43;
-        moveForwardsToWhiteLine(2950, angle43);
-//        moveExtra(.2, 20);
-        //double p = .004; double i = .000015;
+        angle36 += 36;
+        moveForwardPID(4000, angle36);
         sleep(500);
-        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 2);
+        correctOneSide(perpendicular, .006, .000015, 0.0, 0.0);
         sleep(500);
-        pushFrontBlue(perpendicular + 90);
+        moveBackwardsToWhiteLine(1200, .175, perpendicular);
+        sleep(500);
+        pushBlueBeacon(perpendicular);
         sleep(1000);
-        bringDownShooter(-.4, 400);
-        moveBackWardWithEncoders(.6, 3000);
-        turnLeftWithGyro(.3, 30);
+        //correct(perpendicular, .04, .00015, 0.0, 0);
+        moveForwardPID(2500, perpendicular);
+        moveForwardsToWhiteLine(300, perpendicular);
+        pushBlueBeacon(perpendicular);
     }
+
 
 //        moveBackWardWithEncoders(.175, 400);
 //        turnLeftWithPID(75);
@@ -89,18 +78,6 @@ public class BlueSideScore extends AutoOpMode {
 //        moveForwardsToWhiteLine(300, perpendicular);
 //        turnIntoWhiteLine(perpendicular - 90);
 //        pushFrontBlue();
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //    telemetry.addData("init", "test1");
@@ -142,4 +119,40 @@ public class BlueSideScore extends AutoOpMode {
 //        sleep(500);
 //        correct(beforeAngle);
 //        //moveToWhiteLine();
+
+
+//    double angle43 = perpendicular;
+//    //double p = .004; double i = .000015;
+//    turnRightWithPID(43, .006, .00004, 0.0);
+//    sleep(500);
+//    angle43 += 43;
+//    moveForwardsToWhiteLine(2950, angle43);
+//    //        moveExtra(.2, 20);
+//    //double p = .004; double i = .000015;
+//    sleep(500);
+//    turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 2);
+//    sleep(500);
+//    pushFrontBlue(perpendicular + 90);
+//    sleep(1000);
+//    bringDownShooter(-.4, 400);
+//    moveBackWardWithEncoders(.6, 3000);
+//    turnLeftWithGyro(.3, 30);
+
+
+    //shoot
+//        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+//        if (voltage <= 13.5)
+//            power = .9;
+//        else if (voltage <= 13.75 && voltage > 13.5)
+//            power = .85;
+//        else if (voltage > 13.75 && voltage <= 13.9)
+//            power = .78;
+//        else if (voltage > 13.9 && voltage <= 14)
+//            power = .72;
+//        else if (voltage > 14)
+//            power = .7;
+//        shoot(power, 350);
+//        sleep(750);
+    //shoot
+
 }

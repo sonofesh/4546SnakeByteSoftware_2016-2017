@@ -41,14 +41,14 @@ public class BlueSideScore extends AutoOpMode {
             power = .83;
         shoot(power, 360);
         double angle36 = getGyroYaw();
-        turnRightWithPID(46, .006, .000045, 0.0);
+        turnRightWithPID(36, .005, .00004, 0.0);
         sleep(500);
         angle36 += 36;
         moveForwardPID(4000, angle36);
         sleep(500);
         correctOneSide(perpendicular, .006, .000015, 0.0, 0.0);
         sleep(500);
-        moveBackwardsToWhiteLine(1200, .175, perpendicular);
+        moveBackwardsToWhiteLine(300, .175, perpendicular);
         sleep(500);
         pushBlueBeacon(perpendicular);
         sleep(1000);

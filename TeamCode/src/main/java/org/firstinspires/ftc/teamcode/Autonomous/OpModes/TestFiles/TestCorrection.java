@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Test log: 28 + 25 + 32 + 3
  */
 @Autonomous(name = "TestCorrection", group = "Autonomous")
-@Disabled
 public class TestCorrection extends AutoOpMode
 {
     @Override
@@ -27,7 +26,7 @@ public class TestCorrection extends AutoOpMode
         telemetry.addData("before yaw forward", getGyroYaw());
         telemetry.update();
         sleep(3000);
-        moveForwardsToWhiteLine(1250, angle);
+        moveForwardPID(4000, angle);
         //long lastTime = System.currentTimeMillis();
         sleep(2500);
 //        moveBackwardPID(.0003, .0000003, 0.0, 2000);

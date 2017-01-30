@@ -46,15 +46,22 @@ public class RedSideScore extends AutoOpMode {
         turnLeftWithPID(36, .005, .00004, 0.0);
         sleep(500);
         angle36 -= 36;
+        //double p = .004; double i = .000015; //double d = 2.0;
         moveForwardPID(4400, angle36);
         sleep(500);
-        moveIntoWall(1500, -.2, perpendicular);
+        correctOneSideLeft(perpendicular, .004, .000015, 0, 0);
+        moveToFirstLine(1500, .2);
         sleep(500);
         pushRedBeacon(perpendicular);
-        sleep(5000);
+        sleep(500);
         //correct(perpendicular, .04, .00015, 0.0, 0);
-        moveBakcToWhiteLineRed(1500, .175, perpendicular);
+        moveToSecondLine(3000, .25);
+        sleep(500);
         pushRedBeacon(perpendicular);
+        sleep(500);
+        turnRightWithGyro(.4, 90);
+        sleep(500);
+        moveBackWardWithEncoders(.5, 3000);
     }
 
     /*

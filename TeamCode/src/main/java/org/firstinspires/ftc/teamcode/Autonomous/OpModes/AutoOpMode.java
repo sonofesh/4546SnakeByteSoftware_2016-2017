@@ -559,8 +559,10 @@ public abstract class AutoOpMode extends LinearOpMode {
             else if(output > 1)
                 output = 1;
             //+ (reset * i) + derivative
-            FL.setPower(-output);
-            BL.setPower(-output);
+//            FL.setPower(-output);
+//            BL.setPower(-output);
+            FR.setPower(-output);
+            BR.setPower(-output);
             telemetry.log().add("output", output);
             telemetry.log().add("proportion", proportional);
             telemetry.log().add("reset", reset * i);
@@ -1426,23 +1428,36 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //beacon pushing methods
-    public void moveIntoWall(int distance, double power, double angle) throws InterruptedException {
-        //calibration constants
-        double p = .00015; double i = .00000015; //double d = .00000000002;
+    public void moveToFirstLine(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
-        beforeAngle = angle;
-        double correction = .07;
-        long lastTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && Math.abs(getGyroYaw() - beforeAngle) < 36) {
-            FR.setPower(-power * .8);
-            BR.setPower(-power * .8);
-            FL.setPower(power * 1.5);
-            BL.setPower(power * 1.5);
+        double output = power;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .8)) {
+            FR.setPower(output * 1.5);
+            BR.setPower(output * 1.5);
+            FL.setPower(-output * .8);
+            BL.setPower(-output * .8);
+            idle();
         }
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
+        output = power * .7;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .25) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+            FR.setPower(output * 1.5);
+            BR.setPower(output * 1.5);
+            FL.setPower(-output * .8);
+            BL.setPower(-output * .8);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void moveToSecondLine(int distance, double power) throws InterruptedException {
+        moveToFirstLine(distance, -power);
     }
 
     //beacon pushing methods
@@ -1951,13 +1966,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         }
     }
 
-    public void correctOneSide(double perpendicular, double p, double i, double d, double underShoot) throws InterruptedException {
+    public void correctOneSideLeft(double perpendicular, double p, double i, double d, double underShoot) throws InterruptedException {
         //double p = .004; double i = .000015; //double d = 2.0;
         double angle = Math.abs(perpendicular - getGyroYaw());
         turnLeftWithPIDOneSide(angle, p, i, d);
     }
 
-    public void correctOtherSide(double perpendicular, double p, double i, double d, double underShoot) throws InterruptedException {
+    public void correctOneSideRight(double perpendicular, double p, double i, double d, double underShoot) throws InterruptedException {
         //double p = .004; double i = .000015; //double d = 2.0;
         double angle = Math.abs(perpendicular - getGyroYaw());
         turnRightWithPIDOneSide(angle, p, i, d);

@@ -1490,10 +1490,10 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            else
 //                moveBackward(power);
 //            idle();
-            FR.setPower(-power * 1.2 );
-            BR.setPower(-power * 1.2);
-            FL.setPower(power);
-            BL.setPower(power);
+            FR.setPower(-power);
+            BR.setPower(-power);
+            FL.setPower(power * 1.2);
+            BL.setPower(power * 1.2);
         }
         FR.setPower(0);
         BR.setPower(0);

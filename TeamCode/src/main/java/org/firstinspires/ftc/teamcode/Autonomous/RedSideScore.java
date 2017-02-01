@@ -21,14 +21,13 @@ public class RedSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test1");
+        telemetry.addData("init", "test3");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.1, 1150);
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
@@ -42,15 +41,15 @@ public class RedSideScore extends AutoOpMode {
         else if (voltage > 14)
             power = .83;
         shoot(power, 360);
-        double angle36 = getGyroYaw();
-        turnLeftWithPID(36, .005, .00004, 0.0);
+        double angle35 = getGyroYaw();
+        turnLeftWithPID(35, .005, .00004, 0.0);
         sleep(500);
-        angle36 -= 36;
+        angle35 -= 35;
         //double p = .004; double i = .000015; //double d = 2.0;
-        moveForwardPID(4400, angle36);
+        moveForwardPID(4500, angle35);
         sleep(500);
-        correctOneSideLeft(perpendicular, .004, .000015, 0, 0);
-        moveToFirstLine(1500, .2);
+        //correctOneSideLeft(perpendicular, .004, .000015, 0, 0); // W : Why wold we correct to face the wall? That's what we did in the old auto
+        moveToFirstLine(1700, .2);
         sleep(500);
         pushRedBeacon(perpendicular);
         sleep(500);
@@ -61,7 +60,7 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         turnRightWithGyro(.4, 90);
         sleep(500);
-        moveBackWardWithEncoders(.5, 3000);
+        moveForwardWithEncoders(.5, 3000); //W : Changed from Backwards, robot is facing the ball once it turns right so backwards moves into wall.
     }
 
     /*

@@ -41,12 +41,12 @@ public class RedSideScore extends AutoOpMode {
         else if (voltage > 14)
             power = .83;
         shoot(power, 360);
-        double angle35 = getGyroYaw();
-        turnLeftWithPID(35, .005, .00004, 0.0);
+        double angle37 = getGyroYaw();
+        turnLeftWithPID(37, .005, .00004, 0.0);
         sleep(500);
-        angle35 -= 35;
+        angle37 -= 37;
         //double p = .004; double i = .000015; //double d = 2.0;
-        moveForwardPID(4500, angle35);
+        moveForwardPID(4500, angle37);
         sleep(500);
         //correctOneSideLeft(perpendicular, .004, .000015, 0, 0); // W : Why wold we correct to face the wall? That's what we did in the old auto
         moveToFirstLine(1700, .2);

@@ -561,8 +561,8 @@ public abstract class AutoOpMode extends LinearOpMode {
             //+ (reset * i) + derivative
 //            FL.setPower(-output);
 //            BL.setPower(-output);
-            FR.setPower(-output);
-            BR.setPower(-output);
+            FR.setPower(output);
+            BR.setPower(output);
             telemetry.log().add("output", output);
             telemetry.log().add("proportion", proportional);
             telemetry.log().add("reset", reset * i);
@@ -1457,7 +1457,31 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     public void moveToSecondLine(int distance, double power) throws InterruptedException {
-        moveToFirstLine(distance, -power);
+        beforeALV = getAvg();
+        double output = power;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .8)) {
+            FR.setPower(output * .8);
+            BR.setPower(output * .8);
+            FL.setPower(-output * 1.5);
+            BL.setPower(-output * 1.5);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        output = power * .7;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .25) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+            FR.setPower(output * .8);
+            BR.setPower(output * .8);
+            FL.setPower(-output * 1.5);
+            BL.setPower(-output * 1.5);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
     //beacon pushing methods
@@ -2077,7 +2101,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         return wallSensor.getDistance(DistanceUnit.CM);
     }
 
-    public void followWallBlue(double distance, double wallDistance, double perpendicular) throws InterruptedException {
+    public void followRedWallBackward(double distance, double wallDistance, double perpendicular) throws InterruptedException {
         //calibration constaints
         double p = .00015; double i = .00000015; //double d = 2.0;
         double error = distance;
@@ -2107,39 +2131,36 @@ public abstract class AutoOpMode extends LinearOpMode {
             //derivative = d * (error - pastError)/deltaTime;
             //output
             output = proportional + (reset * i);
-            if(output < .05)
-                output = 0;
-            moveForward(output);
             double wallDifference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular));
             double angleDifference = Math.abs(perpendicular - getGyroYaw());
-            while (wallDifference > 4 || angleDifference < 4 && Math.abs(getAvg() - beforeALV) < distance) {
-                if (wallDifference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
+            if (wallDifference > 4 || angleDifference < 4) {
+                if (wallDifference > 4) {
                     if (wallDistance < Math.abs(wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular))) {
-                        FR.setPower(output * (1 + wallDifference * wallCorrection));
-                        BR.setPower(output * (1 + wallDifference * wallCorrection));
-                        FL.setPower(output * (1 - (1 + wallDifference * wallCorrection)));
-                        BL.setPower(output * (1 - (1 + wallDifference * wallCorrection)));
+                        FR.setPower(-output * (1 + wallDifference * wallCorrection));
+                        BR.setPower(-output * (1 + wallDifference * wallCorrection));
+                        FL.setPower(output * (1 - wallDifference * wallCorrection));
+                        BL.setPower(output * (1 - wallDifference * wallCorrection));
                     }
                     else if (wallDistance > Math.abs(wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular))) {
-                        FR.setPower(-output * (1 - (1 + wallDifference * wallCorrection)));
-                        BR.setPower(-output * (1 - (1 + wallDifference * wallCorrection)));
-                        FL.setPower(-output * (1 + wallDifference * wallCorrection));
-                        BL.setPower(-output * (1 + wallDifference * wallCorrection));
+                        FR.setPower(-output * (1 - wallDifference * wallCorrection));
+                        BR.setPower(-output * (1 - wallDifference * wallCorrection));
+                        FL.setPower(output * (1 + wallDifference * wallCorrection));
+                        BL.setPower(output * (1 + wallDifference * wallCorrection));
                     }
                     wallDifference = Math.abs(wallDistance - wallSensor.getDistance(DistanceUnit.CM) - getTrigDistance(perpendicular));
                 }
-                else if (angleDifference > 4 && Math.abs(getAvg() - beforeALV) < distance) {
+                else if (angleDifference > 4) {
                     if (getGyroYaw() < beforeAngle) {
-                        FR.setPower(output * (1 + angleDifference * angleCorrection));
-                        BR.setPower(output * (1 + angleDifference * angleCorrection));
-                        FL.setPower(output * (1 - (1 + angleDifference * angleCorrection)));
-                        BL.setPower(output * (1 - (1 + angleDifference * angleCorrection)));
+                        FR.setPower(-output * (1 + angleDifference * angleCorrection));
+                        BR.setPower(-output * (1 + angleDifference * angleCorrection));
+                        FL.setPower(output * (1 - angleDifference * angleCorrection));
+                        BL.setPower(output * (1 - angleDifference * angleCorrection));
                     }
                     else if (getGyroYaw() > beforeAngle) {
-                        FR.setPower(-output * (1 - (1 + angleDifference * angleCorrection)));
-                        BR.setPower(-output * (1 - (1 + angleDifference * angleCorrection)));
-                        FL.setPower(-output * (1 + angleDifference * angleCorrection));
-                        BL.setPower(-output * (1 + angleDifference * angleCorrection));
+                        FR.setPower(-output * (1 - angleDifference * angleCorrection));
+                        BR.setPower(-output * (1 - angleDifference * angleCorrection));
+                        FL.setPower(output * (1 + angleDifference * angleCorrection));
+                        BL.setPower(output * (1 + angleDifference * angleCorrection));
                     }
                     angleDifference = Math.abs(perpendicular - getGyroYaw());
                 }
@@ -2148,6 +2169,9 @@ public abstract class AutoOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
+            if(output < .05)
+                output = 0;
+            moveForward(output);
             telemetry.addData("output", output);
             telemetry.addData("proportion", proportional);
             telemetry.addData("reset", reset * i);

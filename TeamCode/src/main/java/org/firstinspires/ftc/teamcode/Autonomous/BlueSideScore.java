@@ -49,9 +49,9 @@ public class BlueSideScore extends AutoOpMode {
         turnRightWithPID(144, .005, .00002, 0.0);
         sleep(500);
         moveForwardPID(300);
-        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
-        sleep(500);
-        moveToFirstLine(1500, -.25);
+//        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
+//        sleep(500);
+        moveToWall(1500, -.25);
         sleep(500);
         pushBlueBeacon(perpendicular);
         sleep(1000);

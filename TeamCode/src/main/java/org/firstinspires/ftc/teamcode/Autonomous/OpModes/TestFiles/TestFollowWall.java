@@ -26,7 +26,7 @@ public class TestFollowWall extends AutoOpMode{
         telemetry.addData("before Distance", getRawDistance());
         telemetry.update();
         sleep(2000);
-        followWallBlue(2000,10, getGyroYaw());
+        followRedWallBackward(2000, 10, getGyroYaw());
         sleep(1000);
         telemetry.addData("after yaw", getGyroYaw());
         telemetry.update();

@@ -39,7 +39,6 @@ import javax.xml.datatype.Duration;
  *          Right Trigger : Ramp Down                       Left Trigger : Ramp Uo
  *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
  *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
- *          Y : Deploy Stopper Toggle                       A : Deploy Lift Gate
  *
  * VHS ROBOTICS 4546
  * 10/17/16
@@ -56,8 +55,8 @@ public class TeleOpA extends OpMode {
     DcMotor ShooterB;
     DcMotor ManIn;
     DcMotor ManLift;
-    Servo ManBeaconL;
-    Servo ManBeaconR;
+    Servo BeaconL;
+    Servo BeaconR;
 //    Servo AutoBeaconL;
 //    Servo AutoBeaconR;
     boolean stop;
@@ -87,12 +86,12 @@ public class TeleOpA extends OpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManIn = hardwareMap.dcMotor.get("ManIn");
         ManLift = hardwareMap.dcMotor.get("ManLift");
-        ManBeaconL = hardwareMap.servo.get("ManBeaconL");
-        ManBeaconR = hardwareMap.servo.get("ManBeaconR");
+        BeaconL = hardwareMap.servo.get("BeaconL");
+        BeaconR = hardwareMap.servo.get("BeaconR");
 //        AutoBeaconL = hardwareMap.servo.get("AutoBeaconL");
 //        AutoBeaconR = hardwareMap.servo.get("AutoBeaconR");
-        ManBeaconL.setPosition(.85);
-        ManBeaconR.setPosition(.25);
+        BeaconL.setPosition(.15);
+        BeaconR.setPosition(.15);
 //        AutoBeaconL.setPosition(0);
 //        AutoBeaconR.setPosition(0);
         FL.setPower(0);
@@ -186,18 +185,18 @@ public class TeleOpA extends OpMode {
         else
             ManLift.setPower(0);
 
-        //Back Beacon Control
-        if (gamepad2.x) {
-            ManBeaconR.setPosition(.7);
+        //Beacon Control
+        if (gamepad2.b) {
+            BeaconR.setPosition(.85);
         }
         else {
-            ManBeaconR.setPosition(.25);
+            BeaconR.setPosition(.15);
         }
 
-        if (gamepad2.b)
-            ManBeaconL.setPosition(.3);
+        if (gamepad2.x)
+            BeaconL.setPosition(.85);
         else
-            ManBeaconL.setPosition(.85);
+            BeaconL.setPosition(.15);
 
 
         //Shooter Controls

@@ -21,7 +21,7 @@ public class RedSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test6");
+        telemetry.addData("init", "test14");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -29,7 +29,7 @@ public class RedSideScore extends AutoOpMode {
         //moveForwardPID(500);
         //bring down shooter
         sleep(1000);
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         if (voltage <= 13.5)
             power = .97;
         else if (voltage <= 13.75 && voltage > 13.5)
@@ -41,28 +41,37 @@ public class RedSideScore extends AutoOpMode {
         else if (voltage > 14)
             power = .83;
         shoot(power, 360);
-        double angle39 = getGyroYaw();
-        turnLeftWithPID(39, .004, .00003, 0.0);
+        double change = getGyroYaw() - perpendicular;
+        double angle36 = getGyroYaw();
+        turnLeftWithPID(36 + change, .0038, .000025, 0.0);
         sleep(500);
-        angle39 -= 39;
+        angle36 -= 36;
         //double p = .004; double i = .000015; //double d = 2.0;
-        moveForwardPID(4300, angle39);
+        moveForwardPID(4200, angle36);
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
-        moveToWall(3000, .3);
+        moveToWall(2900, .25);
         sleep(500);
-        moveToSecondLine(1500, .15);
+        moveToSecondLine(1600, .15);
         sleep(500);
-        pushRedBeacon(perpendicular);
+        pushRedBeacon();
+        moveBackToWhiteLine(400, -.125);
+        sleep(500);
+        pushRedBeacon();
         sleep(500);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveToSecondLine(3300, .25);
+        moveToSecondLine(2800, .25);
         sleep(500);
-        pushRedBeacon(perpendicular);
+        moveBackToWhiteLine(300, -.125);
         sleep(500);
-        turnRightWithGyroOneSide(.4, 70);
+        pushRedBeacon();
         sleep(500);
-        moveForwardWithEncoders(.5, 3300);
+        turnRightWithGyroOneSide(.45, 77);
+        sleep(500);
+        moveForwardWithEncoders(.5, 2800);
+        sleep(500);
+        turnRightWithGyroOneSide(.45, 10);
+
     }
 
     /*

@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
  * Created by sopa on 11/18/16.
  */
 @Autonomous(name = "TestColor", group = "Autonomous")
-@Disabled
 public class TestColor extends LinearOpMode
 {
     ColorSensor colorSensorWL;
@@ -46,12 +45,12 @@ public class TestColor extends LinearOpMode
 //            telemetry.addData("cWL", colorSensorAverageValues(colorSensorWL));
 //            telemetry.update();
 //            sleep(1000);
-            telemetry.addData("cBeaconBlue", colorSensorBeacon.blue());
-            telemetry.update();
-            sleep(1000);
-            telemetry.addData("cBeaconRed", colorSensorBeacon.red());
-            telemetry.update();
-            sleep(1000);
+//            telemetry.addData("cBeaconBlue", colorSensorBeacon.blue());
+//            telemetry.update();
+//            sleep(1000);
+//            telemetry.addData("cBeaconRed", colorSensorBeacon.red());
+//            telemetry.update();
+//            sleep(1000);
             telemetry.addData("cWLA", colorSensorAverageValues(colorSensorWLA));
             telemetry.update();
             sleep(1000);

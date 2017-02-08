@@ -1,6 +1,4 @@
 package org.firstinspires.ftc.teamcode.Autonomous.OpModes;
-
-
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
@@ -8,10 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -42,15 +37,13 @@ public abstract class AutoOpMode extends LinearOpMode {
     int FLV = 0;
     int avg = 0;
     long beforeTime = 0;
-    long currentTime = 0;
     public BNO055IMU imu;
-    double ultraDistance;
     ModernRoboticsI2cRangeSensor rangeSensorRed;
     BNO055IMU.Parameters parameters;
-    ColorSensor colorSensorWL;
+    ColorSensor frontBeacon;
     ColorSensor colorSensorWLA;
     //ColorSensor colorSensorBlueBeacon;
-    ColorSensor colorSensorBeacon;
+    ColorSensor backBeacon;
     ModernRoboticsI2cRangeSensor wallSensor;
     int count = 0;
     ModernRoboticsI2cRangeSensor rangeSensor;
@@ -63,12 +56,12 @@ public abstract class AutoOpMode extends LinearOpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-//        BlueBeaconPusher = hardwareMap.servo.get("AutoBeaconL");
-//        RedBeaconPusher = hardwareMap.servo.get("AutoBeaconR");
-        ManBeaconL = hardwareMap.servo.get("ManBeaconL");
-        ManBeaconR = hardwareMap.servo.get("ManBeaconR");
-        ManBeaconL.setPosition(.3);
-        ManBeaconR.setPosition(.7);
+        BlueBeaconPusher = hardwareMap.servo.get("AutoBeaconB");
+        RedBeaconPusher = hardwareMap.servo.get("AutoBeaconF");
+//        ManBeaconL = hardwareMap.servo.get("ManBeaconL");
+//        ManBeaconR = hardwareMap.servo.get("ManBeaconR");
+//        ManBeaconL.setPosition(.3);
+//        ManBeaconR.setPosition(.7);
 //        BlueBeaconPusher.setPosition(0);
 //        RedBeaconPusher.setPosition(0);
         FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -89,16 +82,16 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initialized");
-        colorSensorWL = hardwareMap.colorSensor.get("cSWL");
-        colorSensorWL.setI2cAddress(I2cAddr.create8bit(0x3c));
-        colorSensorWL.enableLed(true);
+        frontBeacon = hardwareMap.colorSensor.get("cSWL");
+        frontBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
+        frontBeacon.enableLed(true);
         telemetry.addData("colorSensorWL", "initialized");
         colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
         colorSensorWLA.setI2cAddress(I2cAddr.create8bit(0x2a));
         colorSensorWLA.enableLed(true);
         telemetry.addData("colorSensorWLA", "initialized");
-        colorSensorBeacon = hardwareMap.colorSensor.get("cSB");
-        colorSensorBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
+        backBeacon = hardwareMap.colorSensor.get("cSB");
+        backBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         telemetry.addData("colorSensorB", "initialized");
         rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
         telemetry.addData("range", getDist(rangeSensor));
@@ -159,8 +152,8 @@ public abstract class AutoOpMode extends LinearOpMode {
      */
     public void shoot(double power, int distance) throws InterruptedException {
         int beforeManLift = ManLift.getCurrentPosition();
-        ShooterF.setPower(power);
-        ShooterB.setPower(-power);
+        ShooterF.setPower(-power);
+        ShooterB.setPower(power);
         bringDownShooter((.3 * -1), (distance + (Math.abs(beforeManLift - 1150))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
@@ -241,7 +234,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         return avg;
     }
 
-
     //range sensor
     public double getDist(ModernRoboticsI2cRangeSensor range) throws InterruptedException {
         double value = range.getDistance(DistanceUnit.CM);
@@ -252,6 +244,27 @@ public abstract class AutoOpMode extends LinearOpMode {
         return value;
     }
 
+    //voltage adjustment
+
+    //base
+    public double basePowerMultiplier()
+    {
+        double power = 1;
+        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage();
+        voltage /= 2;
+        if (voltage <= 13.5)
+            power = 1.2;
+        else if (voltage <= 13.75 && voltage > 13.5)
+            power = 1;
+        else if (voltage > 13.75 && voltage <= 13.9)
+            power = .95;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .9;
+        else if (voltage > 14)
+            power = .85;
+        return power;
+    }
+
     //Forwards, Backwards and Turning
 
     //forward
@@ -259,7 +272,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("encodersR", getAvg());
         telemetry.update();
         beforeALV = getAvg();
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage())/2;;
         double change = (14 - voltageAverage) * 200;
         while(Math.abs(getAvg() - beforeALV) < (distance + change)) {
             moveForward(power);
@@ -277,7 +290,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("encodersR", getAvg());
         telemetry.update();
         beforeALV = getAvg();
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (14 - voltageAverage) * 200;
         double firstTime = System.currentTimeMillis();
         while(Math.abs(getAvg() - beforeALV) < (distance + change) && System.currentTimeMillis() - firstTime < 1500) {
@@ -827,7 +840,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double correction = .2;
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 150;
         distance += change;
         long lastTime = System.currentTimeMillis();
@@ -906,7 +919,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         double correctionLeft = .0525;
         double correctionRight = .025;
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
         long lastTime = System.currentTimeMillis();
@@ -988,7 +1001,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double correction = CORRECTION;
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
         long lastTime = System.currentTimeMillis();
@@ -1201,7 +1214,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         double correction = CORRECTION;
         long lastTime = System.currentTimeMillis();
         long firstTime =  System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 8 && System.currentTimeMillis() - firstTime < 4000) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 8 && System.currentTimeMillis() - firstTime < 4000) {
             error = distance - Math.abs(getAvg() - beforeALV);
             //proportional
             proportional = error * p;
@@ -1290,173 +1303,174 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            idle();
     }
 
-    public void moveExtra(double power, int distance) throws InterruptedException{
-        if (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 8) {
-            moveForwardWithEncoders(power, distance);
-        }
-    }
+//    public void moveExtra(double power, int distance) throws InterruptedException{
+//        if (Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 8) {
+//            moveForwardWithEncoders(power, distance);
+//        }
+//    }
 
-    public void turnIntoWhiteLine(double angle) throws InterruptedException {
-        //calibration constants
-        double p = .006; double i = .00004; double d = 0.0;
-        //double p = .004; double i = .000015;
-        double error = angle;
-        double pastError = 0.0;
-        double output;
-        double proportional = 0.0;
-        double reset = 0.0;
-        double derivative = 0.0;
-        double deltaTime;
-        beforeAngle = getGyroYaw();
-        telemetry.addData("beforeYawAngle", beforeAngle);
-        telemetry.update();
-        long firstTime = System.currentTimeMillis();
-        long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < (angle) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
-            error = angle - Math.abs(getGyroYaw() - beforeAngle);
-            //proportional
-            proportional = error * p;
-            deltaTime = System.currentTimeMillis() - lastTime;
-            //integral
-            reset += (error * deltaTime);
-            //derivative
-            derivative = deltaTime / (error - pastError); //(error - pastError)/deltaTime;
-            //output
-            output = proportional + (reset * i);
-            //Range.clip(output, -1, 1);
-            if (output < .15)
-                output = 0;
-            else if(output > 1)
-                output = 1;
-            //+ (reset * i) + derivative
-            turnRight(output);
-            telemetry.log().add("output", output);
-            telemetry.log().add("proportion", proportional);
-            telemetry.log().add("reset", reset * i);
-            telemetry.log().add("derivative", derivative * d);
-            telemetry.update();
-            pastError = error;
-            lastTime = System.currentTimeMillis();
-            idle();
-        }
-        double afterAngle = getGyroYaw();
-        telemetry.log().add("afterYawAngle", beforeAngle);
-        if (Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
-            telemetry.log().add("turn", "success");
-        else
-            telemetry.log().add("turn", "failure");
-        telemetry.update();
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-    }
+//    public void turnIntoWhiteLine(double angle) throws InterruptedException {
+//        //calibration constants
+//        double p = .006; double i = .00004; double d = 0.0;
+//        //double p = .004; double i = .000015;
+//        double error = angle;
+//        double pastError = 0.0;
+//        double output;
+//        double proportional = 0.0;
+//        double reset = 0.0;
+//        double derivative = 0.0;
+//        double deltaTime;
+//        beforeAngle = getGyroYaw();
+//        telemetry.addData("beforeYawAngle", beforeAngle);
+//        telemetry.update();
+//        long firstTime = System.currentTimeMillis();
+//        long lastTime = System.currentTimeMillis();
+//        while (Math.abs(getGyroYaw() - beforeAngle) < (angle) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
+//            error = angle - Math.abs(getGyroYaw() - beforeAngle);
+//            //proportional
+//            proportional = error * p;
+//            deltaTime = System.currentTimeMillis() - lastTime;
+//            //integral
+//            reset += (error * deltaTime);
+//            //derivative
+//            derivative = deltaTime / (error - pastError); //(error - pastError)/deltaTime;
+//            //output
+//            output = proportional + (reset * i);
+//            //Range.clip(output, -1, 1);
+//            if (output < .15)
+//                output = 0;
+//            else if(output > 1)
+//                output = 1;
+//            //+ (reset * i) + derivative
+//            turnRight(output);
+//            telemetry.log().add("output", output);
+//            telemetry.log().add("proportion", proportional);
+//            telemetry.log().add("reset", reset * i);
+//            telemetry.log().add("derivative", derivative * d);
+//            telemetry.update();
+//            pastError = error;
+//            lastTime = System.currentTimeMillis();
+//            idle();
+//        }
+//        double afterAngle = getGyroYaw();
+//        telemetry.log().add("afterYawAngle", beforeAngle);
+//        if (Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
+//            telemetry.log().add("turn", "success");
+//        else
+//            telemetry.log().add("turn", "failure");
+//        telemetry.update();
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//    }
 
-    public void turnIntoWhiteLineRed(double angle) throws InterruptedException {
-        //calibration constants
-        double p = .00375; double i = .000018; double d = 0.0;
-        //double p = .004; double i = .000015;
-        double error = angle;
-        double pastError = 0.0;
-        double output;
-        double proportional = 0.0;
-        double reset = 0.0;
-        double derivative = 0.0;
-        double deltaTime;
-        beforeAngle = getGyroYaw();
-        telemetry.addData("beforeYawAngle", beforeAngle);
-        telemetry.update();
-        long firstTime = System.currentTimeMillis();
-        long lastTime = System.currentTimeMillis();
-        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 6) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
-            error = angle - Math.abs(getGyroYaw() - beforeAngle);
-            //proportional
-            proportional = error * p;
-            deltaTime = System.currentTimeMillis() - lastTime;
-            //integral
-            reset += (error * deltaTime);
-            //derivative
-            derivative = deltaTime / (error - pastError); //(error - pastError)/deltaTime;
-            //output
-            output = proportional + (reset * i);
-            //Range.clip(output, -1, 1);
-            if (output < .15)
-                output = 0;
-            else if(output > 1)
-                output = 1;
-            //+ (reset * i) + derivative
-            turnLeft(output);
-            telemetry.log().add("output", output);
-            telemetry.log().add("proportion", proportional);
-            telemetry.log().add("reset", reset * i);
-            telemetry.log().add("derivative", derivative * d);
-            telemetry.update();
-            pastError = error;
-            lastTime = System.currentTimeMillis();
-            idle();
-        }
-        double afterAngle = getGyroYaw();
-        telemetry.log().add("afterYawAngle", beforeAngle);
-        if (Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
-            telemetry.log().add("turn", "success");
-        else
-            telemetry.log().add("turn", "failure");
-        telemetry.update();
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-    }
-
-    //beacon pushing methods
-    public void moveBackwardsToWhiteLine(int distance, double power, double angle) throws InterruptedException {
-        //calibration constants
-        double p = .00015; double i = .00000015; //double d = .00000000002;
-        beforeALV = getAvg();
-        beforeAngle = angle;
-        double correction = .07;
-        long lastTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
-            double difference = Math.abs(getGyroYaw() - angle);
-            if (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
-                if(getGyroYaw() < angle) {
-                    FR.setPower(-power * (1 + difference * correction));
-                    BR.setPower(-power * (1 + difference * correction));
-                    FL.setPower(power * (1 - difference * correction));
-                    BL.setPower(power * (1 - difference * correction));
-                }
-                else if(getGyroYaw() > angle) {
-                    FR.setPower(-power * (1 - (difference * correction)));
-                    BR.setPower(-power * (1 - (difference * correction)));
-                    FL.setPower(power * (1 + difference * correction));
-                    BL.setPower(power  * (1 + difference * correction));
-                }
-                telemetry.addData("LeftPower", FL.getPower());
-                telemetry.addData("RightPower", FR.getPower());
-                telemetry.update();
-            }
-            else
-                moveBackward(power);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-    }
+//    public void turnIntoWhiteLineRed(double angle) throws InterruptedException {
+//        //calibration constants
+//        double p = .00375; double i = .000018; double d = 0.0;
+//        //double p = .004; double i = .000015;
+//        double error = angle;
+//        double pastError = 0.0;
+//        double output;
+//        double proportional = 0.0;
+//        double reset = 0.0;
+//        double derivative = 0.0;
+//        double deltaTime;
+//        beforeAngle = getGyroYaw();
+//        telemetry.addData("beforeYawAngle", beforeAngle);
+//        telemetry.update();
+//        long firstTime = System.currentTimeMillis();
+//        long lastTime = System.currentTimeMillis();
+//        while (Math.abs(getGyroYaw() - beforeAngle) < (angle - 6) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10 && System.currentTimeMillis() - firstTime < 3000) {
+//            error = angle - Math.abs(getGyroYaw() - beforeAngle);
+//            //proportional
+//            proportional = error * p;
+//            deltaTime = System.currentTimeMillis() - lastTime;
+//            //integral
+//            reset += (error * deltaTime);
+//            //derivative
+//            derivative = deltaTime / (error - pastError); //(error - pastError)/deltaTime;
+//            //output
+//            output = proportional + (reset * i);
+//            //Range.clip(output, -1, 1);
+//            if (output < .15)
+//                output = 0;
+//            else if(output > 1)
+//                output = 1;
+//            //+ (reset * i) + derivative
+//            turnLeft(output);
+//            telemetry.log().add("output", output);
+//            telemetry.log().add("proportion", proportional);
+//            telemetry.log().add("reset", reset * i);
+//            telemetry.log().add("derivative", derivative * d);
+//            telemetry.update();
+//            pastError = error;
+//            lastTime = System.currentTimeMillis();
+//            idle();
+//        }
+//        double afterAngle = getGyroYaw();
+//        telemetry.log().add("afterYawAngle", beforeAngle);
+//        if (Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
+//            telemetry.log().add("turn", "success");
+//        else
+//            telemetry.log().add("turn", "failure");
+//        telemetry.update();
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//    }
+//
+//    //beacon pushing methods
+//    public void moveBackwardsToWhiteLine(int distance, double power, double angle) throws InterruptedException {
+//        //calibration constants
+//        double p = .00015; double i = .00000015; //double d = .00000000002;
+//        beforeALV = getAvg();
+//        beforeAngle = angle;
+//        double correction = .07;
+//        long lastTime = System.currentTimeMillis();
+//        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+//            double difference = Math.abs(getGyroYaw() - angle);
+//            if (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
+//                if(getGyroYaw() < angle) {
+//                    FR.setPower(-power * (1 + difference * correction));
+//                    BR.setPower(-power * (1 + difference * correction));
+//                    FL.setPower(power * (1 - difference * correction));
+//                    BL.setPower(power * (1 - difference * correction));
+//                }
+//                else if(getGyroYaw() > angle) {
+//                    FR.setPower(-power * (1 - (difference * correction)));
+//                    BR.setPower(-power * (1 - (difference * correction)));
+//                    FL.setPower(power * (1 + difference * correction));
+//                    BL.setPower(power  * (1 + difference * correction));
+//                }
+//                telemetry.addData("LeftPower", FL.getPower());
+//                telemetry.addData("RightPower", FR.getPower());
+//                telemetry.update();
+//            }
+//            else
+//                moveBackward(power);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//    }
 
     //beacon pushing methods
     public void moveToWall(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
-        double output = power;
+        double output = power * basePowerMultiplier();
         while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(output * 1.6);
-            BR.setPower(output * 1.6);
-            FL.setPower(-output * .7);
-            BL.setPower(-output * .7);
+            FR.setPower(output * 1.8);
+            BR.setPower(output * 1.8);
+            FL.setPower(-output * .65);
+            BL.setPower(-output * .65);
             idle();
         }
+        output = .15;
         while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(output * 1.25);
             BR.setPower(output * 1.25);
@@ -1493,12 +1507,27 @@ public abstract class AutoOpMode extends LinearOpMode {
             idle();
         }
         beforeALV = getAvg();
-        output = .15;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .25) && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+        output = .125;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .25) && colorSensorAverageValues(colorSensorWLA) < 10) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
             FL.setPower(output * 1.25);
             BL.setPower(output * 1.25);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void moveBackToWhiteLine(int distance, double power) throws InterruptedException {
+        beforeALV = getAvg();
+        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 10) {
+            FR.setPower(-power * .9);
+            BR.setPower(-power * .9);
+            FL.setPower(power * 1.25);
+            BL.setPower(power * 1.25);
             idle();
         }
         FR.setPower(0);
@@ -1515,7 +1544,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = angle;
         double correction = .07;
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10) {
 //            double difference = Math.abs(getGyroYaw() - angle);
 //            if (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
 //                if(getGyroYaw() < angle) {
@@ -1556,7 +1585,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         double turn = perpendicular - beforeAngle;
         double correction = .07;
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10) {
 //            double difference = Math.abs(getGyroYaw() - angle);
 //            if (difference > 2 && Math.abs(getAvg() - beforeALV) < distance) {
 //                if(getGyroYaw() < angle) {
@@ -1622,9 +1651,9 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        BL.setPower(0);
     }
 
-    public void moveForwardsToWhiteLine(int distance, double power, double angle) throws InterruptedException {
-        moveBackwardsToWhiteLine(distance, -power, angle);
-    }
+//    public void moveForwardsToWhiteLine(int distance, double power, double angle) throws InterruptedException {
+//        moveBackwardsToWhiteLine(distance, -power, angle);
+//    }
 
 
     //0 represents blue and 1 represents red
@@ -1639,21 +1668,18 @@ public abstract class AutoOpMode extends LinearOpMode {
         return 1;
     }
 
-    public void pushRedBeacon(double angle) throws InterruptedException {
+    public void pushRedBeacon() throws InterruptedException {
         //power: .15
         //distance: 25
         count += 1;
         //move forward and push the correct beacon
-        if(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
-            if (beaconValue(colorSensorBeacon) == 1) {
-//            moveBlueSideServo();
-                telemetry.addData("red", "hit");
-                telemetry.update();
+        if(colorSensorAverageValues(colorSensorWLA) < 10) {
+            if (beaconValue(frontBeacon) == 1) {
+                moveRedSideServo();
             }
-            else if (beaconValue(colorSensorBeacon) == 1)
+            else if (beaconValue(backBeacon) == 1)
             {
-                telemetry.addData("red", "hit");
-                telemetry.update();
+                moveBlueSideServo();
             }
             FR.setPower(0);
             BR.setPower(0);
@@ -1661,324 +1687,317 @@ public abstract class AutoOpMode extends LinearOpMode {
             BL.setPower(0);
         }
         else if(count < 2) {
-            moveBackwardsToWhiteLine(100, .175, angle);
-            pushRedBeacon(angle);
+            moveBackToWhiteLine(200, .125);
+            pushRedBeacon();
         }
         else {
-            moveForwardsToWhiteLine(100, .175, angle);
-            pushRedBeacon(angle);
+            moveBackToWhiteLine(200, -.125);
+            pushRedBeacon();
         }
+        telemetry.addData("red", "hit");
+        telemetry.update();
     }
 
-    public void pushBlueBeacon(double angle) throws InterruptedException {
-        //power: .15
-        //distance: 25
+    public void pushBlueBeacon() throws InterruptedException {
         count += 1;
-        //move forward and push the correct beacon
-        if(Math.abs(colorSensorAverageValues(colorSensorWL) - whiteACV) > 10) {
-            if (beaconValue(colorSensorBeacon) == 0) {
-//            moveBlueSideServo();
-                telemetry.addData("blue", "hit");
-                telemetry.update();
+        if(Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10) {
+            if (beaconValue(frontBeacon) == 0) {
+                moveBlueSideServo();
             }
-            else if (beaconValue(colorSensorBeacon) == 0)
-            {
-                telemetry.addData("red", "hit");
-                telemetry.update();
+            else if (beaconValue(backBeacon) == 0) {
+                moveRedSideServo();
             }
-            FR.setPower(0);
-            BR.setPower(0);
-            FL.setPower(0);
-            BL.setPower(0);
         }
         else if(count < 2) {
-            moveBackwardsToWhiteLine(100, .175, angle);
-            pushBlueBeacon(angle);
+            moveBackToWhiteLine(200, .125);
+            pushBlueBeacon();
         }
         else {
-            moveForwardsToWhiteLine(100, .175, angle);
-            pushBlueBeacon(angle);
+            moveBackToWhiteLine(200, -.125);
+            pushBlueBeacon();
         }
+        telemetry.addData("blue", "hit");
+        telemetry.update();
     }
 
     public void correctBlue() throws InterruptedException{
 
     }
 
-    public void pushFrontRed(double angle) throws InterruptedException {
+//    public void pushFrontRed(double angle) throws InterruptedException {
+////        double dist = getDist(rangeSensor);
+////        while (opModeIsActive() && (dist > 13 || dist < 6)) {
+////            if (dist < 6)
+////                moveBackward(.15);
+////            else if (dist > 13)
+////                moveForward(.15);
+////            else{
+////
+////            }
+////            dist = getDist(rangeSensor);
+////        }
+////        if(beaconValue(colorSensorBeacon) == 1)
+////            moveManBeaconR();
+////        else
+////            moveManBeaconL();
+////        Thread.sleep(500);
+////        if(beaconValue(colorSensorBeacon) != 1) {
+////            Thread.sleep(5000);
+////            moveManBeaconR();
+////        }
+////        correct(angle, .01, .00025, 0, 0);
 //        double dist = getDist(rangeSensor);
-//        while (opModeIsActive() && (dist > 13 || dist < 6)) {
-//            if (dist < 6)
-//                moveBackward(.15);
-//            else if (dist > 13)
-//                moveForward(.15);
-//            else{
-//
-//            }
+//        if(dist > 10.5)
+//            moveForward(.175, 8, angle);
+//        dist = getDist(rangeSensor);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        beforeALV = getAvg();
+//        //REMOVE AFTER TESTING
+//        //sleep(5000);
+//        while (dist > 9.5 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 415) {
+//            moveForward(.14);
 //            dist = getDist(rangeSensor);
+//            idle();
 //        }
-//        if(beaconValue(colorSensorBeacon) == 1)
-//            moveManBeaconR();
-//        else
-//            moveManBeaconL();
-//        Thread.sleep(500);
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        sleep(500);
+//        //moveForward(.175, 450, angle);
+//        if(beaconValue(colorSensorBeacon) == 1) {
+//            ManBeaconL.setPosition(1);
+//            sleep(1000);
+//            //moveForwardWithEncoders(.14, 100);
+//            if(getDist(rangeSensor) > 7)
+//                mashBeacons(.12, 100);
+//            ManBeaconL.setPosition(.3);
+//        }
+//        else {
+//            ManBeaconR.setPosition(.15);
+//            sleep(1000);
+//            //moveForwardWithEncoders(.14, 100);
+//            if(getDist(rangeSensor) > 7)
+//                mashBeacons(.12, 100);
+//            ManBeaconR.setPosition(.7);
+//        }
 //        if(beaconValue(colorSensorBeacon) != 1) {
-//            Thread.sleep(5000);
-//            moveManBeaconR();
-//        }
-//        correct(angle, .01, .00025, 0, 0);
-        double dist = getDist(rangeSensor);
-        if(dist > 10.5)
-            moveForward(.175, 8, angle);
-        dist = getDist(rangeSensor);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        beforeALV = getAvg();
-        //REMOVE AFTER TESTING
-        //sleep(5000);
-        while (dist > 9.5 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 415) {
-            moveForward(.14);
-            dist = getDist(rangeSensor);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        sleep(500);
-        //moveForward(.175, 450, angle);
-        if(beaconValue(colorSensorBeacon) == 1) {
-            ManBeaconL.setPosition(1);
-            sleep(1000);
-            //moveForwardWithEncoders(.14, 100);
-            if(getDist(rangeSensor) > 7)
-                mashBeacons(.12, 100);
-            ManBeaconL.setPosition(.3);
-        }
-        else {
-            ManBeaconR.setPosition(.15);
-            sleep(1000);
-            //moveForwardWithEncoders(.14, 100);
-            if(getDist(rangeSensor) > 7)
-                mashBeacons(.12, 100);
-            ManBeaconR.setPosition(.7);
-        }
-        if(beaconValue(colorSensorBeacon) != 1) {
-            moveBackWardWithEncoders(.14, 20);
-            sleep(5000);
-            ManBeaconL.setPosition(1);
-            mashBeacons(.14, 20);
-            sleep(1000);
-            ManBeaconL.setPosition(.3);
-            bringDownShooter(-.4, 800);
-            moveBackWardWithEncoders(.6, 2800);
-            turnRightWithGyro(.3, 30);
-            sleep(30000);
-        }
-    }
-
-//    bringDownShooter(-.4, 800);
-//    moveBackWardWithEncoders(.4, 500);
-//    turnRightWithPID(45, .004, .000015, 0.0);
-//    //double p = .004; double i = .000015;
-//    moveBackWardWithEncoders(.6, 2800);
-//    sleep(30000);
-    public void pushSecondRed(double angle) throws InterruptedException {
-//        double dist = getDist(rangeSensor);
-//        while (opModeIsActive() && (dist > 13 || dist < 6)) {
-//            if (dist < 6)
-//                moveBackward(.15);
-//            else if (dist > 13)
-//                moveForward(.15);
-//            else{
-//
-//            }
-//            dist = getDist(rangeSensor);
-//        }
-//        if(beaconValue(colorSensorBeacon) == 1)
-//            moveManBeaconR();
-//        else
-//            moveManBeaconL();
-//        Thread.sleep(500);
-//        if(beaconValue(colorSensorBeacon) != 1) {
-//            Thread.sleep(5000);
-//            moveManBeaconR();
-//        }
-//        correct(angle, .01, .00025, 0, 0);
-        double dist = getDist(rangeSensor);
-        if(dist > 8)
-            moveForward(.175, 50, angle);
-        dist = getDist(rangeSensor);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        beforeALV = getAvg();
-        //REMOVE AFTER TESTING
-        sleep(500);
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
-            moveForward(.14);
-            dist = getDist(rangeSensor);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        sleep(500);
-        //moveForward(.175, 450, angle);
-        if(beaconValue(colorSensorBeacon) == 1) {
-            ManBeaconL.setPosition(1);
-            sleep(1000);
-            //moveForwardWithEncoders(.14, 100);
-            if(getDist(rangeSensor) > 6)
-                mashBeacons(.12, 100);
-            ManBeaconL.setPosition(.3);
-        }
-        else {
-            ManBeaconR.setPosition(.15);
-            sleep(1000);
-            //moveForwardWithEncoders(.14, 100);
-            if(getDist(rangeSensor) > 6)
-                mashBeacons(.12, 100);
-            ManBeaconR.setPosition(.7);
-        }
-        if(beaconValue(colorSensorBeacon) != 1) {
-            moveBackWardWithEncoders(.14, 20);
-            sleep(5000);
-            ManBeaconL.setPosition(1);
-            mashBeacons(.14, 20);
-            sleep(1000);
-            ManBeaconL.setPosition(.3);
-        }
-    }
-
-    public void pushFrontBlue(double angle) throws InterruptedException {
-        //double p = .004; double i = .000015; //double d = 2.0;
-        //double dist = getDist(rangeSensor);
-
-//        int movement = (int) Math.round(dist - 6) * 30;
-//        if(movement > 0)
-//            moveForward(.175, movement, angle);
-//        else if(movement < 0)
-//            moveBackWardWithCorrection(.175, -movement, angle);
-        double dist = getDist(rangeSensor);
-        if(dist > 8)
-            moveForwardToPush(.175, 35, angle);
-        dist = getDist(rangeSensor);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        //REMOVE AFTER TESTING
-        sleep(500);
-        beforeALV = getAvg();
-        dist = getDist(rangeSensor);
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 515) {
-            moveForward(.14);
-            dist = getDist(rangeSensor);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        //sleep(500);
-        //moveForward(.175, 450, angle);
-        if(beaconValue(colorSensorBeacon) == 0) {
-            ManBeaconL.setPosition(.85);
-            sleep(1000);
-            if(getDist(rangeSensor) > 5.5)
-                mashBeacons(.12, 150);
-            ManBeaconL.setPosition(.3);
-        }
-        else {
-            ManBeaconR.setPosition(.25);
-            sleep(1000);
-            if(getDist(rangeSensor) > 5.5)
-                mashBeacons(.12, 150);
-            ManBeaconR.setPosition(.7);
-        }
-        if(beaconValue(colorSensorBeacon) != 0) {
-            moveBackWardWithEncoders(.14, 20);
-            sleep(5000);
-            ManBeaconR.setPosition(.25);
-            mashBeacons(.14, 100);
-            sleep(500);
-            ManBeaconR.setPosition(.7);
-            sleep(500);
+//            moveBackWardWithEncoders(.14, 20);
+//            sleep(5000);
+//            ManBeaconL.setPosition(1);
+//            mashBeacons(.14, 20);
+//            sleep(1000);
+//            ManBeaconL.setPosition(.3);
 //            bringDownShooter(-.4, 800);
-//            moveBackWardWithEncoders(.6, 3000);
+//            moveBackWardWithEncoders(.6, 2800);
+//            turnRightWithGyro(.3, 30);
 //            sleep(30000);
-        }
-        telemetry.addData("distance", dist);
-        telemetry.update();
-    }
-//    bringDownShooter(-.4, 800);
-//    moveBackWardWithEncoders(.4, 500);
-//    turnLeftWithPID(45, .004, .000015, 0.0);
-//    moveBackWardWithEncoders(.6, 3000);
-//    sleep(30000);
-    public void pushSecondBlue(double angle) throws InterruptedException {
-        //double p = .004; double i = .000015; //double d = 2.0;
-        //double dist = getDist(rangeSensor);
-
-//        int movement = (int) Math.round(dist - 6) * 30;
-//        if(movement > 0)
-//            moveForward(.175, movement, angle);
-//        else if(movement < 0)
-//            moveBackWardWithCorrection(.175, -movement, angle);
-        double dist = getDist(rangeSensor);
-        if(dist > 8)
-            moveForward(.175, 50, angle);
-        dist = getDist(rangeSensor);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        //REMOVE AFTER TESTING
-        sleep(500);
-        beforeALV = getAvg();
-        dist = getDist(rangeSensor);
-        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
-            moveForward(.14);
-            dist = getDist(rangeSensor);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-        telemetry.addData("distance", dist);
-        telemetry.update();
-        sleep(500);
-        //moveForward(.175, 450, angle);
-        if(beaconValue(colorSensorBeacon) == 0) {
-            ManBeaconL.setPosition(1);
-            sleep(1000);
-            if(getDist(rangeSensor) > 7)
-                mashBeacons(.12, 100);
-            ManBeaconL.setPosition(.3);
-        }
-        else {
-            ManBeaconR.setPosition(.05);
-            sleep(1000);
-            if(getDist(rangeSensor) > 6)
-                mashBeacons(.12, 100);
-            ManBeaconR.setPosition(.7);
-        }
-        if(beaconValue(colorSensorBeacon) != 0) {
-            moveBackWardWithEncoders(.14, 20);
-            sleep(5000);
-            ManBeaconR.setPosition(1);
-            mashBeacons(.14, 20);
-            sleep(1000);
-            ManBeaconR.setPosition(.3);
-            sleep(500);
-        }
-        telemetry.addData("distance", dist);
-        telemetry.update();
-    }
+//        }
+//    }
+//
+////    bringDownShooter(-.4, 800);
+////    moveBackWardWithEncoders(.4, 500);
+////    turnRightWithPID(45, .004, .000015, 0.0);
+////    //double p = .004; double i = .000015;
+////    moveBackWardWithEncoders(.6, 2800);
+////    sleep(30000);
+//    public void pushSecondRed(double angle) throws InterruptedException {
+////        double dist = getDist(rangeSensor);
+////        while (opModeIsActive() && (dist > 13 || dist < 6)) {
+////            if (dist < 6)
+////                moveBackward(.15);
+////            else if (dist > 13)
+////                moveForward(.15);
+////            else{
+////
+////            }
+////            dist = getDist(rangeSensor);
+////        }
+////        if(beaconValue(colorSensorBeacon) == 1)
+////            moveManBeaconR();
+////        else
+////            moveManBeaconL();
+////        Thread.sleep(500);
+////        if(beaconValue(colorSensorBeacon) != 1) {
+////            Thread.sleep(5000);
+////            moveManBeaconR();
+////        }
+////        correct(angle, .01, .00025, 0, 0);
+//        double dist = getDist(rangeSensor);
+//        if(dist > 8)
+//            moveForward(.175, 50, angle);
+//        dist = getDist(rangeSensor);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        beforeALV = getAvg();
+//        //REMOVE AFTER TESTING
+//        sleep(500);
+//        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
+//            moveForward(.14);
+//            dist = getDist(rangeSensor);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        sleep(500);
+//        //moveForward(.175, 450, angle);
+//        if(beaconValue(colorSensorBeacon) == 1) {
+//            ManBeaconL.setPosition(1);
+//            sleep(1000);
+//            //moveForwardWithEncoders(.14, 100);
+//            if(getDist(rangeSensor) > 6)
+//                mashBeacons(.12, 100);
+//            ManBeaconL.setPosition(.3);
+//        }
+//        else {
+//            ManBeaconR.setPosition(.15);
+//            sleep(1000);
+//            //moveForwardWithEncoders(.14, 100);
+//            if(getDist(rangeSensor) > 6)
+//                mashBeacons(.12, 100);
+//            ManBeaconR.setPosition(.7);
+//        }
+//        if(beaconValue(colorSensorBeacon) != 1) {
+//            moveBackWardWithEncoders(.14, 20);
+//            sleep(5000);
+//            ManBeaconL.setPosition(1);
+//            mashBeacons(.14, 20);
+//            sleep(1000);
+//            ManBeaconL.setPosition(.3);
+//        }
+//    }
+//
+//    public void pushFrontBlue(double angle) throws InterruptedException {
+//        //double p = .004; double i = .000015; //double d = 2.0;
+//        //double dist = getDist(rangeSensor);
+//
+////        int movement = (int) Math.round(dist - 6) * 30;
+////        if(movement > 0)
+////            moveForward(.175, movement, angle);
+////        else if(movement < 0)
+////            moveBackWardWithCorrection(.175, -movement, angle);
+//        double dist = getDist(rangeSensor);
+//        if(dist > 8)
+//            moveForwardToPush(.175, 35, angle);
+//        dist = getDist(rangeSensor);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        //REMOVE AFTER TESTING
+//        sleep(500);
+//        beforeALV = getAvg();
+//        dist = getDist(rangeSensor);
+//        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 515) {
+//            moveForward(.14);
+//            dist = getDist(rangeSensor);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        //sleep(500);
+//        //moveForward(.175, 450, angle);
+//        if(beaconValue(colorSensorBeacon) == 0) {
+//            ManBeaconL.setPosition(.85);
+//            sleep(1000);
+//            if(getDist(rangeSensor) > 5.5)
+//                mashBeacons(.12, 150);
+//            ManBeaconL.setPosition(.3);
+//        }
+//        else {
+//            ManBeaconR.setPosition(.25);
+//            sleep(1000);
+//            if(getDist(rangeSensor) > 5.5)
+//                mashBeacons(.12, 150);
+//            ManBeaconR.setPosition(.7);
+//        }
+//        if(beaconValue(colorSensorBeacon) != 0) {
+//            moveBackWardWithEncoders(.14, 20);
+//            sleep(5000);
+//            ManBeaconR.setPosition(.25);
+//            mashBeacons(.14, 100);
+//            sleep(500);
+//            ManBeaconR.setPosition(.7);
+//            sleep(500);
+////            bringDownShooter(-.4, 800);
+////            moveBackWardWithEncoders(.6, 3000);
+////            sleep(30000);
+//        }
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//    }
+////    bringDownShooter(-.4, 800);
+////    moveBackWardWithEncoders(.4, 500);
+////    turnLeftWithPID(45, .004, .000015, 0.0);
+////    moveBackWardWithEncoders(.6, 3000);
+////    sleep(30000);
+//    public void pushSecondBlue(double angle) throws InterruptedException {
+//        //double p = .004; double i = .000015; //double d = 2.0;
+//        //double dist = getDist(rangeSensor);
+//
+////        int movement = (int) Math.round(dist - 6) * 30;
+////        if(movement > 0)
+////            moveForward(.175, movement, angle);
+////        else if(movement < 0)
+////            moveBackWardWithCorrection(.175, -movement, angle);
+//        double dist = getDist(rangeSensor);
+//        if(dist > 8)
+//            moveForward(.175, 50, angle);
+//        dist = getDist(rangeSensor);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        //REMOVE AFTER TESTING
+//        sleep(500);
+//        beforeALV = getAvg();
+//        dist = getDist(rangeSensor);
+//        while (dist > 7 && opModeIsActive() && Math.abs(getAvg() - beforeALV) < 500) {
+//            moveForward(.14);
+//            dist = getDist(rangeSensor);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//        sleep(500);
+//        //moveForward(.175, 450, angle);
+//        if(beaconValue(colorSensorBeacon) == 0) {
+//            ManBeaconL.setPosition(1);
+//            sleep(1000);
+//            if(getDist(rangeSensor) > 7)
+//                mashBeacons(.12, 100);
+//            ManBeaconL.setPosition(.3);
+//        }
+//        else {
+//            ManBeaconR.setPosition(.05);
+//            sleep(1000);
+//            if(getDist(rangeSensor) > 6)
+//                mashBeacons(.12, 100);
+//            ManBeaconR.setPosition(.7);
+//        }
+//        if(beaconValue(colorSensorBeacon) != 0) {
+//            moveBackWardWithEncoders(.14, 20);
+//            sleep(5000);
+//            ManBeaconR.setPosition(1);
+//            mashBeacons(.14, 20);
+//            sleep(1000);
+//            ManBeaconR.setPosition(.3);
+//            sleep(500);
+//        }
+//        telemetry.addData("distance", dist);
+//        telemetry.update();
+//    }
 
 
     //test methods
@@ -2138,7 +2157,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double wallCorrection = .02;
         double angleCorrection = .2;
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage())/2;;
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 150;
         distance += change;
         long lastTime = System.currentTimeMillis();

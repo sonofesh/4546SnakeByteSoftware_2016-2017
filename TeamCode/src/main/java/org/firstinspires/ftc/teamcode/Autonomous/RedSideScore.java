@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by 4546 Snakebyte on 12/19/16.
- * Test count: 18 + 3 + 7 + 18 + 8 + 5 + 11 + 11 +
+ * Test count: 18 + 3 + 7 + 18 + 8 + 5 + 11 + 11 + 14
  * This will essentially be our red side auto, provided the first turn is reversed
  * DELETE WHEN DONE.
  * Shoot first auto, configured for red side
@@ -21,13 +21,14 @@ public class RedSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test14");
+        telemetry.addData("init", "test1");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
+        bringDownShooter(.1, 1150);
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         if (voltage <= 13.5)
@@ -40,6 +41,7 @@ public class RedSideScore extends AutoOpMode {
             power = .88;
         else if (voltage > 14)
             power = .83;
+
         shoot(power, 360);
         double change = getGyroYaw() - perpendicular;
         double angle36 = getGyroYaw();
@@ -51,10 +53,9 @@ public class RedSideScore extends AutoOpMode {
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
         moveToWall(2900, .25);
         sleep(500);
-        moveToSecondLine(1600, .15);
+        moveToSecondLine(1600, .2);
         sleep(500);
-        pushRedBeacon();
-        moveBackToWhiteLine(400, -.125);
+        moveBackToWhiteLine(400, -.1);
         sleep(500);
         pushRedBeacon();
         sleep(500);
@@ -62,7 +63,7 @@ public class RedSideScore extends AutoOpMode {
 //        moveToSecondLine(3000, .25);
         moveToSecondLine(2800, .25);
         sleep(500);
-        moveBackToWhiteLine(300, -.125);
+        moveBackToWhiteLine(300, -.1);
         sleep(500);
         pushRedBeacon();
         sleep(500);

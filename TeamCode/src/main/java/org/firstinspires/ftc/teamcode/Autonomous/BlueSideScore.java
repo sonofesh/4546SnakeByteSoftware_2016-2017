@@ -53,14 +53,14 @@ public class BlueSideScore extends AutoOpMode {
 //        sleep(500);
         moveToWall(1500, -.25);
         sleep(500);
-        pushBlueBeacon(perpendicular);
+        pushBlueBeacon();
         sleep(1000);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(3000, -.25);
         sleep(500);
-        pushBlueBeacon(perpendicular);
+        pushBlueBeacon();
         sleep(500);
         turnLeftWithGyro(.4, 90);
         sleep(500);

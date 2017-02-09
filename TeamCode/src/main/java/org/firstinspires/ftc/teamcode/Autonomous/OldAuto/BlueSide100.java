@@ -21,52 +21,52 @@ public class BlueSide100 extends AutoOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize();
-        double power = .8;
-        telemetry.addData("init", "test0");
-        telemetry.update();
-        waitForStart();
-        double perpendicular = getGyroYaw();
-        moveForward(.16, 500);
-        //moveForwardPID(500);
-        //bring down shooter
-        bringDownShooter(.1, 1150);
-        sleep(1000);
-        //shoot
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-        if (voltage <= 13.5)
-            power = .825;
-        else if (voltage <= 13.75 && voltage > 13.5)
-            power = .78;
-        else if (voltage > 13.75 && voltage <= 13.9)
-            power = .725;
-        else if (voltage > 13.9 && voltage <= 14)
-            power = .66;
-        else if (voltage > 14)
-            power = .635;
-        shoot(power, 350);
-        sleep(750);
-        double angle43 = perpendicular;
-        //double p = .004; double i = .000015;
-        turnRightWithPID(43, .006, .00004, 0.0);
-        sleep(500);
-        angle43 += 43;
-        moveForwardsToWhiteLine(2850, angle43);
-        moveForwardWithEncoders(.15, 20);
-        //double p = .004; double i = .000015;
-        sleep(500);
-        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 5);
-        sleep(500);
-        pushFrontBlue(perpendicular + 90);
-        sleep(500);
-        moveBackWardWithEncoders(.4, 400);
-        turnLeftWithPID(Math.abs(getGyroYaw() - perpendicular));
-        sleep(500);
-        moveForwardsToWhiteLine(2500, perpendicular);
-        sleep(500);
-        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular));
-        sleep(500);
-        pushSecondBlue(perpendicular + 90);
+//        initialize();
+//        double power = .8;
+//        telemetry.addData("init", "test0");
+//        telemetry.update();
+//        waitForStart();
+//        double perpendicular = getGyroYaw();
+//        moveForward(.16, 500);
+//        //moveForwardPID(500);
+//        //bring down shooter
+//        bringDownShooter(.1, 1150);
+//        sleep(1000);
+//        //shoot
+//        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+//        if (voltage <= 13.5)
+//            power = .825;
+//        else if (voltage <= 13.75 && voltage > 13.5)
+//            power = .78;
+//        else if (voltage > 13.75 && voltage <= 13.9)
+//            power = .725;
+//        else if (voltage > 13.9 && voltage <= 14)
+//            power = .66;
+//        else if (voltage > 14)
+//            power = .635;
+//        shoot(power, 350);
+//        sleep(750);
+//        double angle43 = perpendicular;
+//        //double p = .004; double i = .000015;
+//        turnRightWithPID(43, .006, .00004, 0.0);
+//        sleep(500);
+//        angle43 += 43;
+//        moveForwardsToWhiteLine(2850, angle43);
+//        moveForwardWithEncoders(.15, 20);
+//        //double p = .004; double i = .000015;
+//        sleep(500);
+//        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular) + 5);
+//        sleep(500);
+//        pushFrontBlue(perpendicular + 90);
+//        sleep(500);
+//        moveBackWardWithEncoders(.4, 400);
+//        turnLeftWithPID(Math.abs(getGyroYaw() - perpendicular));
+//        sleep(500);
+//        moveForwardsToWhiteLine(2500, perpendicular);
+//        sleep(500);
+//        turnIntoWhiteLine(Math.abs(getGyroYaw() - perpendicular));
+//        sleep(500);
+//        pushSecondBlue(perpendicular + 90);
     }
 }
     /*initialize();

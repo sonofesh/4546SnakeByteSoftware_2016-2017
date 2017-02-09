@@ -26,8 +26,8 @@ public abstract class AutoOpMode extends LinearOpMode {
     Servo ManBeaconL;
     Servo ManBeaconR;
     DcMotor ManIn;
-    Servo BlueBeaconPusher;
-    Servo RedBeaconPusher;
+    Servo BackBeaconPusher;
+    Servo FrontBeaconPusher;
     //average encoder value
     int beforeALV = 0;
     double beforeAngle = 2;
@@ -56,8 +56,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         ShooterF = hardwareMap.dcMotor.get("F");
         ManLift = hardwareMap.dcMotor.get("ManLift");
         ManIn = hardwareMap.dcMotor.get("ManIn");
-        BlueBeaconPusher = hardwareMap.servo.get("AutoBeaconB");
-        RedBeaconPusher = hardwareMap.servo.get("AutoBeaconF");
+        BackBeaconPusher = hardwareMap.servo.get("BeaconL");
+        FrontBeaconPusher = hardwareMap.servo.get("BeaconR");
 //        ManBeaconL = hardwareMap.servo.get("ManBeaconL");
 //        ManBeaconR = hardwareMap.servo.get("ManBeaconR");
 //        ManBeaconL.setPosition(.3);
@@ -82,16 +82,17 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initialized");
-        frontBeacon = hardwareMap.colorSensor.get("cSWL");
-        frontBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
-        frontBeacon.enableLed(true);
+        backBeacon = hardwareMap.colorSensor.get("cSWL");
+        backBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
+        backBeacon.enableLed(false);
         telemetry.addData("colorSensorWL", "initialized");
         colorSensorWLA = hardwareMap.colorSensor.get("cSWA");
         colorSensorWLA.setI2cAddress(I2cAddr.create8bit(0x2a));
         colorSensorWLA.enableLed(true);
         telemetry.addData("colorSensorWLA", "initialized");
-        backBeacon = hardwareMap.colorSensor.get("cSB");
-        backBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
+        frontBeacon = hardwareMap.colorSensor.get("cSB");
+        frontBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
+        frontBeacon.enableLed(false);
         telemetry.addData("colorSensorB", "initialized");
         rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
         telemetry.addData("range", getDist(rangeSensor));
@@ -1464,13 +1465,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(output * 1.8);
-            BR.setPower(output * 1.8);
+            FR.setPower(output * 1.7);
+            BR.setPower(output * 1.7);
             FL.setPower(-output * .65);
             BL.setPower(-output * .65);
             idle();
         }
-        output = .15;
+        output = .2;
         while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(output * 1.25);
             BR.setPower(output * 1.25);
@@ -1675,16 +1676,9 @@ public abstract class AutoOpMode extends LinearOpMode {
         //move forward and push the correct beacon
         if(colorSensorAverageValues(colorSensorWLA) < 10) {
             if (beaconValue(frontBeacon) == 1) {
-                moveRedSideServo();
+                moveBackBeacon();
             }
-            else if (beaconValue(backBeacon) == 1)
-            {
-                moveBlueSideServo();
-            }
-            FR.setPower(0);
-            BR.setPower(0);
-            FL.setPower(0);
-            BL.setPower(0);
+            moveFrontBeacon();
         }
         else if(count < 2) {
             moveBackToWhiteLine(200, .125);
@@ -1702,10 +1696,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         count += 1;
         if(Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10) {
             if (beaconValue(frontBeacon) == 0) {
-                moveBlueSideServo();
+                moveBackBeacon();
             }
             else if (beaconValue(backBeacon) == 0) {
-                moveRedSideServo();
+                moveFrontBeacon();
             }
         }
         else if(count < 2) {
@@ -2098,16 +2092,16 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.log().add("next Line");
         telemetry.update();
     }
-    public void moveBlueSideServo() throws InterruptedException {
-        BlueBeaconPusher.setPosition(1);
-        Thread.sleep(1000);
-        BlueBeaconPusher.setPosition(0);
+    public void moveBackBeacon() throws InterruptedException {
+        BackBeaconPusher.setPosition(.9);
+        sleep(1000);
+        BackBeaconPusher.setPosition(.15);
     }
 
-    public void moveRedSideServo() throws InterruptedException {
-        RedBeaconPusher.setPosition(1);
+    public void moveFrontBeacon() throws InterruptedException {
+        FrontBeaconPusher.setPosition(.9);
         sleep(1000);
-        RedBeaconPusher.setPosition(0);
+        FrontBeaconPusher.setPosition(.15);
     }
 
     public void moveManBeaconL() throws InterruptedException {

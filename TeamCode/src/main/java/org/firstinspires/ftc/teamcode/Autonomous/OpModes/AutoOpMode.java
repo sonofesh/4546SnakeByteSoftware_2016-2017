@@ -1686,14 +1686,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         //distance: 25
         telemetry.addData("reached", "pushRedBeacon");
         telemetry.update();
-        count += 1;
         //move forward and push the correct beacon
-        if (beaconValue(frontBeacon) == 1) {
+        if (beaconCompareRed(backBeacon, frontBeacon) == 1) {
             telemetry.addData("reached", "passedBeaconValueIF");
             telemetry.update();
             moveBackBeacon();
         }
-        else if (beaconValue(backBeacon) == 1) {
+        else if (beaconCompareRed(backBeacon, frontBeacon) == 0) {
             moveFrontBeacon();
         }
 
@@ -1730,23 +1729,23 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void pushBlueBeacon() throws InterruptedException {
         count += 1;
         if(Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10) {
-            if (beaconValue(frontBeacon) == 0) {
+            if (beaconCompareBlue(backBeacon,frontBeacon) == 1) {
                 moveBackBeacon();
             }
-            else if (beaconValue(backBeacon) == 0) {
+            else if (beaconCompareBlue(backBeacon,frontBeacon) == 0) {
                 moveFrontBeacon();
             }
         }
-        else if(count < 2) {
-            moveBackToWhiteLine(200, .125);
-            pushBlueBeacon();
-        }
-        else {
-            moveBackToWhiteLine(200, -.125);
-            pushBlueBeacon();
-        }
-        telemetry.addData("blue", "hit");
-        telemetry.update();
+//        else if(count < 2) {
+//            moveBackToWhiteLine(200, .125);
+//            pushBlueBeacon();
+//        }
+//        else {
+//            moveBackToWhiteLine(200, -.125);
+//            pushBlueBeacon();
+//        }
+//        telemetry.addData("blue", "hit");
+//        telemetry.update();
     }
 
     public void correctBlue() throws InterruptedException{

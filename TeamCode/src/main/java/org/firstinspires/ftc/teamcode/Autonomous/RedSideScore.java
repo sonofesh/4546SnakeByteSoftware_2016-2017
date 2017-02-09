@@ -21,7 +21,7 @@ public class RedSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test1");
+        telemetry.addData("init", "test13");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -45,7 +45,7 @@ public class RedSideScore extends AutoOpMode {
         shoot(power, 360);
         double change = getGyroYaw() - perpendicular;
         double angle36 = getGyroYaw();
-        turnLeftWithPID(36 + change, .0038, .000025, 0.0);
+        turnLeftWithPID(36 + change, .004, .00002, 0.0);
         sleep(500);
         angle36 -= 36;
         //double p = .004; double i = .000015; //double d = 2.0;
@@ -53,25 +53,26 @@ public class RedSideScore extends AutoOpMode {
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
         moveToWall(2900, .25);
         sleep(500);
-        moveToSecondLine(1600, .2);
+        moveToSecondLine(1675, .2);
         sleep(500);
-        moveBackToWhiteLine(400, -.1);
+        moveBackToWhiteLine(600, -.1);
         sleep(500);
         pushRedBeacon();
         sleep(500);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveToSecondLine(2800, .25);
+        moveToSecondLine(2950, .25);
         sleep(500);
-        moveBackToWhiteLine(300, -.1);
+        resetCount();
+        moveBackToWhiteLine(600, -.115);
         sleep(500);
         pushRedBeacon();
         sleep(500);
-        turnRightWithGyroOneSide(.45, 77);
+        turnRightWithGyroOneSide(.45, 80);
         sleep(500);
-        moveForwardWithEncoders(.5, 2800);
+        moveForwardWithEncoders(.5, 2000);
         sleep(500);
-        turnRightWithGyroOneSide(.45, 10);
+        turnLeftWithGyro(-.75, 45);
 
     }
 

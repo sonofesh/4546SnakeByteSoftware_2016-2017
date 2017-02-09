@@ -1,18 +1,3 @@
-/** CONTROLS
- *      Controller 1 - Drive
- *          Right Stick Y Axis : Right Wheel Power          Left Stick Y Axis : Left Wheel Power
- *          Y : Reverse Drive Toggle                        A : Half Speed Toggle
- *
- *      Controller 2 - Scoring
- *          Right Stick Y Axis : Manipulator High Power     Left Stick Y Axis : Manipulator Low Power
- *          Right Trigger : Ramp Down                       Left Trigger : Ramp Uo
- *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
- *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
- *          Y : Deploy Stopper Toggle                       A : Deploy Lift Gate
- *
- */
-
-
 
 package org.firstinspires.ftc.teamcode.TeleOP;
 
@@ -32,11 +17,11 @@ import javax.xml.datatype.Duration;
 /** CONTROLS
  *      Controller 1 - Drive
  *          Right Stick Y Axis : Right Wheel Power          Left Stick Y Axis : Left Wheel Power
- *          Y : Reverse Drive Toggle                        A : Half Speed Toggle
+ *          Currently No Macros
  *
  *      Controller 2 - Scoring
  *          Right Stick Y Axis : Manipulator High Power     Left Stick Y Axis : Manipulator Low Power
- *          Right Trigger : Ramp Down                       Left Trigger : Ramp Uo
+ *          Right Trigger : Ramp Down                       Left Trigger : Ramp Up
  *          Right Bumper : Shooter High Power               Left Bumper : Shooter Low Power
  *          Hold X : Beacon Pusher Left                     Hold B : Beacon Pusher Right
  *
@@ -145,26 +130,26 @@ public class TeleOpA extends OpMode {
             BR.setPower(0);
         }
 
-        //HalfSpeed Macro
-        if (gamepad1.a) {
-            currentTime = System.currentTimeMillis();
-            if (currentTime > lastTime + DURATION) {
-                if (halfspeed)
-                    halfspeed = false;
-                else
-                    halfspeed = true;
-                lastTime = System.currentTimeMillis();
-            }
-            speed = (halfspeed) ? HALFSPEED : FULLSPEED;
-        }
-        //Reverse Macro
-        if (gamepad1.y) {
-            currentTime = System.currentTimeMillis();
-            if (currentTime > lastTime + DURATION) {
-                direction *= -1;
-                lastTime = System.currentTimeMillis();
-            }
-        }
+//        //HalfSpeed Macro
+//        if (gamepad1.a) {
+//            currentTime = System.currentTimeMillis();
+//            if (currentTime > lastTime + DURATION) {
+//                if (halfspeed)
+//                    halfspeed = false;
+//                else
+//                    halfspeed = true;
+//                lastTime = System.currentTimeMillis();
+//            }
+//            speed = (halfspeed) ? HALFSPEED : FULLSPEED;
+//        }
+//        //Reverse Macro
+//        if (gamepad1.y) {
+//            currentTime = System.currentTimeMillis();
+//            if (currentTime > lastTime + DURATION) {
+//                direction *= -1;
+//                lastTime = System.currentTimeMillis();
+//            }
+//        }
 
         //CONTROLLER 2
 

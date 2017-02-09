@@ -162,7 +162,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             idle();
         ManIn.setPower(-.25);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2500)
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2000)
             idle();
         ManIn.setPower(0);
         ShooterF.setPower(0);
@@ -1465,10 +1465,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(output * 1.7);
-            BR.setPower(output * 1.7);
-            FL.setPower(-output * .65);
-            BL.setPower(-output * .65);
+            FR.setPower(output * 1.6);
+            BR.setPower(output * 1.6);
+            FL.setPower(-output * .7);
+            BL.setPower(-output * .7);
             idle();
         }
         output = .2;
@@ -1508,7 +1508,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             idle();
         }
         beforeALV = getAvg();
-        output = .125;
+        output = .175;
         while (Math.abs(getAvg() - beforeALV) < (distance * .25) && colorSensorAverageValues(colorSensorWLA) < 10) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
@@ -1524,7 +1524,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void moveBackToWhiteLine(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
-        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 10) {
+        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-power * .9);
             BR.setPower(-power * .9);
             FL.setPower(power * 1.25);
@@ -1669,27 +1669,62 @@ public abstract class AutoOpMode extends LinearOpMode {
         return 1;
     }
 
+
+    //Compares both sensors to see which one has HIGHER of one color. 1 is for back, 0 is for front.
+    public int beaconCompareBlue(ColorSensor back, ColorSensor front) throws InterruptedException {
+        if (colorSensorBlue(back) > colorSensorBlue(front)) return 1;
+        else return 0;
+    }
+
+    public int beaconCompareRed(ColorSensor back, ColorSensor front) throws InterruptedException {
+        if(colorSensorRed(back) > colorSensorRed(front)) return 1;
+        else return 0;
+    }
+
     public void pushRedBeacon() throws InterruptedException {
         //power: .15
         //distance: 25
+        telemetry.addData("reached", "pushRedBeacon");
+        telemetry.update();
         count += 1;
         //move forward and push the correct beacon
-        if(colorSensorAverageValues(colorSensorWLA) < 10) {
-            if (beaconValue(frontBeacon) == 1) {
-                moveBackBeacon();
-            }
+        if (beaconValue(frontBeacon) == 1) {
+            telemetry.addData("reached", "passedBeaconValueIF");
+            telemetry.update();
+            moveBackBeacon();
+        }
+        else if (beaconValue(backBeacon) == 1) {
             moveFrontBeacon();
         }
-        else if(count < 2) {
-            moveBackToWhiteLine(200, .125);
-            pushRedBeacon();
-        }
-        else {
-            moveBackToWhiteLine(200, -.125);
-            pushRedBeacon();
-        }
+
+
+//        if(colorSensorAverageValues(colorSensorWLA) > 3) {
+//            telemetry.addData("reached", "passedIFAverageVal");
+//            telemetry.update();
+//            if (beaconValue(frontBeacon) == 1) {
+//                telemetry.addData("reached", "passedBeaconValueIF");
+//                telemetry.update();
+//                moveBackBeacon();
+//            }
+//            else
+//                moveFrontBeacon();
+//        }
+//        else if(count < 2) {
+//            sleep(1000);
+//            moveBackToWhiteLine(600, .125);
+//            pushRedBeacon();
+//        }
+//        else if(count < 3){
+//            sleep(1000);
+//            moveBackToWhiteLine(600, -.125);
+//            pushRedBeacon();
+//        }
         telemetry.addData("red", "hit");
         telemetry.update();
+    }
+
+    public void resetCount() throws InterruptedException {
+        count = 0;
     }
 
     public void pushBlueBeacon() throws InterruptedException {
@@ -2094,13 +2129,15 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
     public void moveBackBeacon() throws InterruptedException {
         BackBeaconPusher.setPosition(.9);
-        sleep(1000);
+        Thread.sleep(1000);
         BackBeaconPusher.setPosition(.15);
     }
 
     public void moveFrontBeacon() throws InterruptedException {
+        telemetry.addData("reached", "sonesh is a garbage programmer");
+        telemetry.update();
         FrontBeaconPusher.setPosition(.9);
-        sleep(1000);
+        Thread.sleep(1000);
         FrontBeaconPusher.setPosition(.15);
     }
 

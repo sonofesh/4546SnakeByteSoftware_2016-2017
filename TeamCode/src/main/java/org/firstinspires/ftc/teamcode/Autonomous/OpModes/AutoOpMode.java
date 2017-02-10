@@ -1673,26 +1673,22 @@ public abstract class AutoOpMode extends LinearOpMode {
     //Compares both sensors to see which one has HIGHER of one color. 1 is for back, 0 is for front.
     public int beaconCompareBlue(ColorSensor back, ColorSensor front) throws InterruptedException {
         if (colorSensorBlue(back) > colorSensorBlue(front)) return 1;
-        else return 0;
+        return 0;
     }
 
-    public int beaconCompareRed(ColorSensor back, ColorSensor front) throws InterruptedException {
-        if(colorSensorRed(back) > colorSensorRed(front)) return 1;
-        else return 0;
+    public int beaconCompareRed() throws InterruptedException {
+        if(colorSensorRed(backBeacon) > colorSensorRed(frontBeacon)) return 1;
+        return 0;
     }
 
     public void pushRedBeacon() throws InterruptedException {
         //power: .15
         //distance: 25
-        telemetry.addData("reached", "pushRedBeacon");
-        telemetry.update();
         //move forward and push the correct beacon
-        if (beaconCompareRed(backBeacon, frontBeacon) == 1) {
-            telemetry.addData("reached", "passedBeaconValueIF");
-            telemetry.update();
+        if (beaconCompareRed() == 1) {
             moveBackBeacon();
         }
-        else if (beaconCompareRed(backBeacon, frontBeacon) == 0) {
+        else if (beaconCompareRed() == 0) {
             moveFrontBeacon();
         }
 

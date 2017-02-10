@@ -1685,19 +1685,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         //power: .15
         //distance: 25
         //move forward and push the correct beacon
-<<<<<<< HEAD
         if (beaconCompareRed() == 1) {
             moveBackBeacon();
         }
         else if (beaconCompareRed() == 0) {
-=======
-        if (beaconCompareRed(backBeacon, frontBeacon) == 0) {
-            telemetry.addData("reached", "passedBeaconValueIF");
-            telemetry.update();
-            moveBackBeacon();
-        }
-        else if (beaconCompareRed(backBeacon, frontBeacon) == 1) {
->>>>>>> origin/master
             moveFrontBeacon();
         }
 

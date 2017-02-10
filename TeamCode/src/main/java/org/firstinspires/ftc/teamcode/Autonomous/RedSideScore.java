@@ -25,7 +25,7 @@ public class RedSideScore extends AutoOpMode {
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
-        moveForwardWithEncoders(.16, 550);
+        moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.1, 1150);

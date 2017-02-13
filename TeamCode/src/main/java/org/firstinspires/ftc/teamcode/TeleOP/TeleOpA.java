@@ -116,15 +116,15 @@ public class TeleOpA extends OpMode {
         //CONTROLLER 1
         //Tank Drive
         if (Math.abs(gamepad1.left_stick_y) > .1) {
-            FL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
-            BL.setPower(gamepad1.left_stick_y * direction * -1 * speed);
+            FL.setPower(gamepad1.left_stick_y * -1);
+            BL.setPower(gamepad1.left_stick_y * -1);
         } else {
             FL.setPower(0);
             BL.setPower(0);
         }
         if (Math.abs(gamepad1.right_stick_y) > .1) {
-            FR.setPower(gamepad1.right_stick_y * direction * speed);
-            BR.setPower(gamepad1.right_stick_y * direction * speed);
+            FR.setPower(gamepad1.right_stick_y);
+            BR.setPower(gamepad1.right_stick_y);
         } else {
             FR.setPower(0);
             BR.setPower(0);
@@ -186,12 +186,12 @@ public class TeleOpA extends OpMode {
 
         //Shooter Controls
         if (gamepad2.right_bumper) {
-            ShooterF.setPower(1);
-            ShooterB.setPower(-1);
+            ShooterF.setPower(-1);
+            ShooterB.setPower(1);
         }
         else if (gamepad2.left_bumper) {
-            ShooterF.setPower(.9);
-            ShooterB.setPower(-.9);
+            ShooterF.setPower(-.9);
+            ShooterB.setPower(.9);
         }
         else {
             ShooterF.setPower(0);

@@ -1685,11 +1685,11 @@ public abstract class AutoOpMode extends LinearOpMode {
         //power: .15
         //distance: 25
         //move forward and push the correct beacon
-        if (beaconCompareRed() == 1) {
-            moveBackBeacon();
-        }
-        else if (beaconCompareRed() == 0) {
+        if (beaconValue(backBeacon) == 1) {
             moveFrontBeacon();
+        }
+        else if (beaconValue(frontBeacon) == 1) {
+            moveBackBeacon();
         }
 
 
@@ -2129,8 +2129,6 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     public void moveFrontBeacon() throws InterruptedException {
-        telemetry.addData("reached", "sonesh is a garbage programmer");
-        telemetry.update();
         FrontBeaconPusher.setPosition(.9);
         Thread.sleep(1000);
         FrontBeaconPusher.setPosition(.15);

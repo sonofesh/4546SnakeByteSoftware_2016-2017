@@ -23,6 +23,17 @@ public class TestColor extends LinearOpMode
         double average = (colorsensor.red() + colorsensor.blue() + colorsensor.green())/3.0;
         return average;
     }
+
+//    public void pushRedBeacon() throws InterruptedException {
+//        //power: .15
+//        //distance: 25
+//        //move forward and push the correct beacon
+//        if (beaconValue(backBeacon) == 1) {
+//            telemetry.addData("back");
+//        } else if (beaconValue(frontBeacon) == 1) {
+//            moveBackBeacon();
+//        }
+//    }
     @Override
     public void runOpMode() throws InterruptedException
     {

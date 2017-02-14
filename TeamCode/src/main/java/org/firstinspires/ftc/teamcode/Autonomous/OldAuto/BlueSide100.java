@@ -27,7 +27,7 @@ public class BlueSide100 extends AutoOpMode {
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
-        moveForwardWithEncoders(-.16, 500);
+        moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.1, 1150);
@@ -45,19 +45,17 @@ public class BlueSide100 extends AutoOpMode {
             power = .83;
         shoot(power, 360);
         double angle36 = getGyroYaw();
-        turnRightWithPID(36, .005, .00004, 0.0);
+        turnRightWithPID(216, .005, .000025, 0.0);
+        angle36 += 186;
+        moveBackwardPID(3700, angle36);
         sleep(500);
-        angle36 += 36;
-        moveBackwardWithPID(3700, angle36);
-        sleep(500);
-        turnRightWithPID(144, .005, .00002, 0.0);
-        sleep(500);
-        moveForwardPID(400);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-        moveToWall(1500, -.25);
+        moveToWall(1500, .25);
         sleep(500);
-        moveBackToWhiteLine(600, -.1);
+        moveToSecondLine(1675, -.25);
+        sleep(500);
+        moveBackToWhiteLine(600, .1);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
@@ -66,7 +64,7 @@ public class BlueSide100 extends AutoOpMode {
 //        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(3000, -.25);
         sleep(500);
-        moveBackToWhiteLine(600, -.1);
+        moveBackToWhiteLine(600, .1);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

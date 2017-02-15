@@ -918,8 +918,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         double deltaTime;
         int angleError;
         beforeALV = getAvg();
-        double correctionLeft = .0525;
-        double correctionRight = .025;
+        double correctionLeft = .015;
+        double correctionRight = .015;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;

@@ -43,12 +43,12 @@ public class RedSideScore extends AutoOpMode {
             power = .83;
         shoot(power, 360);
         double change = getGyroYaw() - perpendicular;
-        double angle36 = getGyroYaw();
-        turnLeftWithPID(36, .004, .0000225, 0.0);
+        double angle35 = getGyroYaw();
+        turnLeftWithPID(35, .004, .0000225, 0.0);
         sleep(500);
-        angle36 -= 36;
+        angle35 -= 35;
         //double p = .004; double i = .000015; //double d = 2.0;
-        moveForwardPID(4200, angle36);
+        moveForwardPID(4350, angle35);
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
         moveToWall(2900, .3);
         sleep(500);

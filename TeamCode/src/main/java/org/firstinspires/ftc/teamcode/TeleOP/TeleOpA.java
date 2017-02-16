@@ -164,9 +164,9 @@ public class TeleOpA extends OpMode {
             ManIn.setPower(0);
 
         if (Math.abs(gamepad2.left_trigger) > .05)
-            ManLift.setPower(gamepad2.left_trigger * .25 * -1);
+            ManLift.setPower(gamepad2.left_trigger * .55 * -1);
         else if (Math.abs(gamepad2.right_trigger) > .05)
-            ManLift.setPower(gamepad2.right_trigger * .25);
+            ManLift.setPower(gamepad2.right_trigger * .55);
         else
             ManLift.setPower(0);
 

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 
@@ -10,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 = 77 tests
  */
 @Autonomous(name = "BlueSide70", group = "Autonomous")
+@Disabled
 public class BlueSideScore extends AutoOpMode {
     public BlueSideScore() {
         super();

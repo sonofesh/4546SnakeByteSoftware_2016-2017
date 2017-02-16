@@ -97,6 +97,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
         telemetry.addData("range", getDist(rangeSensor));
         telemetry.update();
+        telemetry.addData("backbeacon", backBeacon.red());
+        telemetry.addData("colorSensorWLA", colorSensorWLA.red());
+        telemetry.addData("colorSensorWLA", colorSensorWLA.red());
+        telemetry.update();
 //        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
 
     }
@@ -155,7 +159,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         int beforeManLift = ManLift.getCurrentPosition();
         ShooterF.setPower(-power);
         ShooterB.setPower(power);
-        bringDownShooter((.3 * -1), (distance + (Math.abs(beforeManLift - 1150))));
+        bringDownShooter((.55 * -1), (distance + (Math.abs(beforeManLift - 1150))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
@@ -908,7 +912,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveForwardPID(int distance, double angle) throws InterruptedException {
         //.00025, .00000003, 0.0, 4000
         //calibration constants
-        double p = .0002; double i = .00000015; //double d = 2.0;
+        double p = .0003; double i = .0000003; //double d = 2.0;
         double error = distance;
         double pastError = 0.0;
         double output;
@@ -918,8 +922,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         double deltaTime;
         int angleError;
         beforeALV = getAvg();
-        double correctionLeft = .015;
-        double correctionRight = .015;
+        double correctionLeft = .03;
+        double correctionRight = .035;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
@@ -1820,7 +1824,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         if (beaconValue(backBeacon) == 0) {
             moveFrontBeacon();
         }
-        else if (beaconValue(frontBeacon) == 0) {
+        else if (beaconValue(frontBeacon) == 1) {
             moveBackBeacon();
         }
 //        else if(count < 2) {

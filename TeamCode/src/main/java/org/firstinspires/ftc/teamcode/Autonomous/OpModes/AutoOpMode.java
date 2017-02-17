@@ -70,6 +70,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         telemetry.addData("gyro", "initializing");
         telemetry.update();
         parameters = new BNO055IMU.Parameters();
@@ -82,6 +83,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initialized");
+
         backBeacon = hardwareMap.colorSensor.get("cSWL");
         backBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         backBeacon.enableLed(false);
@@ -165,6 +167,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
             idle();
         ManIn.setPower(-.25);
+        ShooterF.setPower(-power + .1);
+        ShooterB.setPower(power - .1);
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 2000)
             idle();
@@ -922,8 +926,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         double deltaTime;
         int angleError;
         beforeALV = getAvg();
-        double correctionLeft = .03;
-        double correctionRight = .035;
+        double correctionLeft = .04;
+        double correctionRight = .04;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
@@ -1553,19 +1557,19 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
-        while (Math.abs(getGyroYaw() - beforeAngle) > 30) {
-            FR.setPower(output * .7);
-            BR.setPower(output * .7);
-            FL.setPower(-output * 1.6);
-            BL.setPower(-output * 1.6);
+        while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
+            FR.setPower(output * .8);
+            BR.setPower(output * .8);
+            FL.setPower(-output * 1.3);
+            BL.setPower(-output * 1.3);
             idle();
         }
         output = .2;
         while (Math.abs(getAvg() - beforeALV) < distance) {
-            FR.setPower(output * .85);
-            BR.setPower(output * .85);
-            FL.setPower(-output * 1.25);
-            BL.setPower(-output * 1.25);
+            FR.setPower(output * .9);
+            BR.setPower(output * .9);
+            FL.setPower(output * 1.25);
+            BL.setPower(output * 1.25);
             idle();
         }
         FR.setPower(0);
@@ -1601,8 +1605,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         while (Math.abs(getAvg() - beforeALV) < (distance * .25) && colorSensorAverageValues(colorSensorWLA) < 10) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
-            FL.setPower(output * 1.25);
-            BL.setPower(output * 1.25);
+            FL.setPower(output * 1.1);
+            BL.setPower(output * 1.1);
             idle();
         }
         FR.setPower(0);
@@ -1616,8 +1620,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-power * .9);
             BR.setPower(-power * .9);
-            FL.setPower(power * 1.25);
-            BL.setPower(power * 1.25);
+            FL.setPower(power * 1.1);
+            BL.setPower(power * 1.1);
             idle();
         }
         FR.setPower(0);

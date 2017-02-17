@@ -54,8 +54,7 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         moveToSecondLine(1675, .3);
         sleep(500);
-        moveBackToWhiteLine(600, -.15);
-        sleep(500);
+        moveBackToWhiteLine(600, -.125);
         pushRedBeacon();
         sleep(500);
         //correct(perpendicular, .04, .00015, 0.0, 0);
@@ -71,7 +70,7 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         moveForwardWithEncoders(.5, 2000);
         sleep(500);
-        turnLeftWithGyro(-.75, 45);
+        turnLeftWithGyro(.75, 45);
 
     }
 

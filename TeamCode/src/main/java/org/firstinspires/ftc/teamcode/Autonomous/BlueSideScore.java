@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 /**
  * Created by 4546 on 12/21/16.
  * This auto will move to the beacons, hit both, turn, shoot, and then knock the cap ball
- * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 = 77 tests
+ * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 + 19 = tests
  */
 @Autonomous(name = "BlueSide70", group = "Autonomous")
 @Disabled
@@ -22,14 +22,14 @@ public class BlueSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test9");
+        telemetry.addData("init", "test4");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.1, 1150);
+        bringDownShooter(.3, 1150);
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)

@@ -29,7 +29,7 @@ public class BlueSide100 extends AutoOpMode {
         moveForwardWithEncoders(.16, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.1, 1150);
+        bringDownShooter(.3, 1150);
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
@@ -44,14 +44,13 @@ public class BlueSide100 extends AutoOpMode {
             power = .83;
         shoot(power, 360);
         double angle36 = getGyroYaw();
-        turnRightWithPID(36, .005, .000025, 0.0);
+        turnLeftWithPID(36, .005, .000025, 0.0);
         angle36 += 36;
         moveForwardPID(3200, angle36);
         sleep(500);
         turnRightWithPID(180, .005, .000025, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-        moveBackwardPID(300, angle36);
         moveToWall(1500, -.25);
         sleep(500);
         moveToSecondLine(1675, -.25);
@@ -65,7 +64,7 @@ public class BlueSide100 extends AutoOpMode {
 //        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(3000, -.25);
         sleep(500);
-        moveBackToWhiteLine(600, .1);
+        moveBackToWhiteLine(600, .12);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

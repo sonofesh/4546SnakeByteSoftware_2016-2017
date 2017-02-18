@@ -29,18 +29,18 @@ public class RedSideScore extends AutoOpMode {
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.3, 1150);
-        sleep(1000);
+        sleep(750);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         if (voltage <= 13.5)
-            power = .97;
+            power = .96;
         else if (voltage <= 13.75 && voltage > 13.5)
-            power = .94;
+            power = .93;
         else if (voltage > 13.75 && voltage <= 13.9)
-            power = .9;
+            power = .89;
         else if (voltage > 13.9 && voltage <= 14)
-            power = .88;
+            power = .87;
         else if (voltage > 14)
-            power = .83;
+            power = .82;
         shoot(power, 360);
         double change = getGyroYaw() - perpendicular;
         double angle35 = getGyroYaw();
@@ -50,11 +50,11 @@ public class RedSideScore extends AutoOpMode {
         //double p = .004; double i = .000015; //double d = 2.0;
         moveForwardPID(4350, angle35);
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
-        moveToWall(2900, .3);
+        moveToWall(1900, .3);
         sleep(500);
-        moveToSecondLine(1675, .3);
-        sleep(500);
-        moveBackToWhiteLine(600, -.125);
+//        moveToSecondLine(900, .3);
+//        sleep(500);
+        moveBackToWhiteLine(800, -.12);
         pushRedBeacon();
         sleep(500);
         //correct(perpendicular, .04, .00015, 0.0, 0);
@@ -62,16 +62,15 @@ public class RedSideScore extends AutoOpMode {
         moveToSecondLine(2950, .3);
         sleep(500);
         resetCount();
-        moveBackToWhiteLine(600, -.15);
+        moveBackToWhiteLine(600, -.2);
         sleep(500);
         pushRedBeacon();
         sleep(500);
-        turnRightWithGyroOneSide(.5, 80);
+        moveForwardWithEncoders(.5, 500);
+        turnRightWithGyroOneSide(.6, 80);
         sleep(500);
-        moveForwardWithEncoders(.5, 2000);
+        moveForwardWithEncoders(.5, 2500);
         sleep(500);
-        turnLeftWithGyro(.75, 45);
-
     }
 
     /*

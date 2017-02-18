@@ -156,13 +156,12 @@ public class TeleOpA extends OpMode {
         //Manipulator Control
         if (Math.abs(gamepad2.right_stick_y) > .1)
             ManIn.setPower(gamepad2.right_stick_y);
-
             //Half Power Manipulator
         else if (Math.abs(gamepad2.left_stick_y) > .1)
             ManIn.setPower(gamepad2.left_stick_y * .25);
         else
             ManIn.setPower(0);
-
+        //Moni
         if (Math.abs(gamepad2.left_trigger) > .05)
             ManLift.setPower(gamepad2.left_trigger * .55 * -1);
         else if (Math.abs(gamepad2.right_trigger) > .05)
@@ -182,7 +181,6 @@ public class TeleOpA extends OpMode {
             BeaconL.setPosition(.85);
         else
             BeaconL.setPosition(.15);
-
 
         //Shooter Controls
         if (gamepad2.right_bumper) {

@@ -83,7 +83,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "IMU");
         imu.initialize(parameters);
         telemetry.addData("gyro", "initialized");
-
         backBeacon = hardwareMap.colorSensor.get("cSWL");
         backBeacon.setI2cAddress(I2cAddr.create8bit(0x3c));
         backBeacon.enableLed(false);
@@ -96,13 +95,14 @@ public abstract class AutoOpMode extends LinearOpMode {
         frontBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         frontBeacon.enableLed(false);
         telemetry.addData("colorSensorB", "initialized");
-        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
-        telemetry.addData("range", getDist(rangeSensor));
+//        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
+//        telemetry.addData("range", getDist(rangeSensor));
         telemetry.update();
         telemetry.addData("backbeacon", backBeacon.red());
         telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.update();
+        sleep(2000);
 //        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
 
     }
@@ -164,13 +164,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         bringDownShooter((.55 * -1), (distance + (Math.abs(beforeManLift - 1150))));
         sleep(1000);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 1000)
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 500)
             idle();
         ManIn.setPower(-.25);
         ShooterF.setPower(-power + .1);
         ShooterB.setPower(power - .1);
         beforeTime = System.currentTimeMillis();
-        while(Math.abs(System.currentTimeMillis() - beforeTime) < 2000)
+        while(Math.abs(System.currentTimeMillis() - beforeTime) < 1500)
             idle();
         ManIn.setPower(0);
         ShooterF.setPower(0);
@@ -1565,7 +1565,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             idle();
         }
         output = .25;
-        while (Math.abs(getAvg() - beforeALV) < distance) {
+        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);
@@ -1602,7 +1602,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         }
         beforeALV = getAvg();
         output = .175;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .25) && colorSensorAverageValues(colorSensorWLA) < 10) {
+        while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
             FL.setPower(output * 1.1);

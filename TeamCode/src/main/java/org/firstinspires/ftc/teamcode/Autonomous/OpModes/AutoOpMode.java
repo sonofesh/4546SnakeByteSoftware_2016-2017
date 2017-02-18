@@ -1553,7 +1553,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 //    }
 
     //beacon pushing methods
-    public void moveToWall(int distance, double power) throws InterruptedException {
+    public void moveToWallRed(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
@@ -1570,6 +1570,44 @@ public abstract class AutoOpMode extends LinearOpMode {
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);
             BL.setPower(-output * 1.1);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+//        output = power * .7;
+//        while (Math.abs(getAvg() - beforeALV) < (distance * .25)) {
+//            FR.setPower(output * 1.5);
+//            BR.setPower(output * 1.5);
+//            FL.setPower(-output * .8);
+//            BL.setPower(-output * .8);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+    }
+
+    //Positive values power values are towards the wall.
+    public void moveToWallBlue(int distance, double power) throws InterruptedException {
+        beforeALV = getAvg();
+        beforeAngle = getGyroYaw();
+        double output = power * basePowerMultiplier();
+        while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
+            FR.setPower(-output * 1.3);
+            BR.setPower(-output * 1.3);
+            FL.setPower(output * .8);
+            BL.setPower(output * .8);
+            idle();
+        }
+        output = .25;
+        while (Math.abs(getAvg() - beforeALV) < distance) {
+            FR.setPower(-output * 1.1);
+            BR.setPower(-output * 1.1);
+            FL.setPower(output * .9);
+            BL.setPower(output * .9);
             idle();
         }
         FR.setPower(0);
@@ -2350,6 +2388,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
+    }
+
+    public void BigBallPathRed(int distance, double power) {
+
     }
 
 //    public void maintainWallDistance(double power, double distance) throws InterruptedException{

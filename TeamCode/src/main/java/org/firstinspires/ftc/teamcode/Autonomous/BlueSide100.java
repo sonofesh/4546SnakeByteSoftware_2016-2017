@@ -52,7 +52,7 @@ public class BlueSide100 extends AutoOpMode {
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
         moveBackwardPID(300, angle36);
-        moveToWall(1500, -.25);
+        moveToWallBlue(1500, .25);
         sleep(500);
         moveToSecondLine(1675, -.25);
         sleep(500);

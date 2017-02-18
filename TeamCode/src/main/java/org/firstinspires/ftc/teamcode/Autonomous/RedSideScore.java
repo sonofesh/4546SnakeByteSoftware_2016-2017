@@ -50,7 +50,7 @@ public class RedSideScore extends AutoOpMode {
         //double p = .004; double i = .000015; //double d = 2.0;
         moveForwardPID(4350, angle35);
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
-        moveToWall(2900, .3);
+        moveToWallRed(2900, .3);
         sleep(500);
         moveToSecondLine(1675, .3);
         sleep(500);

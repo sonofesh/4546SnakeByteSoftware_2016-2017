@@ -44,35 +44,33 @@ public class BlueSide100 extends AutoOpMode {
             power = .83;
         shoot(power, 360);
         double angle36 = getGyroYaw();
-        turnLeftWithPID(36, .005, .000025, 0.0);
+        bringDownShooter(-.4, 500);
+        turnRightWithPID(36, .005, .000025, 0.0);
         angle36 += 36;
         moveForwardPID(3200, angle36);
         sleep(500);
-        turnRightWithPID(180, .005, .000025, 0.0);
+        turnRightWithPID(170, .0055, .000045, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-<<<<<<< HEAD
-        moveToWall(1500, -.25);
-=======
-        moveBackwardPID(300, angle36);
-        moveToWallBlue(1500, .25);
->>>>>>> origin/master
+        moveBackWardWithEncoders(.2, 300);
+        moveToWallBlue(2200, .25);
         sleep(500);
-        moveToSecondLine(1675, -.25);
+        moveToSecondLine(900, -.2);
         sleep(500);
-        moveBackToWhiteLine(600, .1);
+        moveBackToWhiteLine(800, .16);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(3000, -.25);
+        moveToSecondLine(3000, -.3);
         sleep(500);
         moveBackToWhiteLine(600, .12);
         sleep(500);
         pushBlueBeacon();
         sleep(500);
+        moveBackWardWithEncoders(.4, 800);
         turnLeftWithGyro(.4, 90);
         sleep(500);
         moveForwardWithEncoders(.5, 3000);

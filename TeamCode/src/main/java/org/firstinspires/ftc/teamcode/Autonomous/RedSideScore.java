@@ -20,8 +20,9 @@ public class RedSideScore extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
+        sleep(2000);
         double power = .88;
-        telemetry.addData("init", "test11");
+        telemetry.addData("init", "test12");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -41,7 +42,8 @@ public class RedSideScore extends AutoOpMode {
             power = .87;
         else if (voltage > 14)
             power = .82;
-        shoot(power, 360);
+        shoot(power, 380);
+        bringDownShooter(-.4, 400);
         double change = getGyroYaw() - perpendicular;
         double angle35 = getGyroYaw();
         turnLeftWithPID(35, .004, .0000225, 0.0);
@@ -50,21 +52,18 @@ public class RedSideScore extends AutoOpMode {
         //double p = .004; double i = .000015; //double d = 2.0;
         moveForwardPID(4350, angle35);
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
-        moveToWallRed(2900, .3);
+        moveToWallRed(2000, .275);
         sleep(500);
-        moveToSecondLine(1675, -.2);
+        moveToSecondLine(1100, .2);
         sleep(500);
-//        moveToSecondLine(900, .3);
-//        sleep(500);
-        moveBackToWhiteLine(800, -.12);
+        moveBackToWhiteLine(650, -.15);
         pushRedBeacon();
         sleep(500);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
         moveToSecondLine(2950, .3);
         sleep(500);
-        resetCount();
-        moveBackToWhiteLine(600, -.2);
+        moveBackToWhiteLine(850, -.17);
         sleep(500);
         pushRedBeacon();
         sleep(500);

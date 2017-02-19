@@ -54,7 +54,7 @@ public class BlueSideScore extends AutoOpMode {
         moveForwardPID(400);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-        moveToWall(1500, -.25);
+        moveToWallBlue(1500, -.25);
         sleep(500);
         moveBackToWhiteLine(600, -.1);
         sleep(500);

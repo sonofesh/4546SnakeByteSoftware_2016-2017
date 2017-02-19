@@ -1143,7 +1143,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveBackwardPID(int distance) throws InterruptedException
     {
         //calibration constants
-        double p = .00015; double i = .00000015; //double d = 2.0;
+        double p = .0002; double i = .00000015; //double d = 2.0;
         double error = distance;
         double pastError = 0.0;
         double output;
@@ -1564,8 +1564,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             BL.setPower(-output * 1.3);
             idle();
         }
-        output = .25;
-        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 12) {
+        while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);
@@ -1596,8 +1595,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(-output * 1.3);
-            BR.setPower(-output * 1.3);
+            FR.setPower(-output * 1.5);
+            BR.setPower(-output * 1.5);
             FL.setPower(output * .8);
             BL.setPower(output * .8);
             idle();
@@ -1639,7 +1638,6 @@ public abstract class AutoOpMode extends LinearOpMode {
             idle();
         }
         beforeALV = getAvg();
-        output = .175;
         while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
@@ -1790,7 +1788,9 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     //0 represents blue and 1 represents red
     public int beaconValue(ColorSensor color) throws InterruptedException {
-        if(colorSensorBlue(color) > colorSensorRed(color)) {
+        if(colorSensorBlue(color)  == 255)
+            return -1;
+        else if(colorSensorBlue(color) > colorSensorRed(color)) {
             telemetry.addData("Beacon", "Blue");
             telemetry.update();
             return 0;
@@ -1816,35 +1816,24 @@ public abstract class AutoOpMode extends LinearOpMode {
         //power: .15
         //distance: 25
         //move forward and push the correct beacon
-        if (beaconValue(backBeacon) == 1) {
+        if (beaconValue(backBeacon) == 255) {
+            if (beaconValue(frontBeacon) == 1)
+                moveBackBeacon();
+            else
+                moveFrontBeacon();
+        }
+        else if (beaconValue(frontBeacon) == 255) {
+            if (beaconValue(backBeacon) == 1)
+                moveFrontBeacon();
+            else
+                moveBackBeacon();
+        }
+        else if (beaconValue(backBeacon) == 1) {
             moveFrontBeacon();
         }
         else if (beaconValue(frontBeacon) == 1) {
             moveBackBeacon();
         }
-
-
-//        if(colorSensorAverageValues(colorSensorWLA) > 3) {
-//            telemetry.addData("reached", "passedIFAverageVal");
-//            telemetry.update();
-//            if (beaconValue(frontBeacon) == 1) {
-//                telemetry.addData("reached", "passedBeaconValueIF");
-//                telemetry.update();
-//                moveBackBeacon();
-//            }
-//            else
-//                moveFrontBeacon();
-//        }
-//        else if(count < 2) {
-//            sleep(1000);
-//            moveBackToWhiteLine(600, .125);
-//            pushRedBeacon();
-//        }
-//        else if(count < 3){
-//            sleep(1000);
-//            moveBackToWhiteLine(600, -.125);
-//            pushRedBeacon();
-//        }
         telemetry.addData("red", "hit");
         telemetry.update();
     }
@@ -1866,7 +1855,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         if (beaconValue(backBeacon) == 0) {
             moveFrontBeacon();
         }
-        else if (beaconValue(frontBeacon) == 1) {
+        else if (beaconValue(frontBeacon) == 0) {
             moveBackBeacon();
         }
 //        else if(count < 2) {
@@ -2267,13 +2256,13 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public void moveFrontBeacon() throws InterruptedException {
         FrontBeaconPusher.setPosition(.9);
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         FrontBeaconPusher.setPosition(.15);
     }
 
     public void moveManBeaconL() throws InterruptedException {
         ManBeaconL.setPosition(.85);
-        sleep(1000);
+        sleep(1500);
         ManBeaconL.setPosition(.3);
     }
 
@@ -2390,9 +2379,46 @@ public abstract class AutoOpMode extends LinearOpMode {
         BL.setPower(0);
     }
 
-    public void BigBallPathRed(int distance, double power) {
-
+    public void arcTurnRight (double power, double angle) throws InterruptedException {
+        beforeAngle = getGyroYaw();
+        telemetry.addData("beforeYawAngle", beforeAngle);
+        telemetry.update();
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle) {
+            FR.setPower(power * .5);
+            BR.setPower(power * .5);
+            FL.setPower(-power);
+            FL.setPower(-power);
+            idle();
+        }
+        beforeAngle = getGyroYaw();
+        telemetry.addData("afterYawAngle", beforeAngle);
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
+
+    public void arcTurnLeft (double power, double angle) throws InterruptedException {
+        beforeAngle = getGyroYaw();
+        telemetry.addData("beforeYawAngle", beforeAngle);
+        telemetry.update();
+        while(Math.abs(getGyroYaw() - beforeAngle) < angle) {
+            FR.setPower(power);
+            BR.setPower(power);
+            FL.setPower(-power * .5);
+            FL.setPower(-power * .5);
+            idle();
+        }
+        beforeAngle = getGyroYaw();
+        telemetry.addData("afterYawAngle", beforeAngle);
+        telemetry.update();
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
 
 //    public void maintainWallDistance(double power, double distance) throws InterruptedException{
 ////        FR.setPower(power);

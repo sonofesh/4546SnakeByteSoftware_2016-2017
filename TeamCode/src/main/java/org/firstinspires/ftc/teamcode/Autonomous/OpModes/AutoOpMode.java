@@ -166,7 +166,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 500)
             idle();
-        ManIn.setPower(-.25);
+        ManIn.setPower(-.2);
         ShooterF.setPower(-power + .1);
         ShooterB.setPower(power - .1);
         beforeTime = System.currentTimeMillis();
@@ -1637,7 +1637,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             BL.setPower(output * 1.25);
             idle();
         }
-        beforeALV = getAvg();
+        output = .175;
         while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
@@ -1852,12 +1852,32 @@ public abstract class AutoOpMode extends LinearOpMode {
 //                moveFrontBeacon();
 //            }
 //        }
-        if (beaconValue(backBeacon) == 0) {
+//        if (beaconValue(backBeacon) == 0) {
+//            moveFrontBeacon();
+//        }
+//        else if (beaconValue(frontBeacon) == 0) {
+//            moveBackBeacon();
+//        }
+        if (beaconValue(backBeacon) == 255) {
+            if (beaconValue(frontBeacon) == 0)
+                moveBackBeacon();
+            else
+                moveFrontBeacon();
+        }
+        else if (beaconValue(frontBeacon) == 255) {
+            if (beaconValue(backBeacon) == 0)
+                moveFrontBeacon();
+            else
+                moveBackBeacon();
+        }
+        else if (beaconValue(backBeacon) == 0) {
             moveFrontBeacon();
         }
         else if (beaconValue(frontBeacon) == 0) {
             moveBackBeacon();
         }
+        telemetry.addData("red", "hit");
+        telemetry.update();
 //        else if(count < 2) {
 //            moveBackToWhiteLine(200, .125);
 //            pushBlueBeacon();

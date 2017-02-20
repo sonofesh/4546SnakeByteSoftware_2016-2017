@@ -55,9 +55,9 @@ public class BlueSide100 extends AutoOpMode {
         moveBackWardWithEncoders(.2, 300);
         moveToWallBlue(2200, .25);
         sleep(500);
-        moveToSecondLine(900, -.2);
+        moveToSecondLine(700, -.175);
         sleep(500);
-        moveBackToWhiteLine(800, .16);
+        moveBackToWhiteLine(600, .16);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);

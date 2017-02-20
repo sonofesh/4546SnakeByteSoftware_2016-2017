@@ -1633,8 +1633,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         while (Math.abs(getAvg() - beforeALV) < (distance * .8)) {
             FR.setPower(-output * .9);
             BR.setPower(-output * .9);
-            FL.setPower(output * 1.25);
-            BL.setPower(output * 1.25);
+            FL.setPower(output * 1.1);
+            BL.setPower(output * 1.1);
             idle();
         }
         output = .175;

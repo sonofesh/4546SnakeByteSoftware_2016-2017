@@ -93,10 +93,10 @@ public class TeleOpA extends OpMode {
         shootTimeDURATION = 500;
         currentTime = 0;
         lastTime = 0;
-        stop = false;
-        gate = false;
-        scale = new MotorScaling();
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+//        stop = false;
+//        gate = false;
+//        scale = new MotorScaling();
+//        voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
     }
 
 //    public double getShootingPower() throws InterruptedException {
@@ -118,14 +118,16 @@ public class TeleOpA extends OpMode {
         if (Math.abs(gamepad1.left_stick_y) > .1) {
             FL.setPower(gamepad1.left_stick_y * -1);
             BL.setPower(gamepad1.left_stick_y * -1);
-        } else {
+        }
+        else {
             FL.setPower(0);
             BL.setPower(0);
         }
         if (Math.abs(gamepad1.right_stick_y) > .1) {
             FR.setPower(gamepad1.right_stick_y);
             BR.setPower(gamepad1.right_stick_y);
-        } else {
+        }
+        else {
             FR.setPower(0);
             BR.setPower(0);
         }
@@ -161,7 +163,7 @@ public class TeleOpA extends OpMode {
             ManIn.setPower(gamepad2.left_stick_y * .25);
         else
             ManIn.setPower(0);
-        //Moni
+        //Mani
         if (Math.abs(gamepad2.left_trigger) > .05)
             ManLift.setPower(gamepad2.left_trigger * .55 * -1);
         else if (Math.abs(gamepad2.right_trigger) > .05)

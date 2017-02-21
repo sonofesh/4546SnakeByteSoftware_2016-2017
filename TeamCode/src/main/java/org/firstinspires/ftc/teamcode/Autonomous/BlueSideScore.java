@@ -11,8 +11,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * This auto will move to the beacons, hit both, turn, shoot, and then knock the cap ball
  * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 + 19 = tests
  */
-@Autonomous(name = "BlueSide70", group = "Autonomous")
-@Disabled
+@Autonomous(name = "BlueSide100", group = "Autonomous")
 public class BlueSideScore extends AutoOpMode {
     public BlueSideScore() {
         super();
@@ -22,7 +21,7 @@ public class BlueSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test4");
+        telemetry.addData("init", "test6");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -33,42 +32,44 @@ public class BlueSideScore extends AutoOpMode {
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
-            power = .97;
+            power = .95;
         else if (voltage <= 13.75 && voltage > 13.5)
-            power = .94;
+            power = .92;
         else if (voltage > 13.75 && voltage <= 13.9)
-            power = .9;
-        else if (voltage > 13.9 && voltage <= 14)
             power = .88;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .86;
         else if (voltage > 14)
-            power = .83;
+            power = .80;
         shoot(power, 360);
         double angle36 = getGyroYaw();
-        turnRightWithPID(36, .005, .00004, 0.0);
-        sleep(500);
+        bringDownShooter(-.4, 600);
+        turnRightWithPID(36, .005, .000025, 0.0);
         angle36 += 36;
-        moveForwardPID(3700, angle36);
+        moveForwardPID(3200, angle36);
         sleep(500);
-        turnRightWithPID(144, .005, .00002, 0.0);
-        sleep(500);
-        moveForwardPID(400);
+        turnRightWithPID(160, .0055, .000045, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-        moveToWallBlue(1500, -.25);
+        moveBackWardWithEncoders(.2, 300);
+        moveToWallBlue(2250, .25);
         sleep(500);
-        moveBackToWhiteLine(600, -.1);
+        if(onWhiteLine() == false)
+            moveBackwardsToWhiteLine(500);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(3000, -.25);
+        moveToSecondLine(3400, -.3);
         sleep(500);
-        moveBackToWhiteLine(600, -.1);
+        if(onWhiteLine() == false)
+            moveBackwardsToWhiteLine(200);
         sleep(500);
         pushBlueBeacon();
         sleep(500);
+        moveBackWardWithEncoders(.4, 800);
         turnLeftWithGyro(.4, 90);
         sleep(500);
         moveForwardWithEncoders(.5, 3000);

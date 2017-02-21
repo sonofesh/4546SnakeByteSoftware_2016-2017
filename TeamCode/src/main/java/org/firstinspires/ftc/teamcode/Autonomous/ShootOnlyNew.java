@@ -26,7 +26,7 @@ public class ShootOnlyNew extends AutoOpMode {
         waitForStart();
         moveForward(.175, 1100, getGyroYaw());
         sleep(1000);
-        bringDownShooter(.1, 900);
+        bringDownShooter(.275, 900);
         sleep(1000);
         //Voltage Scaling
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
@@ -38,7 +38,7 @@ public class ShootOnlyNew extends AutoOpMode {
             power = .85;
         else if(voltage > 14)
             power = .8;
-        shootSlow(power, 390);
+        shoot(power, 390);
         sleep(500);
         moveForwardWithEncoders(.4, 2500);
     }

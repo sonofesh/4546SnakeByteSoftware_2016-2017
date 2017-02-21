@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * test count: 9
  */
 
-@Autonomous(name = "BlueSide100", group = "Autonomous")
+@Autonomous(name = "BlueSide90", group = "Autonomous")
 public class BlueSide100 extends AutoOpMode {
     public BlueSide100() {
         super();
@@ -22,7 +22,7 @@ public class BlueSide100 extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test1");
+        telemetry.addData("init", "test6");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
@@ -33,47 +33,50 @@ public class BlueSide100 extends AutoOpMode {
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
-            power = .97;
+            power = .95;
         else if (voltage <= 13.75 && voltage > 13.5)
-            power = .94;
+            power = .92;
         else if (voltage > 13.75 && voltage <= 13.9)
-            power = .9;
-        else if (voltage > 13.9 && voltage <= 14)
             power = .88;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .86;
         else if (voltage > 14)
-            power = .83;
+            power = .80;
         shoot(power, 360);
         double angle36 = getGyroYaw();
-        bringDownShooter(-.4, 500);
+        bringDownShooter(-.4, 600);
         turnRightWithPID(36, .005, .000025, 0.0);
         angle36 += 36;
         moveForwardPID(3200, angle36);
         sleep(500);
-        turnRightWithPID(170, .0055, .000045, 0.0);
+        turnRightWithPID(160, .0055, .000045, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
         moveBackWardWithEncoders(.2, 300);
-        moveToWallBlue(2200, .25);
+        moveToWallBlue(2250, .25);
         sleep(500);
-        moveToSecondLine(700, -.175);
+        if(onWhiteLine() == false)
+            moveToSecondLine(700, -.2);
         sleep(500);
-        moveBackToWhiteLine(600, .16);
+        if(onWhiteLine() == false)
+            moveBackToWhiteLine(600, .12, 8);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(3000, -.3);
+        moveToSecondLine(3400, -.3);
         sleep(500);
-        moveBackToWhiteLine(600, .12);
+        if(onWhiteLine() == false)
+            moveBackToWhiteLine(600, .125, 8);
         sleep(500);
         pushBlueBeacon();
         sleep(500);
         moveBackWardWithEncoders(.4, 800);
         turnLeftWithGyro(.4, 90);
         sleep(500);
-        moveForwardWithEncoders(.5, 3000);
+        moveBackWardWithEncoders(.5, 3000);
     }
 }
     /*initialize();

@@ -58,6 +58,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         ManIn = hardwareMap.dcMotor.get("ManIn");
         BackBeaconPusher = hardwareMap.servo.get("BeaconL");
         FrontBeaconPusher = hardwareMap.servo.get("BeaconR");
+
 //        ManBeaconL = hardwareMap.servo.get("ManBeaconL");
 //        ManBeaconR = hardwareMap.servo.get("ManBeaconR");
 //        ManBeaconL.setPosition(.3);
@@ -70,7 +71,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        FrontBeaconPusher.setPosition(.15);
+        BackBeaconPusher.setPosition(.15);
         telemetry.addData("gyro", "initializing");
         telemetry.update();
         parameters = new BNO055IMU.Parameters();
@@ -996,7 +998,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //gyro stabilization with PID
-    public void moveBackwardPID(int distance, double angle) throws InterruptedException {
+    public void mo(int distance, double angle) throws InterruptedException {
         //.00025, .00000003, 0.0, 4000
         //calibration constants
         double p = .0002; double i = .00000015; //double d = 2.0;
@@ -1290,6 +1292,50 @@ public abstract class AutoOpMode extends LinearOpMode {
         else
             telemetry.addData("failure", "PID failed");
         telemetry.update();
+    }
+
+    //beacon pushing methods
+    public void moveBackwardsToWhiteLine(int distance) throws InterruptedException {
+        //calibration constants
+        double p = .00000625;
+        double i = .0000000031; //double d = .00000000002;
+        double error = distance;
+        double pastError = 0.0;
+        double proportional = 0.0;
+        double reset = 0.0;
+        double derivative = 0.0;
+        double deltaTime;
+        int angleError;
+        double output;
+        beforeALV = getAvg();
+        double correction = CORRECTION;
+        long lastTime = System.currentTimeMillis();
+        long firstTime = System.currentTimeMillis();
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 8 && System.currentTimeMillis() - firstTime < 4000) {
+            error = distance - Math.abs(getAvg() - beforeALV);
+            //proportional
+            proportional = error * p;
+            //integral
+            deltaTime = System.currentTimeMillis() - lastTime;
+            //integral
+            reset += (error * deltaTime);
+            //derivative
+            //derivative = d * (error - pastError)/deltaTime;
+            //output
+            output = proportional + (reset * i);
+            if (output < .05) {
+                output = 0;
+            }
+            FR.setPower(output * .9);
+            BR.setPower(output * .9);
+            FL.setPower(-output * 1.1);
+            BL.setPower(-output * 1.1);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
     //beacon pushing methods
@@ -1595,20 +1641,21 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(-output * 1.5);
-            BR.setPower(-output * 1.5);
+            FR.setPower(-output * 1.3);
+            BR.setPower(-output * 1.3);
             FL.setPower(output * .8);
             BL.setPower(output * .8);
             idle();
         }
         output = .25;
-        while (Math.abs(getAvg() - beforeALV) < distance) {
+        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-output * 1.1);
             BR.setPower(-output * 1.1);
             FL.setPower(output * .9);
             BL.setPower(output * .9);
             idle();
         }
+        moveBackWardWithEncoders(.2, 150);
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
@@ -1664,6 +1711,25 @@ public abstract class AutoOpMode extends LinearOpMode {
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
+    }
+
+    public void moveBackToWhiteLine(int distance, double power, int accuracy) throws InterruptedException {
+        beforeALV = getAvg();
+        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < accuracy) {
+            FR.setPower(-power * .9);
+            BR.setPower(-power * .9);
+            FL.setPower(power * 1.1);
+            BL.setPower(power * 1.1);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public boolean onWhiteLine() throws InterruptedException {
+        return (colorSensorAverageValues(colorSensorWLA) > 10);
     }
 
     //beacon pushing methods
@@ -1858,26 +1924,30 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        else if (beaconValue(frontBeacon) == 0) {
 //            moveBackBeacon();
 //        }
-        if (beaconValue(backBeacon) == 255) {
-            if (beaconValue(frontBeacon) == 0)
-                moveBackBeacon();
-            else
+        int count = 0;
+        while(count < 3 && beaconValue(backBeacon) == 1 || beaconValue(frontBeacon) == 1) {
+            if (beaconValue(backBeacon) == 255) {
+                if (beaconValue(frontBeacon) == 0)
+                    moveBackBeacon();
+                else
+                    moveFrontBeacon();
+            } else if (beaconValue(frontBeacon) == 255) {
+                if (beaconValue(backBeacon) == 0)
+                    moveFrontBeacon();
+                else
+                    moveBackBeacon();
+            } else if (beaconValue(backBeacon) == 0) {
                 moveFrontBeacon();
-        }
-        else if (beaconValue(frontBeacon) == 255) {
-            if (beaconValue(backBeacon) == 0)
-                moveFrontBeacon();
-            else
+            } else if (beaconValue(frontBeacon) == 0) {
                 moveBackBeacon();
+            }
+            telemetry.addData("blue", "hit");
+            telemetry.update();
+            count ++;
         }
-        else if (beaconValue(backBeacon) == 0) {
-            moveFrontBeacon();
-        }
-        else if (beaconValue(frontBeacon) == 0) {
-            moveBackBeacon();
-        }
-        telemetry.addData("red", "hit");
-        telemetry.update();
+
+
+
 //        else if(count < 2) {
 //            moveBackToWhiteLine(200, .125);
 //            pushBlueBeacon();

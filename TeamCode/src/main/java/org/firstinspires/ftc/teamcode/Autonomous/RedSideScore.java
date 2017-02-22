@@ -51,6 +51,7 @@ public class RedSideScore extends AutoOpMode {
         angle32 -= 33;
         //double p = .004; double i = .000015; //double d = 2.0;
         moveForwardPID(4350, angle32);
+        resetEncoders();
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
         moveToWallRed(2000, .335);
         sleep(500);

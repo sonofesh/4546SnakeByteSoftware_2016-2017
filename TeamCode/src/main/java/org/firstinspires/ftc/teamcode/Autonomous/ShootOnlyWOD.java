@@ -1,22 +1,11 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
- * Created by 4546 on 1/4/2017.
- * Does what the name says
- * Will consistently score 30 points and is a good option
- * if we're with a team that has an amazing auto(ex: Faltech)
- * Same as other ShootOnly but written by extending AutOpMode
+ * Created by sopa on 2/21/17.
  */
-
-@Autonomous(name = "ShootNotKnock", group = "Autonomous")
-public class ShootWithoutPark extends AutoOpMode {
-    public ShootWithoutPark() {
-        super();
-    }
+public class ShootOnlyWOD extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
@@ -40,6 +29,6 @@ public class ShootWithoutPark extends AutoOpMode {
             power = .8;
         shoot(power, 360);
         sleep(500);
+        moveForwardWithEncoders(.4, 2500);
     }
 }
-

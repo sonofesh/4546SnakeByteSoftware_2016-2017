@@ -75,7 +75,7 @@ public class BlueSide100 extends AutoOpMode {
         moveToSecondLine(3600, -.3);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .11, 7);
+            moveBackToWhiteLine(600, .125, 7);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

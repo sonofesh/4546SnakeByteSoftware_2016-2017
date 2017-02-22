@@ -59,7 +59,7 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         moveBackToWhiteLine(650, -.14, 9);
         pushRedBeacon();
-
+        resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
         moveToSecondLine(3650, .3);

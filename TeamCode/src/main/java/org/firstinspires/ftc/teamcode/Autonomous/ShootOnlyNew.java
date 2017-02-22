@@ -20,11 +20,11 @@ public class ShootOnlyNew extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-        sleep(10000);
         telemetry.addData("final", "init");
         telemetry.update();
         double power = .85;
         waitForStart();
+        sleep(10000);
         moveForward(.175, 1100, getGyroYaw());
         sleep(1000);
         bringDownShooter(.275, 1150);

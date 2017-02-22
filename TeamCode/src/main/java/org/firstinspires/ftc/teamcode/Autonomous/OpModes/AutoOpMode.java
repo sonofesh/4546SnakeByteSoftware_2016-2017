@@ -1621,10 +1621,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         while (Math.abs(getGyroYaw() - beforeAngle) < 25) {
-            FR.setPower(output * .75);
-            BR.setPower(output * .75);
-            FL.setPower(-output * 1.35);
-            BL.setPower(-output * 1.35);
+            FR.setPower(output * .8);
+            BR.setPower(output * .8);
+            FL.setPower(-output * 1.3);
+            BL.setPower(-output * 1.3);
             idle();
         }
         while (Math.abs(getAvg() - beforeALV) < distance) {

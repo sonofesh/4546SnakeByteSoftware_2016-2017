@@ -46,14 +46,14 @@ public class RedSideScore extends AutoOpMode {
         bringDownShooter(-.4, 400);
         double change = getGyroYaw() - perpendicular;
         double angle32 = getGyroYaw();
-        turnLeftWithPID(33, .00325, .000018, 0.0);
+        turnLeftWithPID(32, .00325, .000018, 0.0);
         sleep(500);
-        angle32 -= 33;
+        angle32 -= 32;
         //double p = .004; double i = .000015; //double d = 2.0;
         moveForwardPID(4350, angle32);
         resetEncoders();
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
-        moveToWallRed(2000, .335);
+        moveToWallRed(2000, .325);
         sleep(500);
         moveToSecondLine(1100, .2);
         sleep(500);

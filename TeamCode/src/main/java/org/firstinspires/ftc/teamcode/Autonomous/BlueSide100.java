@@ -53,28 +53,29 @@ public class BlueSide100 extends AutoOpMode {
         if(getGyroYaw() + 160 > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
             turnRightWithPID(firstTurn, .005, .00004, 0.0);
-            turnRightWithPID(165 - firstTurn, .0055, .00005, 0.0);
+            turnRightWithPID(160 - firstTurn, .004, .00004, 0.0);
         }
         else
-            turnRightWithPID(165, .004, .00004, 0.0);
+            turnRightWithPID(160, .004, .00004, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
         moveBackWardWithEncoders(.2, 450);
         resetEncoders();
-        moveToWallBlue(2050, .325);
+        moveToWallBlue(2450, .325);
         sleep(500);
         if(onWhiteLine() == false)
             moveBackToWhiteLine(600, -.14, 12);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
+        resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(3600, -.3);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(700, .14, 8);
+            moveBackToWhiteLine(600, .11, 7);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

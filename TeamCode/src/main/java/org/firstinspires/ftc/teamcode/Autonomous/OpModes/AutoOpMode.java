@@ -1734,7 +1734,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             BL.setPower(output * 1.15);
             idle();
         }
-        output = .175;
+        output = .2;
         while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < 12) {
             FR.setPower(-output * .85);
             BR.setPower(-output * .85);

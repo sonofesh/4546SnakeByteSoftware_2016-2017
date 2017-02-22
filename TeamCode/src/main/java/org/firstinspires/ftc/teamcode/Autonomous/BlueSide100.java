@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Created by sopa on 12/31/16.
  * Test count:
  * Shoot first, hit beacons sequentially, hit cap ball, park
- * test count: 9
+ * test count: 9 + 7
  */
 
 @Autonomous(name = "BlueSide90", group = "Autonomous")
@@ -22,11 +22,11 @@ public class BlueSide100 extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         double power = .88;
-        telemetry.addData("init", "test6");
+        telemetry.addData("init", "test7");
         telemetry.update();
         waitForStart();
         double perpendicular = getGyroYaw();
-        moveForwardWithEncoders(.16, 500);
+        moveForwardWithEncoders(.16, 600);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.3, 1150);
@@ -43,40 +43,45 @@ public class BlueSide100 extends AutoOpMode {
         else if (voltage > 14)
             power = .80;
         shoot(power, 360);
-        double angle36 = getGyroYaw();
+        double angle38 = getGyroYaw();
         bringDownShooter(-.4, 600);
-        turnRightWithPID(36, .005, .000025, 0.0);
-        angle36 += 36;
-        moveForwardPID(3200, angle36);
+        turnRightWithPID(38, .005, .000025, 0.0);
+        angle38 += 38;
+        moveForwardPID(3200, angle38);
         sleep(500);
-        turnRightWithPID(160, .0055, .000045, 0.0);
+        double turn = 160;
+        if(getGyroYaw() + 160 > 360) {
+            double firstTurn = Math.abs(360 - getGyroYaw());
+            turnRightWithPID(firstTurn, .005, .00004, 0.0);
+            turnRightWithPID(165 - firstTurn, .0055, .00005, 0.0);
+        }
+        else
+            turnRightWithPID(165, .004, .00004, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-        moveBackWardWithEncoders(.2, 300);
-        moveToWallBlue(2250, .25);
+        moveBackWardWithEncoders(.2, 450);
+        resetEncoders();
+        moveToWallBlue(2050, .325);
         sleep(500);
         if(onWhiteLine() == false)
-            moveToSecondLine(700, -.2);
-        sleep(500);
-        if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .12, 8);
+            moveBackToWhiteLine(600, -.14, 12);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(3400, -.3);
+        moveToSecondLine(3600, -.3);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .125, 8);
+            moveBackToWhiteLine(700, .14, 8);
         sleep(500);
         pushBlueBeacon();
         sleep(500);
-        moveBackWardWithEncoders(.4, 800);
-        turnLeftWithGyro(.4, 90);
-        sleep(500);
-        moveBackWardWithEncoders(.5, 3000);
+//        moveBackWardWithEncoders(.4, 800);
+//        turnLeftWithGyro(.4, 90);
+//        sleep(500);
+//        moveBackWardWithEncoders(.5, 3000);
     }
 }
     /*initialize();

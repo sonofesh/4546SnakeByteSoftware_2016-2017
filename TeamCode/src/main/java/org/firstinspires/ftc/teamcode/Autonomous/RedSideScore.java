@@ -25,13 +25,13 @@ public class RedSideScore extends AutoOpMode {
         telemetry.addData("init", "test12");
         telemetry.update();
         waitForStart();
+        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.2, 500);
         //moveForwardPID(500);
         //bring down shooter
         bringDownShooter(.3, 1150);
         sleep(750);
-        double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         if (voltage <= 13.5)
             power = .96;
         else if (voltage <= 13.75 && voltage > 13.5)
@@ -45,24 +45,25 @@ public class RedSideScore extends AutoOpMode {
         shoot(power, 380);
         bringDownShooter(-.4, 400);
         double change = getGyroYaw() - perpendicular;
-        double angle32 = getGyroYaw();
-        turnLeftWithPID(32, .00325, .000018, 0.0);
+        double angle32 = getGyroYaw() - change;
+        turnLeftWithPID(30, .003, .0000175, 0.0);
         sleep(500);
-        angle32 -= 32;
+        angle32 -= 30;
         //double p = .004; double i = .000015; //double d = 2.0;
-        moveForwardPID(4350, angle32);
-        resetEncoders();
+        moveForwardPID(4450, angle32);
 //        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
-        moveToWallRed(2000, .325);
+        moveToWallRed(2000, .3);
         sleep(500);
-        moveToSecondLine(1100, .2);
+        resetEncoders();
+        moveToSecondLine(1380, .25);
         sleep(500);
-        moveBackToWhiteLine(650, -.14, 9);
+        if(onWhiteLine(9) == false)
+            moveBackToWhiteLine(650, -.14, 9);
         pushRedBeacon();
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveToSecondLine(3650, .3);
+        moveToSecondLine(3800, .3);
         sleep(500);
         moveBackToWhiteLine(850, -.17);
         sleep(500);
@@ -71,7 +72,7 @@ public class RedSideScore extends AutoOpMode {
         moveForwardWithEncoders(.5, 500);
         turnRightWithGyroOneSide(.6, 80);
         sleep(500);
-        moveForwardWithEncoders(.5, 2500);
+        moveForwardWithEncoders(.5, 1700);
         sleep(500);
     }
 

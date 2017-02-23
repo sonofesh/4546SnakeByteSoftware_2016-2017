@@ -359,7 +359,6 @@ public abstract class AutoOpMode extends LinearOpMode {
             BR.setPower(power);
             idle();
         }
-        beforeAngle = getGyroYaw();
         telemetry.addData("afterYawAngle", beforeAngle);
         telemetry.update();
         FR.setPower(0);

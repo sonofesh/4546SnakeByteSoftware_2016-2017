@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Created by sopa on 12/31/16.
  * Test count:
  * Shoot first, hit beacons sequentially, hit cap ball, park
- * test count: 9 + 7 + 24 + 
+ * test count: 9 + 7 + 24 +
  */
 
 @Autonomous(name = "BlueSide90", group = "Autonomous")
@@ -75,7 +75,7 @@ public class BlueSide100 extends AutoOpMode {
         moveToSecondLine(3600, -.3);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .125, 7);
+            moveBackToWhiteLine(600, .125, 9);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

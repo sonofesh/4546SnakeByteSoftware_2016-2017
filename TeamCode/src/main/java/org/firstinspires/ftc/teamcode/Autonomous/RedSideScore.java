@@ -65,7 +65,7 @@ public class RedSideScore extends AutoOpMode {
 //        moveToSecondLine(3000, .25);
         moveToSecondLine(3800, .3);
         sleep(500);
-        moveBackToWhiteLine(850, -.17);
+        moveBackToWhiteLine(850, -.15);
         sleep(500);
         pushRedBeacon();
         sleep(500);

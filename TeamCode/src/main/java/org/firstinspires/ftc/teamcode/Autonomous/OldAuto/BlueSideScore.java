@@ -56,7 +56,7 @@ public class BlueSideScore extends AutoOpMode {
 //        sleep(500);
         moveToWallBlue(1500, .25);
         sleep(500);
-        moveBackToWhiteLine(600, -.1);
+        moveBackToWhiteLine(600, -.14, -.1);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
@@ -65,7 +65,7 @@ public class BlueSideScore extends AutoOpMode {
 //        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(3000, -.25);
         sleep(500);
-        moveBackToWhiteLine(600, -.1);
+        moveBackToWhiteLine(600, -.14, -.1);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

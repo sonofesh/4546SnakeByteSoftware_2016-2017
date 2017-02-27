@@ -71,8 +71,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ManLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FrontBeaconPusher.setPosition(.15);
-        BackBeaconPusher.setPosition(.15);
+        FrontBeaconPusher.setPosition(.1);
+        BackBeaconPusher.setPosition(.1);
         telemetry.addData("gyro", "initializing");
         telemetry.update();
         parameters = new BNO055IMU.Parameters();
@@ -104,7 +104,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.update();
-        sleep(2000);
 //        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
 
     }
@@ -219,6 +218,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         double average = (sensor.red() + sensor.blue() + sensor.green())/3.0;
         return average;
     }
+    public double colorSensorAverageValues() throws InterruptedException {
+        double average = (colorSensorWLA.red() + colorSensorWLA.blue() + colorSensorWLA.green())/3.0;
+        return average;
+    }
     public double colorSensorRed(ColorSensor sensor) throws InterruptedException {
         return sensor.red();
     }
@@ -227,10 +230,26 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //gyro methods
-    public float getGyroYaw() throws InterruptedException {
+    public double getGyroYaw() throws InterruptedException {
         Orientation angles = imu.getAngularOrientation();
         return (angles.firstAngle * -1);
     }
+
+    public double getGyroYaw(double turn) throws InterruptedException {
+        double turnAbs = Math.abs(turn);
+        Orientation angles = imu.getAngularOrientation();
+        if (turnAbs > 270 && Math.abs(angles.firstAngle) < 90)
+            return (Math.abs(angles.firstAngle) - (turnAbs - 360));
+        else if (turnAbs < 90 && Math.abs(angles.firstAngle) > 270)
+            return ((Math.abs(angles.firstAngle) - 360) - turnAbs);
+        return (Math.abs(angles.firstAngle) - turnAbs);
+    }
+
+    public double getVelocity() throws InterruptedException {
+        return 0.0;
+    }
+
+
 
 //    public float getVelocity() throws InterruptedException {
 //        ve velocity = imu.getVelocity();
@@ -348,7 +367,6 @@ public abstract class AutoOpMode extends LinearOpMode {
             BR.setPower(power);
             idle();
         }
-        beforeAngle = getGyroYaw();
         telemetry.addData("afterYawAngle", beforeAngle);
         telemetry.update();
         FR.setPower(0);
@@ -424,13 +442,18 @@ public abstract class AutoOpMode extends LinearOpMode {
         double reset = 0.0;
         double derivative = 0.0;
         double deltaTime;
-        beforeAngle = getGyroYaw();
+        double change = 0;
+//        if(Math.abs(360 - getGyroYaw()) < angle)
+//            change = -1 * Math.abs(360 - angle);
+//        else if(Math.abs(360 - getGyroYaw()) < angle)
+//            change = Math.abs(360 - angle);
+        beforeAngle = getGyroYaw() + change;
         telemetry.addData("beforeYawAngle", beforeAngle);
         telemetry.update();
         long firstTime = System.currentTimeMillis();
         long lastTime = System.currentTimeMillis();
-        while(Math.abs(getGyroYaw() - beforeAngle) < angle && System.currentTimeMillis() - firstTime < 3000) {
-            error = angle - Math.abs(getGyroYaw() - beforeAngle);
+        while(Math.abs(change + getGyroYaw() - beforeAngle) < angle && System.currentTimeMillis() - firstTime < 3000) {
+            error = angle - Math.abs(change + getGyroYaw() - beforeAngle);
             //proportional
             proportional = error * p;
             deltaTime = System.currentTimeMillis() - lastTime;
@@ -454,7 +477,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             lastTime = System.currentTimeMillis();
             idle();
         }
-        double afterAngle = getGyroYaw();
+        double afterAngle = change + getGyroYaw();
         telemetry.addData("afterYawAngle", beforeAngle);
         if(Math.abs(afterAngle - beforeAngle) > angle - 1 && Math.abs(afterAngle - beforeAngle) < angle + 1)
             telemetry.addData("turn", "success");
@@ -918,7 +941,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveForwardPID(int distance, double angle) throws InterruptedException {
         //.00025, .00000003, 0.0, 4000
         //calibration constants
-        double p = .0003; double i = .0000003; //double d = 2.0;
+        double p = .000275; double i = .000000275; //double d = 2.0;
         double error = distance;
         double pastError = 0.0;
         double output;
@@ -928,8 +951,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         double deltaTime;
         int angleError;
         beforeALV = getAvg();
-        double correctionLeft = .04;
-        double correctionRight = .04;
+        double correctionLeft = .05;
+        double correctionRight = .05;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
@@ -1603,14 +1626,16 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
-        while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(output * .8);
-            BR.setPower(output * .8);
-            FL.setPower(-output * 1.3);
-            BL.setPower(-output * 1.3);
+        double startTime = System.currentTimeMillis();
+//        deltaTime / (getAvg() - pastError);
+        while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
+            FR.setPower(output * .9);
+            BR.setPower(output * .9);
+            FL.setPower(-output * 1.2);
+            BL.setPower(-output * 1.2);
             idle();
         }
-        while (Math.abs(getAvg() - beforeALV) < distance) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);
@@ -1635,31 +1660,68 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        BL.setPower(0);
     }
 
+    public void resetEncoders() throws InterruptedException {
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        idle();
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
     //Positive values power values are towards the wall.
     public void moveToWallBlue(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
-        while (Math.abs(getGyroYaw() - beforeAngle) < 30) {
-            FR.setPower(-output * 1.3);
-            BR.setPower(-output * 1.3);
-            FL.setPower(output * .8);
-            BL.setPower(output * .8);
+        //Math.abs(getAvg() - beforeALV) < distance
+        while (Math.abs(getGyroYaw() - beforeAngle) < 17 && Math.abs(getAvg() - beforeALV) < distance) {
+            FR.setPower(-output * 1.2);
+            BR.setPower(-output * 1.2);
+            FL.setPower(output * .9);
+            BL.setPower(output * .9);
             idle();
         }
         output = .25;
-        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < 12) {
+        while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(-output * 1.1);
             BR.setPower(-output * 1.1);
             FL.setPower(output * .9);
             BL.setPower(output * .9);
             idle();
         }
-        moveBackWardWithEncoders(.2, 150);
         FR.setPower(0);
         BR.setPower(0);
         FL.setPower(0);
         BL.setPower(0);
+        if(Math.abs(getAvg() - beforeALV) > distance)
+            telemetry.addData("hit white line", "success");
+         //remember that you added this pause
+//        beforeALV = getAvg();
+//        while (Math.abs(getAvg() - beforeALV) < 100) {
+//            FR.setPower(-output * 1.1);
+//            BR.setPower(-output * 1.1);
+//            FL.setPower(output * .9);
+//            BL.setPower(output * .9);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
+
+//        beforeALV = getAvg();
+//        while (Math.abs(getAvg() - beforeALV) < 50) {
+//            FR.setPower(-output * 1.1);
+//            BR.setPower(-output * 1.1);
+//            FL.setPower(output * .9);
+//            BL.setPower(output * .9);
+//            idle();
+//        }
+//        FR.setPower(0);
+//        BR.setPower(0);
+//        FL.setPower(0);
+//        BL.setPower(0);
 //        output = power * .7;
 //        while (Math.abs(getAvg() - beforeALV) < (distance * .25)) {
 //            FR.setPower(output * 1.5);
@@ -1668,26 +1730,46 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            BL.setPower(-output * .8);
 //            idle();
 //        }
-//        FR.setPower(0);
-//        BR.setPower(0);
-//        FL.setPower(0);
-//        BL.setPower(0);
     }
 
     public void moveToSecondLine(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         double output = power;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .8)) {
-            FR.setPower(-output * .9);
-            BR.setPower(-output * .9);
+        while (Math.abs(getAvg() - beforeALV) < (distance * .6) && colorSensorAverageValues(colorSensorWLA) < 14) {
+            FR.setPower(-output * .875);
+            BR.setPower(-output * .875);
             FL.setPower(output * 1.1);
             BL.setPower(output * 1.1);
             idle();
         }
-        output = .175;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < 12) {
-            FR.setPower(-output * .9);
-            BR.setPower(-output * .9);
+        output = .225;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .4) && colorSensorAverageValues(colorSensorWLA) < 14) {
+            FR.setPower(-output * .875);
+            BR.setPower(-output * .875);
+            FL.setPower(output * 1.1);
+            BL.setPower(output * 1.1);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void moveToSecondLine(int distance, double power, double accurracy) throws InterruptedException {
+        beforeALV = getAvg();
+        double output = power;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .8) && colorSensorAverageValues(colorSensorWLA) < accurracy) {
+            FR.setPower(-output * .875);
+            BR.setPower(-output * .875);
+            FL.setPower(output * 1.1);
+            BL.setPower(output * 1.1);
+            idle();
+        }
+        output = .225;
+        while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < accurracy) {
+            FR.setPower(-output * .875);
+            BR.setPower(-output * .875);
             FL.setPower(output * 1.1);
             BL.setPower(output * 1.1);
             idle();
@@ -1713,13 +1795,13 @@ public abstract class AutoOpMode extends LinearOpMode {
         BL.setPower(0);
     }
 
-    public void moveBackToWhiteLine(int distance, double power, int accuracy) throws InterruptedException {
+    public void moveBackToWhiteLine(int distance, double power, double accuracy) throws InterruptedException {
         beforeALV = getAvg();
         while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < accuracy) {
-            FR.setPower(-power * .9);
-            BR.setPower(-power * .9);
-            FL.setPower(power * 1.1);
-            BL.setPower(power * 1.1);
+            FR.setPower(-power * .85);
+            BR.setPower(-power * .85);
+            FL.setPower(power * 1.15);
+            BL.setPower(power * 1.15);
             idle();
         }
         FR.setPower(0);
@@ -1730,6 +1812,9 @@ public abstract class AutoOpMode extends LinearOpMode {
 
     public boolean onWhiteLine() throws InterruptedException {
         return (colorSensorAverageValues(colorSensorWLA) > 10);
+    }
+    public boolean onWhiteLine(double accuracy) throws InterruptedException {
+        return (colorSensorAverageValues(colorSensorWLA) >= accuracy);
     }
 
     //beacon pushing methods
@@ -1925,29 +2010,27 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            moveBackBeacon();
 //        }
         int count = 0;
-        while(count < 3 && beaconValue(backBeacon) == 1 || beaconValue(frontBeacon) == 1) {
-            if (beaconValue(backBeacon) == 255) {
-                if (beaconValue(frontBeacon) == 0)
-                    moveBackBeacon();
-                else
-                    moveFrontBeacon();
-            } else if (beaconValue(frontBeacon) == 255) {
-                if (beaconValue(backBeacon) == 0)
-                    moveFrontBeacon();
-                else
-                    moveBackBeacon();
-            } else if (beaconValue(backBeacon) == 0) {
-                moveFrontBeacon();
-            } else if (beaconValue(frontBeacon) == 0) {
+        if (beaconValue(backBeacon) == 255) {
+            if (beaconValue(frontBeacon) == 0)
                 moveBackBeacon();
-            }
-            telemetry.addData("blue", "hit");
-            telemetry.update();
-            count ++;
+            else
+                moveFrontBeacon();
+        } else if (beaconValue(frontBeacon) == 255) {
+            if (beaconValue(backBeacon) == 0)
+                moveFrontBeacon();
+            else
+                moveBackBeacon();
+        } else if (beaconValue(backBeacon) == 0) {
+            moveFrontBeacon();
+        } else if (beaconValue(frontBeacon) == 0) {
+            moveBackBeacon();
         }
+        telemetry.addData("blue", "hit");
+        telemetry.update();
+//        count++;
 
 
-
+    }
 //        else if(count < 2) {
 //            moveBackToWhiteLine(200, .125);
 //            pushBlueBeacon();
@@ -1958,7 +2041,6 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        }
 //        telemetry.addData("blue", "hit");
 //        telemetry.update();
-    }
 
     public void correctBlue() throws InterruptedException{
 
@@ -2347,7 +2429,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveFrontBeacon() throws InterruptedException {
         FrontBeaconPusher.setPosition(.9);
         Thread.sleep(1500);
-        FrontBeaconPusher.setPosition(.15);
+        FrontBeaconPusher.setPosition(0);
     }
 
     public void moveManBeaconL() throws InterruptedException {

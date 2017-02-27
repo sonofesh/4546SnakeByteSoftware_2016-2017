@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Same as other ShootOnly but written by extending AutOpMode
  */
 
-@Autonomous(name = "40PointAuto", group = "Autonomous")
+@Autonomous(name = "40PointAutoWithD12", group = "Autonomous")
 public class ShootOnlyNew extends AutoOpMode {
     public ShootOnlyNew() {
         super();
@@ -24,9 +24,10 @@ public class ShootOnlyNew extends AutoOpMode {
         telemetry.update();
         double power = .85;
         waitForStart();
-        moveForward(.175, 1100, getGyroYaw());
+        sleep(12000);
+        moveForwardWithEncoders(.175, 1100);
         sleep(1000);
-        bringDownShooter(.275, 900);
+        bringDownShooter(.275, 1150);
         sleep(1000);
         //Voltage Scaling
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
@@ -38,8 +39,15 @@ public class ShootOnlyNew extends AutoOpMode {
             power = .85;
         else if(voltage > 14)
             power = .8;
-        shoot(power, 390);
+        shoot(power, 360);
         sleep(500);
         moveForwardWithEncoders(.4, 2500);
     }
 }
+
+//
+// start time set
+// start encoder set
+//if (start time - current time > x && start ecoder - current = ~0)
+//        { NOT MOVING}
+

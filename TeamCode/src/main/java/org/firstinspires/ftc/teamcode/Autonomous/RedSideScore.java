@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by 4546 Snakebyte on 12/19/16.
- * Test count: 18 + 3 + 7 + 18 + 8 + 5 + 11 + 11 + 14 + 14
+ * Test count: 18 + 3 + 7 + 18 + 8 + 5 + 11 + 11 + 14 + 14 + 2
  * This will essentially be our red side auto, provided the first turn is reversed
  * DELETE WHEN DONE.
  * Shoot first auto, configured for red side
@@ -22,15 +21,16 @@ public class RedSideScore extends AutoOpMode {
         initialize();
         sleep(2000);
         double power = .88;
-        telemetry.addData("init", "test12");
+        telemetry.addData("init", "test1");
         telemetry.update();
         waitForStart();
+        double startLight = colorSensorAverageValues();
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.2, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.3, 1150);
+        bringDownShooter(.35, 1100);
         sleep(750);
         if (voltage <= 13.5)
             power = .96;
@@ -43,29 +43,30 @@ public class RedSideScore extends AutoOpMode {
         else if (voltage > 14)
             power = .82;
         shoot(power, 380);
-        bringDownShooter(-.4, 400);
+        bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
-        double angle32 = getGyroYaw() - change;
-        turnLeftWithPID(30, .003, .0000175, 0.0);
+        double angle32 = getGyroYaw() + change;
+        turnLeftWithPID(32, .003, .0000175, 0.0);
         sleep(500);
-        angle32 -= 30;
-        //double p = .004; double i = .000015; //double d = 2.0;
+        angle32 -= 32;
+        //double p = .004; douzble i = .000015; //double d = 2.0;
         moveForwardPID(4450, angle32);
-//        correctOneSideLeft(perpendicular, .0042, .000012, 0, 20);
+        correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
         moveToWallRed(2000, .3);
         sleep(500);
         resetEncoders();
-        moveToSecondLine(1380, .25);
+        if(onWhiteLine(startLight + 5) == false)
+            moveToSecondLine(2000, .275);
         sleep(500);
-        if(onWhiteLine(9) == false)
-            moveBackToWhiteLine(650, -.14, 9);
+        if(onWhiteLine(startLight + 5) == false)
+            moveBackToWhiteLine(650, -.14, startLight + 5);
         pushRedBeacon();
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveToSecondLine(3800, .3);
+        moveToSecondLine(4000, .3);
         sleep(500);
-        moveBackToWhiteLine(850, -.15);
+        moveBackToWhiteLine(850, -.14, startLight + 8);
         sleep(500);
         pushRedBeacon();
         sleep(500);

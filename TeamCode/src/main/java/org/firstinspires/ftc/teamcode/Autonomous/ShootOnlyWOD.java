@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
 /**
  * Created by sopa on 2/21/17.
  */
+
+@Autonomous(name = "40PointAutoNoDelay", group = "Autonomous")
 public class ShootOnlyWOD extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -13,7 +17,7 @@ public class ShootOnlyWOD extends AutoOpMode {
         telemetry.update();
         double power = .85;
         waitForStart();
-        moveForward(.175, 1100, getGyroYaw());
+        moveForwardWithEncoders(.175, 1100);
         sleep(1000);
         bringDownShooter(.275, 1150);
         sleep(1000);

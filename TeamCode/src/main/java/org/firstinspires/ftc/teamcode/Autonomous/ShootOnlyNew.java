@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Same as other ShootOnly but written by extending AutOpMode
  */
 
-@Autonomous(name = "40PointAutoWithD10", group = "Autonomous")
+@Autonomous(name = "40PointAutoWithD12", group = "Autonomous")
 public class ShootOnlyNew extends AutoOpMode {
     public ShootOnlyNew() {
         super();
@@ -24,8 +24,8 @@ public class ShootOnlyNew extends AutoOpMode {
         telemetry.update();
         double power = .85;
         waitForStart();
-        sleep(10000);
-        moveForward(.175, 1100, getGyroYaw());
+        sleep(12000);
+        moveForwardWithEncoders(.175, 1100);
         sleep(1000);
         bringDownShooter(.275, 1150);
         sleep(1000);
@@ -44,3 +44,10 @@ public class ShootOnlyNew extends AutoOpMode {
         moveForwardWithEncoders(.4, 2500);
     }
 }
+
+//
+// start time set
+// start encoder set
+//if (start time - current time > x && start ecoder - current = ~0)
+//        { NOT MOVING}
+

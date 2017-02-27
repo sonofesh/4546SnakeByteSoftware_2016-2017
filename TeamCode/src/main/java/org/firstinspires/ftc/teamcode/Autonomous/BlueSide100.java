@@ -25,6 +25,7 @@ public class BlueSide100 extends AutoOpMode {
         telemetry.addData("init", "test1");
         telemetry.update();
         waitForStart();
+        double startLight = colorSensorAverageValues();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.2, 500);
         //moveForwardPID(500);
@@ -44,7 +45,7 @@ public class BlueSide100 extends AutoOpMode {
             power = .80;
         shoot(power, 360);
         double angle38 = getGyroYaw();
-        bringDownShooter(-.4, 600);
+        bringDownShooter(-.4, 620);
         turnRightWithPID(40, .00525, .00003, 0.0);
         angle38 += 40;
         moveForwardPID(3300, angle38);
@@ -56,15 +57,12 @@ public class BlueSide100 extends AutoOpMode {
             turnRightWithPID(160 - firstTurn, .0054, .00006, 0.0);
         }
         else
-            turnRightWithPID(160, .00525, .000065, 0.0);
-//        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
-//        sleep(500);
-        moveBackWardWithEncoders(.2, 750);
+            turnRightWithPID(160, .004, .000045, 0.0);
         resetEncoders();
         moveToWallBlue(2450, .325);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(850, -.15, 10);
+            moveBackToWhiteLine(1000, -.15, startLight + 7);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
@@ -72,10 +70,10 @@ public class BlueSide100 extends AutoOpMode {
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(3600, -.3);
+        moveToSecondLine(4000, -.3);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .125, 9);
+            moveBackToWhiteLine(600, .125, startLight + 6);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

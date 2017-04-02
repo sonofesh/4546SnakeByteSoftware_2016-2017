@@ -250,12 +250,6 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
 
-
-//    public float getVelocity() throws InterruptedException {
-//        ve velocity = imu.getVelocity();
-//        return 0;
-//    }
-
     //encoders
     public int getAvg() throws InterruptedException {
         FRV = Math.abs(FR.getCurrentPosition());
@@ -283,7 +277,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage();
         voltage /= 2;
         if (voltage <= 13.5)
-            power = 1.2;
+            power = 1.25;
         else if (voltage <= 13.75 && voltage > 13.5)
             power = 1;
         else if (voltage > 13.75 && voltage <= 13.9)

@@ -12,6 +12,14 @@
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Blocks-release/res/menu/menu_server.xml"
     },
     {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/menu/ftc_robot_controller.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/src/main/res/menu/ftc_robot_controller.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/menu/menu_server.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Blocks-release/res/menu/menu_server.xml"
+    },
+    {
         "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/menu/ftc_robot_controller.xml",
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/src/main/res/menu/ftc_robot_controller.xml"
     },
@@ -22,5 +30,9 @@
     {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/release/menu/ftc_robot_controller.xml",
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/src/main/res/menu/ftc_robot_controller.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/menu/main_menu.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Inspection-release/res/menu/main_menu.xml"
     }
 ]

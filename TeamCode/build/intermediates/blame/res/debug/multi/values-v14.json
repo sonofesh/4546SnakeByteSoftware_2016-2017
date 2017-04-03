@@ -26,6 +26,32 @@
         ]
     },
     {
+        "outputFile": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/res/merged/debug/values-v14/values-v14.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endLine": 4,
+                    "endColumn": 12,
+                    "endOffset": 201
+                },
+                "from": {
+                    "file": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/exploded-aar/4546SnakeByteSoftware_2016-2017/FtcRobotController/unspecified/res/values-v14/values-v14.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endLine": 4,
+                        "endColumn": 12,
+                        "endOffset": 201
+                    }
+                }
+            }
+        ]
+    },
+    {
         "outputFile": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/TeamCode/build/intermediates/res/merged/debug/values-v14/values-v14.xml",
         "map": [
             {

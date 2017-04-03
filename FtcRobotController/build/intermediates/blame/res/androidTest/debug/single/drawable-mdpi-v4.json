@@ -1,5 +1,9 @@
 [
     {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4/ic_launcher.png",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/drawable-mdpi-v4/ic_launcher.png"
+    },
+    {
         "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/drawable-mdpi-v4/ic_launcher.png",
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/drawable-mdpi-v4/ic_launcher.png"
     },

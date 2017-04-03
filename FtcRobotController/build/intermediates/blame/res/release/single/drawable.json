@@ -12,6 +12,18 @@
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Inspection-release/res/drawable/icon_robotcontroller.png"
     },
     {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/icon_menu.png",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Inspection-release/res/drawable/icon_menu.png"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/button_shape.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/drawable/button_shape.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/black_border.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Blocks-release/res/drawable/black_border.xml"
+    },
+    {
         "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/black_border.xml",
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Blocks-release/res/drawable/black_border.xml"
     },
@@ -22,6 +34,10 @@
     {
         "merged": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/button_shape.xml",
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/drawable/button_shape.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/icon_robotcontroller.png",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/Inspection-release/res/drawable/icon_robotcontroller.png"
     },
     {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/release/drawable/button_shape.xml",

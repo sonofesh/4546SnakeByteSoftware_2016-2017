@@ -12,8 +12,24 @@
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/xml/preferences.xml"
     },
     {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/k9usbbot.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/k9usbbot.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/k9legacybot.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/k9legacybot.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/preferences.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/xml/preferences.xml"
+    },
+    {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/pushbotsens.xml",
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/pushbotsens.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/device_filter.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/xml/device_filter.xml"
     },
     {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/k9usbbot.xml",
@@ -48,8 +64,20 @@
         "source": "/Users/sopa/Desktop/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/k9usbbot.xml"
     },
     {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/pushbotsens.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/pushbotsens.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/squarebot.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/squarebot.xml"
+    },
+    {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/preferences.xml",
         "source": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/bundles/debug/res/xml/preferences.xml"
+    },
+    {
+        "merged": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/pushbot.xml",
+        "source": "/Users/sopa/Desktop/Robotics/4546SnakeByteSoftware_2016-2017/FtcRobotController/build/intermediates/exploded-aar/FtcCommon-release/res/xml/pushbot.xml"
     },
     {
         "merged": "/Users/sopa/Desktop/SnakeByte4546_2016-2017/FtcRobotController/build/intermediates/res/merged/androidTest/debug/xml/squarebot.xml",

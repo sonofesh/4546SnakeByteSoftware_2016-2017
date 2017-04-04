@@ -116,15 +116,16 @@ public class ShootingVoltage extends OpMode {
     public void loop() {
         //CONTROLLER 1
         //Tank Drive
-        if (gamepad1.left_stick_y > .1) {
-            voltageScale += .001;
+        if (gamepad1.left_stick_y > .5) {
+            voltageScale += .0005;
             telemetry.addData("scale", voltageScale);
+            telemetry.update();
         }
-        else if(gamepad1.left_stick_y < .1){
-            voltageScale -= .001;
+        else if(gamepad1.left_stick_y < -.5){
+            voltageScale -= .0005;
             telemetry.addData("scale", voltageScale);
+            telemetry.update();
         }
-        telemetry.update();
 //        //HalfSpeed Macro
 //        if (gamepad1.a) {
 //            currentTime = System.currentTimeMillis();
@@ -166,8 +167,8 @@ public class ShootingVoltage extends OpMode {
 
         //Shooter Controls
         if (gamepad2.right_bumper) {
-            ShooterF.setPower(-(voltageScale * hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage()) -.8);
-            ShooterB.setPower(voltageScale * hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() +.8);
+            ShooterF.setPower(-(voltageScale * hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage()) - .8);
+            ShooterB.setPower(voltageScale * hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + .8);
         }
         else {
             ShooterF.setPower(0);

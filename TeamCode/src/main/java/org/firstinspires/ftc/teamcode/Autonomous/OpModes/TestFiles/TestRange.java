@@ -14,6 +14,7 @@ public class TestRange extends AutoOpMode {
     @Override
     public void runOpMode() throws InterruptedException
     {
+        initialize();
         telemetry.addData("Before Angle", getGyroYaw());
         telemetry.update();
         sleep(1000);

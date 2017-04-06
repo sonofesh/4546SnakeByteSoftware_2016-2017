@@ -45,6 +45,13 @@ public class Blue100Worlds extends AutoOpMode {
         shoot(power, 360);
         double angle45 = getGyroYaw();
         bringDownShooter(-.4, 620);
+        if(getGyroYaw() + 45 > 360) {
+            double firstTurn = Math.abs(360 - getGyroYaw());
+            turnRightWithPID(firstTurn, .005, .00003, 0.0);
+            turnRightWithPID(45 - firstTurn, .0055, .00006, 0.0);
+        }
+        else
+            turnRightWithPID(45, .00525, .00003, 0.0);
         turnRightWithPID(45, .00525, .00003, 0.0); //CHANGE - Steeper angle
         angle45 += 45;
         moveStartToWall(3000, angle45, 40, parallel);

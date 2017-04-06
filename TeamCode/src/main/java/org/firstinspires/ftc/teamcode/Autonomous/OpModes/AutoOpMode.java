@@ -38,7 +38,6 @@ public abstract class AutoOpMode extends LinearOpMode {
     int avg = 0;
     long beforeTime = 0;
     public BNO055IMU imu;
-    ModernRoboticsI2cRangeSensor rangeSensorRed;
     BNO055IMU.Parameters parameters;
     ColorSensor frontBeacon;
     ColorSensor colorSensorWLA;
@@ -46,7 +45,6 @@ public abstract class AutoOpMode extends LinearOpMode {
     ColorSensor backBeacon;
     ModernRoboticsI2cRangeSensor wallSensor;
     int count = 0;
-    ModernRoboticsI2cRangeSensor rangeSensor;
     public void initialize() throws InterruptedException {
         FR = hardwareMap.dcMotor.get("FR");
         BR = hardwareMap.dcMotor.get("BR");
@@ -97,11 +95,10 @@ public abstract class AutoOpMode extends LinearOpMode {
         frontBeacon.setI2cAddress(I2cAddr.create8bit(0x2e));
         frontBeacon.enableLed(false);
         telemetry.addData("colorSensorB", "initialized");
-//        rangeSensor = new ModernRoboticsI2cRangeSensor(hardwareMap.i2cDeviceSynch.get("rangeSensor"));
-//        telemetry.addData("range", getDist(rangeSensor));
+        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
+        telemetry.addData("range", getRawDistance());
         telemetry.update();
         telemetry.addData("backbeacon", backBeacon.red());
-        telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.update();
 //        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
@@ -259,14 +256,14 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //range sensor
-    public double getDist(ModernRoboticsI2cRangeSensor range) throws InterruptedException {
-        double value = range.getDistance(DistanceUnit.CM);
-        if(value == 255 && value == 0) {
-            sleep(62);
-            getDist(range);
-        }
-        return value;
-    }
+//    public double getDist(ModernRoboticsI2cRangeSensor wallSensor) throws InterruptedException {
+//        double value = range.getDistance(DistanceUnit.CM);
+//        if(value == 255 && value == 0) {
+//            sleep(62);
+//            getDist(range);
+//        }
+//        return value;
+//    }
 
     //voltage adjustment
 
@@ -1015,7 +1012,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     //gyro stabilization with PID
-    public void mo(int distance, double angle) throws InterruptedException {
+    /* public void moveForward(int distance, double angle) throws InterruptedException {
         //.00025, .00000003, 0.0, 4000
         //calibration constants
         double p = .0002; double i = .00000015; //double d = 2.0;
@@ -1095,7 +1092,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         else
             telemetry.addData("failure", "PID failed");
         telemetry.update();
-    }
+    } */
 
 
 
@@ -1621,7 +1618,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
-//        deltaTime / (getAvg() - pastError);
+//        deltaT ime / (getAvg() - pastError);
         while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);

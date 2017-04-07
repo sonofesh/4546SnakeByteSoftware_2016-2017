@@ -1667,16 +1667,16 @@ public abstract class AutoOpMode extends LinearOpMode {
         double output = power * basePowerMultiplier();
         //Math.abs(getAvg() - beforeALV) < distance
         while (Math.abs(getGyroYaw() - beforeAngle) < 17 && Math.abs(getAvg() - beforeALV) < distance) {
-            FR.setPower(-output * 1.2);
-            BR.setPower(-output * 1.2);
+            FR.setPower(-output * 1.15);
+            BR.setPower(-output * 1.15);
             FL.setPower(output * .9);
             BL.setPower(output * .9);
             idle();
         }
         output = .25;
-        while (Math.abs(getAvg() - beforeALV) < distance) {
-            FR.setPower(-output * 1.1);
-            BR.setPower(-output * 1.1);
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 11) {
+            FR.setPower(-output * 1.05);
+            BR.setPower(-output * 1.05);
             FL.setPower(output * .9);
             BL.setPower(output * .9);
             idle();

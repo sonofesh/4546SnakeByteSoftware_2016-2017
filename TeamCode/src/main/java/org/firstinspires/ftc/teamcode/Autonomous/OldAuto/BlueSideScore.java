@@ -63,7 +63,7 @@ public class BlueSideScore extends AutoOpMode {
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(3000, -.25);
+        moveToSecondLine(3000, -.25, 7);
         sleep(500);
         moveBackToWhiteLine(600, -.14, -.1);
         sleep(500);

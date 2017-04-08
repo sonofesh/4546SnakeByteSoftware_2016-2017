@@ -101,8 +101,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("backbeacon", backBeacon.red());
         telemetry.addData("colorSensorWLA", colorSensorWLA.red());
         telemetry.update();
-//        wallSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "wallSensor");
-
     }
     //movement methods
     public void zero() throws InterruptedException {
@@ -293,9 +291,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         telemetry.addData("encodersR", getAvg());
         telemetry.update();
         beforeALV = getAvg();
-        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage())/2;;
-        double change = (14 - voltageAverage) * 200;
-        while(Math.abs(getAvg() - beforeALV) < (distance + change)) {
+        double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage())/2;
+        while(Math.abs(getAvg() - beforeALV) < distance) {
             moveForward(power);
             idle();
         }
@@ -1659,20 +1656,11 @@ public abstract class AutoOpMode extends LinearOpMode {
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
 //        deltaT ime / (getAvg() - pastError);
-        while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
-            {
-                FR.setPower(output * .9);
-                BR.setPower(output * .9);
-                FL.setPower(-output * 1.2);
-                BL.setPower(-output * 1.2);
-                idle();
-            }
-        }
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000 && colorSensorAverageValues(colorSensorWLA) < light) {
-            FR.setPower(output * .75);
-            BR.setPower(output * .75);
-            FL.setPower(-output * .9);
-            BL.setPower(-output * .9);
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 10000 && colorSensorAverageValues(colorSensorWLA) < light) {
+            FR.setPower(output * .9);
+            BR.setPower(output * .9);
+            FL.setPower(-output * 1.1);
+            BL.setPower(-output * 1.1);
             idle();
         }
         FR.setPower(0);
@@ -1753,21 +1741,13 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        }
     }
 
-    public void moveToSecondLine(int distance, double power) throws InterruptedException {
+    public void moveToSecondLine(int distance, double power, double light) throws InterruptedException {
         beforeALV = getAvg();
         double output = power;
         double starttime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < (distance * .6) && colorSensorAverageValues(colorSensorWLA) < 14 || System.currentTimeMillis() > time + 250) {
-            FR.setPower(-output * .875);
-            BR.setPower(-output * .875);
-            FL.setPower(output * 1.1);
-            BL.setPower(output * 1.1);
-            idle();
-        }
-        output = .225;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .4) && colorSensorAverageValues(colorSensorWLA) < 14) {
-            FR.setPower(-output * .875);
-            BR.setPower(-output * .875);
+        while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < light) {
+            FR.setPower(-output * .9);
+            BR.setPower(-output * .9);
             FL.setPower(output * 1.1);
             BL.setPower(output * 1.1);
             idle();
@@ -1778,29 +1758,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         BL.setPower(0);
     }
 
-    public void moveToSecondLine(int distance, double power, double accurracy) throws InterruptedException {
-        beforeALV = getAvg();
-        double output = power;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .8) && colorSensorAverageValues(colorSensorWLA) < accurracy) {
-            FR.setPower(-output * .875);
-            BR.setPower(-output * .875);
-            FL.setPower(output * 1.1);
-            BL.setPower(output * 1.1);
-            idle();
-        }
-        output = .225;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .2) && colorSensorAverageValues(colorSensorWLA) < accurracy) {
-            FR.setPower(-output * .875);
-            BR.setPower(-output * .875);
-            FL.setPower(output * 1.1);
-            BL.setPower(output * 1.1);
-            idle();
-        }
-        FR.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BL.setPower(0);
-    }
 
     public void moveBackToWhiteLine(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
@@ -1820,10 +1777,10 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveBackToWhiteLine(int distance, double power, double accuracy) throws InterruptedException {
         beforeALV = getAvg();
         while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < accuracy) {
-            FR.setPower(-power * .85);
-            BR.setPower(-power * .85);
-            FL.setPower(power * 1.15);
-            BL.setPower(power * 1.15);
+            FR.setPower(-power * .9);
+            BR.setPower(-power * .9);
+            FL.setPower(power * 1.1);
+            BL.setPower(power * 1.1);
             idle();
         }
         FR.setPower(0);

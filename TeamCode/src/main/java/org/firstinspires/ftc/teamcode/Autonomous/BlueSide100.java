@@ -49,27 +49,27 @@ public class BlueSide100 extends AutoOpMode {
         double angle45 = getGyroYaw();
         if(getGyroYaw() + 45 > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
-            turnRightWithPID(firstTurn, .005, .00003, 0.0);
-            turnRightWithPID(45 - firstTurn, .0055, .00003, 0.0);
+            turnRightWithPID(firstTurn, .004, .00003, 0.0);
+            turnRightWithPID(45 - firstTurn, .0045, .00003, 0.0);
         }
         else
-            turnRightWithPID(45, .00525, .00003, 0.0);
+            turnRightWithPID(45, .0035, .00003, 0.0);
         angle45 += 45;
-        moveForwardPID(3300, angle45);
+        moveForwardPID(3200, angle45);
         sleep(750);
-        double turn = 160;
-        if(getGyroYaw() + 160 > 360) {
+        double turn = 140;
+        if(getGyroYaw() + turn > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
             turnRightWithPID(firstTurn, .005, .000025, 0.0);
-            turnRightWithPID(160 - firstTurn, .0045, .00003, 0.0);
+            turnRightWithPID(turn - firstTurn, .003, .000025, 0.0);
         }
         else
-            turnRightWithPID(160, .004, .000045, 0.0);
+            turnRightWithPID(turn, .004, .000045, 0.0);
         resetEncoders();
-        moveToWallBlue(2700, .325);
+        moveToWallBlue(3100, .325);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(1000, -.15, startLight + 7);
+            moveBackToWhiteLine(1000, -.115, startLight + 4);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
@@ -77,10 +77,10 @@ public class BlueSide100 extends AutoOpMode {
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(4000, -.3);
+        moveToSecondLine(4000, -.25, startLight + 4);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .125, startLight + 6);
+            moveBackToWhiteLine(600, .115, startLight + 5);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

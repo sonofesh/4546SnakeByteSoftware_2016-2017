@@ -56,7 +56,7 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)
-            moveToSecondLine(2000, .275);
+            moveToSecondLine(2000, .275, 6);
         sleep(500);
         if(onWhiteLine(startLight + 5) == false)
             moveBackToWhiteLine(650, -.14, startLight + 5);
@@ -64,7 +64,7 @@ public class RedSideScore extends AutoOpMode {
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveToSecondLine(4000, .3);
+        moveToSecondLine(4000, .3, 6);
         sleep(500);
         moveBackToWhiteLine(850, -.14, startLight + 8);
         sleep(500);

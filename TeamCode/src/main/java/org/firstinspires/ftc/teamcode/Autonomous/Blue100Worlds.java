@@ -54,7 +54,7 @@ public class Blue100Worlds extends AutoOpMode {
             turnRightWithPID(45, .00525, .00003, 0.0);
         turnRightWithPID(45, .00525, .00003, 0.0); //CHANGE - Steeper angle
         angle45 += 45;
-        moveStartToWall(3000, angle45, 40, parallel);
+        moveStartToWall(3000, angle45);
         sleep(750);
         double turn = 160;
         if(getGyroYaw() + 160 > 360) {
@@ -76,7 +76,7 @@ public class Blue100Worlds extends AutoOpMode {
         //correct(parallel, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, parallel);
 //        moveForwardsToWhiteLine(300, parallel);
-        moveToSecondLine(4000, -.3);
+//        moveToSecondLine(4000, -.3);
         sleep(500);
         if(onWhiteLine() == false)
             moveBackToWhiteLine(600, .125, startLight + 6);

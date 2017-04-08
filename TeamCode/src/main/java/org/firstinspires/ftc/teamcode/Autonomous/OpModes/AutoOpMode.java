@@ -933,6 +933,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         //.00025, .00000003, 0.0, 4000
         //calibration constants
         double p = .000275; double i = .000000275; //double d = 2.0;
+
         double error = distance;
         double pastError = 0.0;
         double output;
@@ -1612,25 +1613,26 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        BL.setPower(0);
 //    }
 
-    //beacon pushing methods
+    //beacon pushing methods ///IMPORTANT NOTE - CHANGED THIS TO STOP AT FIRST BEACON
     public void moveToWallRed(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
 //        deltaT ime / (getAvg() - pastError);
-        while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
-            FR.setPower(output * .9);
-            BR.setPower(output * .9);
-            FL.setPower(-output * 1.2);
-            BL.setPower(-output * 1.2);
-            idle();
+        while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {{
+                FR.setPower(output * .9);
+                BR.setPower(output * .9);
+                FL.setPower(-output * 1.2);
+                BL.setPower(-output * 1.2);
+                idle();
+            }
         }
         while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
-            FR.setPower(output * .9);
-            BR.setPower(output * .9);
-            FL.setPower(-output * 1.1);
-            BL.setPower(-output * 1.1);
+            FR.setPower(output * .75);
+            BR.setPower(output * .75);
+            FL.setPower(-output * .9);
+            BL.setPower(-output * .9);
             idle();
         }
         FR.setPower(0);
@@ -1649,6 +1651,34 @@ public abstract class AutoOpMode extends LinearOpMode {
 //        BR.setPower(0);
 //        FL.setPower(0);
 //        BL.setPower(0);
+    }
+
+    public void moveToWallRed_Stop(int distance, double power, double light) throws InterruptedException {
+        beforeALV = getAvg();
+        beforeAngle = getGyroYaw();
+        double output = power * basePowerMultiplier();
+        double startTime = System.currentTimeMillis();
+//        deltaT ime / (getAvg() - pastError);
+        while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
+            {
+                FR.setPower(output * .9);
+                BR.setPower(output * .9);
+                FL.setPower(-output * 1.2);
+                BL.setPower(-output * 1.2);
+                idle();
+            }
+        }
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000 && colorSensorAverageValues(colorSensorWLA) < light) {
+            FR.setPower(output * .75);
+            BR.setPower(output * .75);
+            FL.setPower(-output * .9);
+            BL.setPower(-output * .9);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
     public void resetEncoders() throws InterruptedException {
@@ -1726,7 +1756,8 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveToSecondLine(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         double output = power;
-        while (Math.abs(getAvg() - beforeALV) < (distance * .6) && colorSensorAverageValues(colorSensorWLA) < 14) {
+        double starttime = System.currentTimeMillis();
+        while (Math.abs(getAvg() - beforeALV) < (distance * .6) && colorSensorAverageValues(colorSensorWLA) < 14 || System.currentTimeMillis() > time + 250) {
             FR.setPower(-output * .875);
             BR.setPower(-output * .875);
             FL.setPower(output * 1.1);
@@ -2281,7 +2312,7 @@ public abstract class AutoOpMode extends LinearOpMode {
 /** ================== WORLD's COMP. METHODS =================== **/
 
     //MoveForwardPID() + additional limit to movement (stop moving once range sensor detects close enough to wall
-    public void moveStartToWall (int encoderCAP, double angle, int rangeDistance, double parallel) throws InterruptedException
+    public void moveStartToWall (int encoderCAP, double angle /* int rangeDistance, double parallel */) throws InterruptedException
     {
         double p = .000275; double i = .000000275; //double d = 2.0;
         double error = encoderCAP;
@@ -2299,7 +2330,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         double change = (13.5 - voltageAverage) * 200;
         encoderCAP += change;
         long lastTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < encoderCAP && rangeDistance > getDistanceToWall(parallel)) {
+        while (Math.abs(getAvg() - beforeALV) < encoderCAP /* && rangeDistance > getDistanceToWall(parallel) */ ) {
             error = encoderCAP - Math.abs(getAvg() - beforeALV);
             //proportional
             proportional = error * p;

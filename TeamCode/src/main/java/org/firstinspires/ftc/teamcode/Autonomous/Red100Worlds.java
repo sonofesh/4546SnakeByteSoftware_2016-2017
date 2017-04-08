@@ -46,29 +46,29 @@ public class Red100Worlds extends AutoOpMode {
         shoot(power, 380);
         bringDownShooter(-.45, 400);
         double change = getGyroYaw() - parallel;
-        double angle45 = getGyroYaw() + change; //Shouldn't this be minus change?
-        turnLeftWithPID(45, .003, .0000175, 0.0); //CHANGED from 32 to 45 - steeper angle
+        double angle42 = getGyroYaw() + change; //Shouldn't this be minus change?
+        turnLeftWithPID(42, .003, .0000175, 0.0); //CHANGED 32 to 45 to 42
         sleep(500);
-        angle45 -= 45;
+        angle42 -= 42;
         //double p = .004; douzble i = .000015; //double d = 2.0;
-        moveStartToWall(3000, angle45, 50, parallel); //New method - moves till range sensor detects close or until encoder cap
-        correctOneSideLeft(parallel, .0042, .000012, 0, 30);
-        turnRightWithGyroOneSide(.4,40); //Turn into wall
-        moveToWallRed(2000, .3);
+        moveStartToWall(3100, angle42); // removed rang sensor for now.
+        correctOneSideLeft(parallel, .01, .000020, 0, 30); //change .0075 .000015
+        moveToWallRed_Stop(2200, .3, startLight + 7);
         sleep(500);
         resetEncoders();
-        if (onWhiteLine(startLight + 5) == false)
-            moveToSecondLine(2000, .275);
+//        if (onWhiteLine(startLight + 5) == false)
+//            moveToSecondLine(2000, .275);
         sleep(500);
-        if (onWhiteLine(startLight + 5) == false)
-            moveBackToWhiteLine(650, -.14, startLight + 5);
+        if (onWhiteLine(startLight + 3) == false)
+            moveBackToWhiteLine(150, .14, startLight + 2);
         pushRedBeacon();
         resetEncoders();
         //correct(parallel, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
         moveToSecondLine(4000, .3);
         sleep(500);
-        moveBackToWhiteLine(850, -.14, startLight + 8);
+        if (onWhiteLine(startLight + 3) == false)
+            moveBackToWhiteLine(150, -.14, startLight + 2);
         sleep(500);
         pushRedBeacon();
         sleep(500);

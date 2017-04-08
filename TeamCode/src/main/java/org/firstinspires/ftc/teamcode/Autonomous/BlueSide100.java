@@ -47,7 +47,13 @@ public class BlueSide100 extends AutoOpMode {
 //        shoot(power, 360);
 //        bringDownShooter(-.4, 620);
         double angle45 = getGyroYaw();
-        turnRightWithPID(45, .00525, .00003, 0.0);
+        if(getGyroYaw() + 45 > 360) {
+            double firstTurn = Math.abs(360 - getGyroYaw());
+            turnRightWithPID(firstTurn, .005, .00003, 0.0);
+            turnRightWithPID(45 - firstTurn, .0055, .00003, 0.0);
+        }
+        else
+            turnRightWithPID(45, .00525, .00003, 0.0);
         angle45 += 45;
         moveForwardPID(3300, angle45);
         sleep(750);

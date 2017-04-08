@@ -2012,7 +2012,6 @@ public abstract class AutoOpMode extends LinearOpMode {
         }
         telemetry.addData("blue", "hit");
         telemetry.update();
-//        count++;
 
 
     }

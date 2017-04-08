@@ -2136,7 +2136,7 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     public double getRawDistance() throws InterruptedException {
-        return wallSensor.getDistance(DistanceUnit.CM);
+        return wallSensor.cmUltrasonic();
     }
 
     public void followRedWallBackward(double distance, double wallDistance, double perpendicular) throws InterruptedException {

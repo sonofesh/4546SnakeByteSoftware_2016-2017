@@ -17,19 +17,17 @@ public class TestRange extends AutoOpMode {
         initialize();
         telemetry.addData("Before Angle", getGyroYaw());
         telemetry.update();
-        sleep(1000);
-        double angle = getGyroYaw();
-        telemetry.addData("After Angle", angle);
-        telemetry.addData("Raw Distance", getRawDistance());
-        telemetry.addData("Trig Distance", getTrigDistance(angle));
-        telemetry.addData("Distance to Wall", getDistanceToWall(angle));
-        telemetry.update();
-        sleep(3000);
-        angle = getGyroYaw();
-        telemetry.addData("After Angle", angle);
-        telemetry.addData("Raw Distance", getRawDistance());
-        telemetry.addData("Trig Distance", getTrigDistance(angle));
-        telemetry.addData("Distance to Wall", getDistanceToWall(angle));
-        telemetry.update();
+        waitForStart();
+        while(true) {
+            double angle = getGyroYaw();
+            telemetry.addData("After Angle", angle);
+            telemetry.addData("Raw Distance", getRawDistance());
+            sleep(500);
+            telemetry.addData("Trig Distance", getTrigDistance(angle));
+            sleep(500);
+            telemetry.addData("Distance to Wall", getDistanceToWall(angle));
+            telemetry.update();
+            sleep(5000);
+        }
     }
 }

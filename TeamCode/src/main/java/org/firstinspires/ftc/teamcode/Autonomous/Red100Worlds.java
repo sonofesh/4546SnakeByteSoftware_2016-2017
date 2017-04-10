@@ -30,28 +30,28 @@ public class Red100Worlds extends AutoOpMode {
         double parallel = getGyroYaw();
         moveForwardWithEncoders(.2, 500);
         //bring down shooter
-        bringDownShooter(.35, 1100);
-        sleep(750);
-        if (voltage <= 13.5)
-            power = .96;
-        else if (voltage <= 13.75 && voltage > 13.5)
-            power = .93;
-        else if (voltage > 13.75 && voltage <= 13.9)
-            power = .89;
-        else if (voltage > 13.9 && voltage <= 14)
-            power = .87;
-        else if (voltage > 14)
-            power = .82;
-        shoot(power, 380);
-        bringDownShooter(-.45, 400);
-        double angle45 = getGyroYaw(); //Shouldn't this be minus change?
-        turnLeftWithPID(45, .00125, .0000175, 0.0); //CHANGED 32 to 45 to 42
+//        bringDownShooter(.35, 1100);
+//        sleep(750);
+//        if (voltage <= 13.5)
+//            power = .96;
+//        else if (voltage <= 13.75 && voltage > 13.5)
+//            power = .93;
+//        else if (voltage > 13.75 && voltage <= 13.9)
+//            power = .89;
+//        else if (voltage > 13.9 && voltage <= 14)
+//            power = .87;
+//        else if (voltage > 14)
+//            power = .82;
+//        shoot(power, 380);
+//        bringDownShooter(-.45, 400);
+        double angle50 = getGyroYaw(); //Shouldn't this be minus change?
+        turnLeftWithPID(50, .00375, .0000125, 0.0); //CHANGED 32 to 45 to 42
         sleep(500);
-        angle45 -= 45;
+        angle50 -= 50;
         //double p = .004; double i = .000015; //double d = 2.0;
-        moveStartToWall(3100, angle45); // removed rang sensor for now.
-        turnLeftWithPIDOneSide(25, .01, .00002, 0);
-        moveToWallRed_Stop(2100, .3, startLight + 5);
+        moveStartToWall(3100, angle50); // removed rang sensor for now.
+        turnRightWithPID(15, .003, .000015, 0.0);
+        moveToWallRed_Stop(3000, .3, startLight + 5);
         sleep(500);
         resetEncoders();
 //        if (onWhiteLine(startLight + 5) == false)

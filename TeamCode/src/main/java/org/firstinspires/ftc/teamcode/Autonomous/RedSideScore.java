@@ -20,51 +20,52 @@ public class RedSideScore extends AutoOpMode {
     public void runOpMode() throws InterruptedException {
         initialize();
         sleep(2000);
+        double startLight = colorSensorAverageValues();
         double power = .88;
         telemetry.addData("init", "test1");
         telemetry.update();
         waitForStart();
-        double startLight = colorSensorAverageValues();
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
         double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.2, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.35, 1100);
-        sleep(750);
-        if (voltage <= 13.5)
-            power = .96;
-        else if (voltage <= 13.75 && voltage > 13.5)
-            power = .93;
-        else if (voltage > 13.75 && voltage <= 13.9)
-            power = .89;
-        else if (voltage > 13.9 && voltage <= 14)
-            power = .87;
-        else if (voltage > 14)
-            power = .82;
-        shoot(power, 380);
-        bringDownShooter(-.45, 400);
+//        bringDownShooter(.35, 1100);
+//        sleep(750);
+//        if (voltage <= 13.5)
+//            power = .96;
+//        else if (voltage <= 13.75 && voltage > 13.5)
+//            power = .93;
+//        else if (voltage > 13.75 && voltage <= 13.9)
+//            power = .89;
+//        else if (voltage > 13.9 && voltage <= 14)
+//            power = .87;
+//        else if (voltage > 14)
+//            power = .82;
+//        shoot(power, 380);
+//        bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
         double angle32 = getGyroYaw() + change;
-        turnLeftWithPID(32, .003, .0000175, 0.0);
+        turnLeftWithPID(34, .003, .0000165, 0.0);
         sleep(500);
-        angle32 -= 32;
+        angle32 -= 34;
         //double p = .004; douzble i = .000015; //double d = 2.0;
         moveForwardPID(4450, angle32);
-        correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
-        moveToWallRed(2000, .3);
+        //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
+        moveToWallRed(3000, .25, startLight + 5);
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)
-            moveToSecondLine(2000, .275, 6);
+            moveToSecondLine(2000, .2, startLight + 4);
         sleep(500);
         if(onWhiteLine(startLight + 5) == false)
-            moveBackToWhiteLine(650, -.14, startLight + 5);
+            moveBackToWhiteLine(650, -.14, startLight + 3);
         pushRedBeacon();
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveToSecondLine(4000, .3, 6);
+        moveBackAgainstWall();
+        moveToSecondLine(4000, .3, startLight + 6);
         sleep(500);
         moveBackToWhiteLine(850, -.14, startLight + 8);
         sleep(500);

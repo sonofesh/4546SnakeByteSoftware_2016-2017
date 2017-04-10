@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 
 @Autonomous(name = "BlueSide90", group = "Autonomous")
+@Disabled
 public class BlueSide100 extends AutoOpMode {
     public BlueSide100() {
         super();
@@ -27,7 +28,7 @@ public class BlueSide100 extends AutoOpMode {
         waitForStart();
         double startLight = colorSensorAverageValues();
         double perpendicular = getGyroYaw();
-        moveForwardWithEncoders(.2, 500);
+        moveForwardWithEncoders(.225, 500);
         //moveForwardPID(500);
         //bring down shooter
         //commented out to increase testing speed
@@ -47,17 +48,17 @@ public class BlueSide100 extends AutoOpMode {
 //        shoot(power, 360);
 //        bringDownShooter(-.4, 620);
         double angle45 = getGyroYaw();
-        if(getGyroYaw() + 45 > 360) {
+        if(getGyroYaw() + 40 > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
             turnRightWithPID(firstTurn, .004, .00003, 0.0);
-            turnRightWithPID(45 - firstTurn, .0045, .00003, 0.0);
+            turnRightWithPID(40 - firstTurn, .0045, .00003, 0.0);
         }
         else
-            turnRightWithPID(45, .0035, .00003, 0.0);
-        angle45 += 45;
-        moveForwardPID(3200, angle45);
+            turnRightWithPID(40, .0035, .00003, 0.0);
+        angle45 += 40;
+        moveForwardPID(3000, angle45);
         sleep(750);
-        double turn = 140;
+        double turn = 165;
         if(getGyroYaw() + turn > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
             turnRightWithPID(firstTurn, .005, .000025, 0.0);
@@ -77,7 +78,8 @@ public class BlueSide100 extends AutoOpMode {
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(4000, -.25, startLight + 4);
+        moveToSecondLine(400, -.3, startLight + 20);
+        moveToSecondLine(3500, -.3, startLight + 4);
         sleep(500);
         if(onWhiteLine() == false)
             moveBackToWhiteLine(600, .115, startLight + 5);

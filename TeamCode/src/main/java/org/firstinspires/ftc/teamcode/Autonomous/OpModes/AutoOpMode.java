@@ -940,8 +940,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         double deltaTime;
         int angleError;
         beforeALV = getAvg();
-        double correctionLeft = .05;
-        double correctionRight = .05;
+        double correctionLeft = .04;
+        double correctionRight = .04;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
@@ -1611,25 +1611,16 @@ public abstract class AutoOpMode extends LinearOpMode {
 //    }
 
     //beacon pushing methods ///IMPORTANT NOTE - CHANGED THIS TO STOP AT FIRST BEACON
-    public void moveToWallRed(int distance, double power) throws InterruptedException {
+    public void moveToWallRed(int distance, double power, double light) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
-//        deltaT ime / (getAvg() - pastError);
-        while (Math.abs(getGyroYaw() - beforeAngle) < 25 && Math.abs(System.currentTimeMillis() - startTime) < 4000) {{
-                FR.setPower(output * .9);
-                BR.setPower(output * .9);
-                FL.setPower(-output * 1.2);
-                BL.setPower(-output * 1.2);
-                idle();
-            }
-        }
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
-            FR.setPower(output * .75);
-            BR.setPower(output * .75);
-            FL.setPower(-output * .9);
-            BL.setPower(-output * .9);
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000 && colorSensorAverageValues(colorSensorWLA) < light) {
+            FR.setPower(output * .9);
+            BR.setPower(output * .9);
+            FL.setPower(-output * 1.1);
+            BL.setPower(-output * 1.1);
             idle();
         }
         FR.setPower(0);
@@ -1656,7 +1647,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
 //        deltaT ime / (getAvg() - pastError);
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 10000 && colorSensorAverageValues(colorSensorWLA) < light) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 12000 && colorSensorAverageValues(colorSensorWLA) < light) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);
@@ -1777,6 +1768,21 @@ public abstract class AutoOpMode extends LinearOpMode {
     public void moveBackToWhiteLine(int distance, double power, double accuracy) throws InterruptedException {
         beforeALV = getAvg();
         while (Math.abs(getAvg() - beforeALV) < distance && colorSensorAverageValues(colorSensorWLA) < accuracy) {
+            FR.setPower(-power * .9);
+            BR.setPower(-power * .9);
+            FL.setPower(power * 1.1);
+            BL.setPower(power * 1.1);
+            idle();
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+    }
+
+    public void moveBackAgainstWall(int distance, double power) throws InterruptedException {
+        beforeALV = getAvg();
+        while (Math.abs(getAvg() - beforeALV) < distance) {
             FR.setPower(-power * .9);
             BR.setPower(-power * .9);
             FL.setPower(power * 1.1);
@@ -1936,40 +1942,27 @@ public abstract class AutoOpMode extends LinearOpMode {
     }
 
     public void pushBlueBeacon() throws InterruptedException {
-//        count += 1;
-//        if(Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 10) {
-//            if (beaconCompareBlue(backBeacon,frontBeacon) == 0) {
-//                moveBackBeacon();
-//            }
-//            else if (beaconCompareBlue(backBeacon,frontBeacon) == 1) {
-//                moveFrontBeacon();
-//            }
-//        }
-//        if (beaconValue(backBeacon) == 0) {
-//            moveFrontBeacon();
-//        }
-//        else if (beaconValue(frontBeacon) == 0) {
-//            moveBackBeacon();
-//        }
         int count = 0;
         if (beaconValue(backBeacon) == 255) {
             if (beaconValue(frontBeacon) == 0)
                 moveBackBeacon();
             else
                 moveFrontBeacon();
-        } else if (beaconValue(frontBeacon) == 255) {
+        }
+        else if (beaconValue(frontBeacon) == 255) {
             if (beaconValue(backBeacon) == 0)
                 moveFrontBeacon();
             else
                 moveBackBeacon();
-        } else if (beaconValue(backBeacon) == 0) {
+        }
+        else if (beaconValue(backBeacon) == 0) {
             moveFrontBeacon();
-        } else if (beaconValue(frontBeacon) == 0) {
+        }
+        else if (beaconValue(frontBeacon) == 0) {
             moveBackBeacon();
         }
         telemetry.addData("blue", "hit");
         telemetry.update();
-
 
     }
 //        else if(count < 2) {

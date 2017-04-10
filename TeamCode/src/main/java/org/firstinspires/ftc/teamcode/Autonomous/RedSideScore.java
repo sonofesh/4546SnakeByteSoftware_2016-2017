@@ -46,9 +46,9 @@ public class RedSideScore extends AutoOpMode {
 //        bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
         double angle32 = getGyroYaw() + change;
-        turnLeftWithPID(34, .003, .0000165, 0.0);
+        turnLeftWithPID(35, .003, .0000165, 0.0);
         sleep(500);
-        angle32 -= 34;
+        angle32 -= 35;
         //double p = .004; douzble i = .000015; //double d = 2.0;
         moveForwardPID(4450, angle32);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
@@ -64,7 +64,7 @@ public class RedSideScore extends AutoOpMode {
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveBackAgainstWall();
+        moveBackAgainstWall(200, .3);
         moveToSecondLine(4000, .3, startLight + 6);
         sleep(500);
         moveBackToWhiteLine(850, -.14, startLight + 8);

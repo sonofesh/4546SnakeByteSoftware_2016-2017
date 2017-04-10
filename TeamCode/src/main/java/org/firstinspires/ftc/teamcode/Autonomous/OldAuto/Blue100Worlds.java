@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.OldAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * test count: 9 + 7 + 24 +
  */
 
+@Disabled
 @Autonomous(name = "Blue100Worlds", group = "Autonomous")
 public class Blue100Worlds extends AutoOpMode {
     public Blue100Worlds() {

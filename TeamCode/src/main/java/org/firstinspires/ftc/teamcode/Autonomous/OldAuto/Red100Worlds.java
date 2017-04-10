@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Autonomous.OldAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 
@@ -11,6 +12,8 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * DELETE WHEN DONE.
  * Shoot first auto, configured for red side
  */
+
+@Disabled
 @Autonomous(name = "Red100Worlds", group = "Autonomous")
 public class Red100Worlds extends AutoOpMode {
     public Red100Worlds() {

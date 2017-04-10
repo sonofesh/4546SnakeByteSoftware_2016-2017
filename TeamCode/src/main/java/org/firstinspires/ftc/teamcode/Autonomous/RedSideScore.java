@@ -52,29 +52,33 @@ public class RedSideScore extends AutoOpMode {
         //double p = .004; douzble i = .000015; //double d = 2.0;
         moveForwardPID(4450, angle32);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
-        moveToWallRed(3000, .25, startLight + 5);
+        moveToWallRed(2000, .25);
+        moveToWallRed(200, .15); //slow down near end so stay aligned with wall
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)
-            moveToSecondLine(2000, .2, startLight + 4);
+            moveToSecondLine(1400, .2, startLight + 4);
         sleep(500);
-        if(onWhiteLine(startLight + 5) == false)
-            moveBackToWhiteLine(650, -.14, startLight + 3);
+        if(onWhiteLine(startLight + 5) == false) {
+//            moveBackToWhiteLine(650, -.14, startLight + 3);
+            movePulseToWhiteLine(650, -.13, startLight + 3);
+        }
         pushRedBeacon();
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveBackAgainstWall();
-        moveToSecondLine(4000, .3, startLight + 6);
+        moveBackAgainstWall(200, .3);
+        moveToSecondLine(2600, .3, startLight + 5);
         sleep(500);
-        moveBackToWhiteLine(850, -.14, startLight + 8);
+//        moveBackToWhiteLine(850, -.14, startLight + 8);
+        movePulseToWhiteLine(850, -.14, startLight + 3);
         sleep(500);
         pushRedBeacon();
         sleep(500);
-        moveForwardWithEncoders(.5, 500);
-        turnRightWithGyroOneSide(.6, 80);
+        moveForwardWithEncoders(.5, 450);//slight decreased from 500
+        turnRightWithGyroOneSide(.6, 81);//slightly increased from 80
         sleep(500);
-        moveForwardWithEncoders(.5, 1700);
+        moveForwardWithEncoders(.5, 1200); //decreased from 1700
         sleep(500);
     }
 

@@ -30,38 +30,38 @@ public class RedSideScore extends AutoOpMode {
         moveForwardWithEncoders(.2, 500);
         //moveForwardPID(500);
         //bring down shooter
-        bringDownShooter(.35, 1100);
-        sleep(750);
-        if (voltage <= 13.5)
-            power = .96;
-        else if (voltage <= 13.75 && voltage > 13.5)
-            power = .93;
-        else if (voltage > 13.75 && voltage <= 13.9)
-            power = .89;
-        else if (voltage > 13.9 && voltage <= 14)
-            power = .87;
-        else if (voltage > 14)
-            power = .82;
-        shoot(power, 380);
-        bringDownShooter(-.45, 400);
+//        bringDownShooter(.35, 1100);
+//        sleep(750);
+//        if (voltage <= 13.5)
+//            power = .96;
+//        else if (voltage <= 13.75 && voltage > 13.5)
+//            power = .93;
+//        else if (voltage > 13.75 && voltage <= 13.9)
+//            power = .89;
+//        else if (voltage > 13.9 && voltage <= 14)
+//            power = .87;
+//        else if (voltage > 14)
+//            power = .82;
+//        shoot(power, 380);
+//        bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
         double angle35 = getGyroYaw() + change;
-        turnLeftWithPID(35, .003, .0000165, 0.0);
+        turnLeftWithPID(35, .0032
+                , .0000145, 0.0);
         sleep(500);
         angle35 -= 35;
         //double p = .004; double i = .000015; //double d = 2.0;
         double startTime = System.currentTimeMillis();
-        moveForwardPID(4450, angle35);
+        moveForwardPIDtoWallRed(4450, angle35, 1000);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
-        moveToWallRed(1600, .25);
-        moveToWallRed(400, .15); //slow down near end so stay aligned with wall
+        moveToWallRed_Stop(1600, .25, startLight + 6);
+        moveToWallRed(200, .15); //slow down near end so stay aligned with wall
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)
             moveToSecondLine(1200, .2, startLight + 4);
         sleep(500);
         if(onWhiteLine(startLight + 5) == false) {
-//            moveBackToWhiteLine(650, -.14, startLight + 3);
             movePulseToWhiteLine(650, -.13, startLight + 3);
         }
         pushRedBeacon();
@@ -76,10 +76,10 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         pushRedBeacon();
         sleep(500);
-        moveForwardWithEncoders(.5, 425);//slight decreased from 500
+        moveForwardWithEncoders(.5, 375);//decreased from 500
         turnRightWithGyroOneSide(.6, 83);//slightly increased from 80
         sleep(500);
-        moveForwardWithEncoders(.5, 1200); //decreased from 1700
+        moveForwardWithEncoders(.5, 1000); //decreased from 1700
         sleep(500);
     }
 

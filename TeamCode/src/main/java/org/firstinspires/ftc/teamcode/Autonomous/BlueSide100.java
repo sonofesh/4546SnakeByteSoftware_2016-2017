@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  */
 
 @Autonomous(name = "BlueSide90", group = "Autonomous")
-@Disabled
 public class BlueSide100 extends AutoOpMode {
     public BlueSide100() {
         super();
@@ -58,19 +57,20 @@ public class BlueSide100 extends AutoOpMode {
         angle45 += 40;
         moveForwardPID(3000, angle45);
         sleep(750);
-        double turn = 165;
+        double turn = 150;
         if(getGyroYaw() + turn > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
-            turnRightWithPID(firstTurn, .005, .000025, 0.0);
-            turnRightWithPID(turn - firstTurn, .003, .000025, 0.0);
+            turnRightWithPID(firstTurn, .00525, .00002, 0.0);
+            sleep(100);
+            turnRightWithPID(turn - firstTurn, .00525, .00002, 0.0);
         }
         else
-            turnRightWithPID(turn, .004, .000045, 0.0);
+            turnRightWithPID(turn, .004, .0003, 0.0);
         resetEncoders();
-        moveToWallBlue(3100, .325);
+        moveToWallBlue(3500, .325);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(1000, -.115, startLight + 4);
+            moveBackToWhiteLine(1000, -.115, startLight + 3);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
@@ -79,10 +79,13 @@ public class BlueSide100 extends AutoOpMode {
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(400, -.3, startLight + 20);
-        moveToSecondLine(3500, -.3, startLight + 4);
+        moveToSecondLine(3250, -.2, startLight + 3);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(600, .115, startLight + 5);
+            movePulseToWhiteLine(650, .1, startLight + 2);
+        sleep(500);
+        pushBlueBeacon();
+        moveForwardWithEncoders(.12, 100);
         sleep(500);
         pushBlueBeacon();
         sleep(500);

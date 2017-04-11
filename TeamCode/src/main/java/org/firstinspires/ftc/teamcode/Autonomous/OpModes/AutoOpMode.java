@@ -1023,8 +1023,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         int angleError;
         beforeALV = getAvg();
         int distALV = getAvg();
-        double correctionLeft = .04;
-        double correctionRight = .04;
+        double correctionLeft = .03;
+        double correctionRight = .03;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
@@ -1078,12 +1078,15 @@ public abstract class AutoOpMode extends LinearOpMode {
             lastTime = System.currentTimeMillis();
             idle();
             if (System.currentTimeMillis() - distTime > time) {
-                if(getAvg() - distALV < 20) {
+                if(Math.abs(getAvg() - distALV) < 20) {
                     stuck = true;
+                    moveBackWardWithEncoders(.15, 200);
+                    turnRightWithGyroOneSide(.25, 15);
                 }
-                distTime = System.currentTimeMillis();
-                distALV = getAvg();
-                turnRightWithGyroOneSide(-.15, 15);
+                else {
+                    distTime = System.currentTimeMillis();
+                    distALV = getAvg();
+                }
             }
         }
         FR.setPower(0);
@@ -1709,7 +1712,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 10000) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);

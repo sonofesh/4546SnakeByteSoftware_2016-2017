@@ -1611,12 +1611,12 @@ public abstract class AutoOpMode extends LinearOpMode {
 //    }
 
     //beacon pushing methods ///IMPORTANT NOTE - CHANGED THIS TO STOP AT FIRST BEACON
-    public void moveToWallRed(int distance, double power, double light) throws InterruptedException {
+    public void moveToWallRed(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000 && colorSensorAverageValues(colorSensorWLA) < light) {
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 4000) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
             FL.setPower(-output * 1.1);
@@ -1779,6 +1779,28 @@ public abstract class AutoOpMode extends LinearOpMode {
         FL.setPower(0);
         BL.setPower(0);
     }
+
+    public void movePulseToWhiteLine(int distance, double power, double accuracy) throws InterruptedException {
+        beforeALV = getAvg();
+        if (distance > 0) {
+            while (Math.abs(getAvg() - beforeALV) < 10) {
+                FR.setPower(-power * .9);
+                BR.setPower(-power * .9);
+                FL.setPower(power * 1.1);
+                BL.setPower(power * 1.1);
+                idle();
+            }
+            FR.setPower(0);
+            BR.setPower(0);
+            FL.setPower(0);
+            BL.setPower(0);
+            if (colorSensorAverageValues(colorSensorWLA) < accuracy)
+            {
+                movePulseToWhiteLine(distance - 10, power, accuracy);
+            }
+        }
+    }
+
 
     public void moveBackAgainstWall(int distance, double power) throws InterruptedException {
         beforeALV = getAvg();

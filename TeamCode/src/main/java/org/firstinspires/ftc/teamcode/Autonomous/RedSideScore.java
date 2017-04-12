@@ -30,20 +30,20 @@ public class RedSideScore extends AutoOpMode {
         moveForwardWithEncoders(.2, 500);
         //moveForwardPID(500);
         //bring down shooter
-//        bringDownShooter(.35, 1100);
-//        sleep(750);
-//        if (voltage <= 13.5)
-//            power = .96;
-//        else if (voltage <= 13.75 && voltage > 13.5)
-//            power = .93;
-//        else if (voltage > 13.75 && voltage <= 13.9)
-//            power = .89;
-//        else if (voltage > 13.9 && voltage <= 14)
-//            power = .87;
-//        else if (voltage > 14)
-//            power = .82;
-//        shoot(power, 380);
-//        bringDownShooter(-.45, 400);
+        bringDownShooter(.28, 1100);
+        sleep(750);
+        if (voltage <= 13.5)
+            power = .96;
+        else if (voltage <= 13.75 && voltage > 13.5)
+            power = .93;
+        else if (voltage > 13.75 && voltage <= 13.9)
+            power = .89;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .87;
+        else if (voltage > 14)
+            power = .82;
+        shoot(power, 380);
+        bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
         double angle33 = getGyroYaw() + change;
         turnLeftWithPID(28, .0032, .0000145, 0.0);

@@ -31,21 +31,21 @@ public class BlueSide100 extends AutoOpMode {
         //moveForwardPID(500);
         //bring down shooter
         //commented out to increase testing speed
-//        bringDownShooter(.28, 1150);
-//        sleep(1000);
-//        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
-//        if (voltage <= 13.5)
-//            power = .95;
-//        else if (voltage <= 13.75 && voltage > 13.5)
-//            power = .92;
-//        else if (voltage > 13.75 && voltage <= 13.9)
-//            power = .88;
-//        else if (voltage > 13.9 && voltage <= 14)
-//            power = .86;
-//        else if (voltage > 14)
-//            power = .80;
-//        shoot(power, 360);
-//        bringDownShooter(-.4, 620);
+        bringDownShooter(.28, 1150);
+        sleep(1000);
+        double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
+        if (voltage <= 13.5)
+            power = .95;
+        else if (voltage <= 13.75 && voltage > 13.5)
+            power = .92;
+        else if (voltage > 13.75 && voltage <= 13.9)
+            power = .88;
+        else if (voltage > 13.9 && voltage <= 14)
+            power = .86;
+        else if (voltage > 14)
+            power = .80;
+        shoot(power, 360);
+        bringDownShooter(-.4, 620);
         double angle45 = getGyroYaw();
         if(getGyroYaw() + 40 > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
@@ -57,20 +57,21 @@ public class BlueSide100 extends AutoOpMode {
         angle45 += 40;
         moveForwardPID(3000, angle45);
         sleep(750);
-        double turn = 148;
+        double turn = 145;
         if(getGyroYaw() + turn > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
-            turnRightWithPID(firstTurn, .0052, .00002, 0.0);
+            turnRightWithPID(firstTurn, .0052, .000018, 0.0);
             sleep(100);
-            turnRightWithPID(turn - firstTurn, .0052, .00002, 0.0);
+            turnRightWithPID(turn - firstTurn, .0052, .000018, 0.0);
         }
         else
             turnRightWithPID(turn, .004, .0003, 0.0);
         resetEncoders();
-        moveToWallBlue(3500, .325);
+        moveForwardWithEncoders(-.3, 200);
+        moveToWallBlue(3200, .275, startLight + 5);
         sleep(500);
         if(onWhiteLine() == false)
-            moveBackToWhiteLine(1000, -.115, startLight + 3);
+            movePulseToWhiteLine(900, -.13, startLight + 2);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
@@ -78,8 +79,8 @@ public class BlueSide100 extends AutoOpMode {
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(400, -.3, startLight + 20);
-        moveToSecondLine(3250, -.2, startLight + 3);
+        moveToSecondLine(200, -.3, startLight + 20);
+        moveToSecondLine(3000, -.2, startLight + 3);
         sleep(500);
         if(onWhiteLine() == false)
             movePulseToWhiteLine(650, .1, startLight + 2);

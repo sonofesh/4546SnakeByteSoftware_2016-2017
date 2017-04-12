@@ -162,7 +162,7 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeTime = System.currentTimeMillis();
         while(Math.abs(System.currentTimeMillis() - beforeTime) < 500)
             idle();
-        ManIn.setPower(-.2);
+        ManIn.setPower(-.22);
         ShooterF.setPower(-power + .1);
         ShooterB.setPower(power - .1);
         beforeTime = System.currentTimeMillis();
@@ -1742,12 +1742,25 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
         double startTime = System.currentTimeMillis();
+        long distTime = System.currentTimeMillis();
+        long distALV = getAvg();
+        long time = 1000;
 //        deltaT ime / (getAvg() - pastError);
         while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(System.currentTimeMillis() - startTime) < 12000 && colorSensorAverageValues(colorSensorWLA) < light) {
             FR.setPower(output * .9);
             BR.setPower(output * .9);
-            FL.setPower(-output * 1.1);
-            BL.setPower(-output * 1.1);
+            FL.setPower(-output * 1.2);
+            BL.setPower(-output * 1.2);
+            if (System.currentTimeMillis() - distTime > time) {
+                if(Math.abs(getAvg() - distALV) < 10) {
+                    moveBackWardWithEncoders(.15, 200);
+                    turnRightWithGyroOneSide(.25, 5);
+                }
+                else {
+                    distTime = System.currentTimeMillis();
+                    distALV = getAvg();
+                }
+            }
             idle();
         }
         FR.setPower(0);
@@ -1770,21 +1783,25 @@ public abstract class AutoOpMode extends LinearOpMode {
         beforeALV = getAvg();
         beforeAngle = getGyroYaw();
         double output = power * basePowerMultiplier();
-        //Math.abs(getAvg() - beforeALV) < distance
-        while (Math.abs(getGyroYaw() - beforeAngle) < 17 && Math.abs(getAvg() - beforeALV) < distance) {
-            FR.setPower(-output * 1.15);
-            BR.setPower(-output * 1.15);
+        double startTime = System.currentTimeMillis();
+        long distTime = System.currentTimeMillis();
+        long distALV = getAvg();
+        long time = 1000;
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 8) {
+            FR.setPower(-output * 1.2);
+            BR.setPower(-output * 1.2);
             FL.setPower(output * .9);
             BL.setPower(output * .9);
             idle();
-        }
-        output = .25;
-        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 11) {
-            FR.setPower(-output * 1.05);
-            BR.setPower(-output * 1.05);
-            FL.setPower(output * .9);
-            BL.setPower(output * .9);
-            idle();
+//            if (System.currentTimeMillis() - distTime > time) {
+//                if(Math.abs(getAvg() - distALV) < 1) {
+//                    turnRightWithGyroOneSide(-.25, 10);
+//                }
+//                else {
+//                    distTime = System.currentTimeMillis();
+//                    distALV = getAvg();
+//                }
+//            }
         }
         FR.setPower(0);
         BR.setPower(0);
@@ -1826,6 +1843,37 @@ public abstract class AutoOpMode extends LinearOpMode {
 //            BL.setPower(-output * .8);
 //            idle();
 //        }
+    }
+
+    //Positive values power values are towards the wall.
+    public void moveToWallBlue(int distance, double power, double light) throws InterruptedException {
+        beforeALV = getAvg();
+        beforeAngle = getGyroYaw();
+        double output = power * basePowerMultiplier();
+        double startTime = System.currentTimeMillis();
+        long distTime = System.currentTimeMillis();
+        long distALV = getAvg();
+        long time = 1000;
+        while (Math.abs(getAvg() - beforeALV) < distance && Math.abs(colorSensorAverageValues(colorSensorWLA) - whiteACV) > 8) {
+            FR.setPower(-output * 1.2);
+            BR.setPower(-output * 1.2);
+            FL.setPower(output * .9);
+            BL.setPower(output * .9);
+            idle();
+//            if (System.currentTimeMillis() - distTime > time) {
+//                if(Math.abs(getAvg() - distALV) < 1) {
+//                    turnRightWithGyroOneSide(-.25, 10);
+//                }
+//                else {
+//                    distTime = System.currentTimeMillis();
+//                    distALV = getAvg();
+//                }
+//            }
+        }
+        FR.setPower(0);
+        BR.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
     }
 
     public void moveToSecondLine(int distance, double power, double light) throws InterruptedException {

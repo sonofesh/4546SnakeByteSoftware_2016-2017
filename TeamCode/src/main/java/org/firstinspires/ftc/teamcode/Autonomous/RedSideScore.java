@@ -45,21 +45,20 @@ public class RedSideScore extends AutoOpMode {
 //        shoot(power, 380);
 //        bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
-        double angle35 = getGyroYaw() + change;
-        turnLeftWithPID(35, .0032
-                , .0000145, 0.0);
+        double angle33 = getGyroYaw() + change;
+        turnLeftWithPID(28, .0032, .0000145, 0.0);
         sleep(500);
-        angle35 -= 35;
+        angle33 -= 33;
         //double p = .004; double i = .000015; //double d = 2.0;
         double startTime = System.currentTimeMillis();
-        moveForwardPIDtoWallRed(4450, angle35, 1000);
+        moveForwardPIDtoWallRed(4450, angle33, 1000);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
         moveToWallRed_Stop(1600, .25, startLight + 6);
         moveToWallRed(200, .15); //slow down near end so stay aligned with wall
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)
-            moveToSecondLine(1200, .2, startLight + 4);
+            moveToSecondLine(800, .2, startLight + 4);
         sleep(500);
         if(onWhiteLine(startLight + 5) == false) {
             movePulseToWhiteLine(650, -.13, startLight + 3);
@@ -68,8 +67,8 @@ public class RedSideScore extends AutoOpMode {
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
-        moveBackAgainstWall(200, .3);
-        moveToSecondLine(2600, .3, startLight + 5);
+        moveBackAgainstWall(400, .3);
+        moveToSecondLine(2300, .3, startLight + 5);
         sleep(500);
 //        moveBackToWhiteLine(850, -.14, startLight + 8);
         movePulseToWhiteLine(850, -.14, startLight + 3);
@@ -79,7 +78,7 @@ public class RedSideScore extends AutoOpMode {
         moveForwardWithEncoders(.5, 375);//decreased from 500
         turnRightWithGyroOneSide(.6, 83);//slightly increased from 80
         sleep(500);
-        moveForwardWithEncoders(.5, 1000); //decreased from 1700
+        moveForwardWithEncoders(.5, 800); //decreased from 1700
         sleep(500);
     }
 

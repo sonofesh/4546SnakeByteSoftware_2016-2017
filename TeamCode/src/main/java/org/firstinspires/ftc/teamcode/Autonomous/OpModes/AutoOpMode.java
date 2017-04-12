@@ -1078,7 +1078,7 @@ public abstract class AutoOpMode extends LinearOpMode {
             lastTime = System.currentTimeMillis();
             idle();
             if (System.currentTimeMillis() - distTime > time) {
-                if(Math.abs(getAvg() - distALV) < 20) {
+                if(Math.abs(getAvg() - distALV) < 10) {
                     stuck = true;
                     moveBackWardWithEncoders(.15, 200);
                     turnRightWithGyroOneSide(.25, 15);

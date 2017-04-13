@@ -53,7 +53,7 @@ public class BlueSide100 extends AutoOpMode {
             turnRightWithPID(40 - firstTurn, .0045, .00003, 0.0);
         }
         else
-            turnRightWithPID(40, .0035, .00003, 0.0);
+            turnRightWithPID(40, .0045, .000025, 0.0);
         angle45 += 40;
         moveForwardPID(3000, angle45);
         sleep(750);
@@ -62,13 +62,13 @@ public class BlueSide100 extends AutoOpMode {
             double firstTurn = Math.abs(360 - getGyroYaw());
             turnRightWithPID(firstTurn, .0052, .000018, 0.0);
             sleep(100);
-            turnRightWithPID(turn - firstTurn, .0052, .000018, 0.0);
+            turnRightWithPID(turn - firstTurn, .0045, .00002, 0.0);
         }
         else
             turnRightWithPID(turn, .004, .0003, 0.0);
         resetEncoders();
-        moveForwardWithEncoders(-.3, 200);
-        moveToWallBlue(3200, .275, startLight + 5);
+        moveForwardWithEncoders(-.3, 600);
+        moveToWallBlue(3200, .25, startLight + 4);
         sleep(500);
         if(onWhiteLine() == false)
             movePulseToWhiteLine(900, -.13, startLight + 2);

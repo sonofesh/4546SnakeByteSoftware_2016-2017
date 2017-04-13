@@ -940,8 +940,8 @@ public abstract class AutoOpMode extends LinearOpMode {
         double deltaTime;
         int angleError;
         beforeALV = getAvg();
-        double correctionLeft = .04;
-        double correctionRight = .04;
+        double correctionLeft = .035;
+        double correctionRight = .035;
         double voltageAverage = (hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage() + hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage())/2;;
         double change = (13.5 - voltageAverage) * 200;
         distance += change;
@@ -1860,15 +1860,16 @@ public abstract class AutoOpMode extends LinearOpMode {
             FL.setPower(output * .9);
             BL.setPower(output * .9);
             idle();
-//            if (System.currentTimeMillis() - distTime > time) {
-//                if(Math.abs(getAvg() - distALV) < 1) {
-//                    turnRightWithGyroOneSide(-.25, 10);
-//                }
-//                else {
-//                    distTime = System.currentTimeMillis();
-//                    distALV = getAvg();
-//                }
-//            }
+            if (System.currentTimeMillis() - distTime > time) {
+                if(Math.abs(getAvg() - distALV) < 10) {
+                    moveForwardWithEncoders(.25, 150);
+                    turnRightWithGyroOneSide(-.25, 10);
+                }
+                else {
+                    distTime = System.currentTimeMillis();
+                    distALV = getAvg();
+                }
+            }
         }
         FR.setPower(0);
         BR.setPower(0);

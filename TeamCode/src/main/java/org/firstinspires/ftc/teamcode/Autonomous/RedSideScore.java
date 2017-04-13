@@ -46,14 +46,15 @@ public class RedSideScore extends AutoOpMode {
         bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
         double angle33 = getGyroYaw() + change;
-        turnLeftWithPID(28, .0032, .0000145, 0.0);
+        turnLeftWithPID(32, .0035, .000013, 0.0);
         sleep(500);
-        angle33 -= 33;
+        angle33 -= 32;
         //double p = .004; double i = .000015; //double d = 2.0;
         double startTime = System.currentTimeMillis();
-        moveForwardPIDtoWallRed(4450, angle33, 1000);
+        moveForwardPIDtoWallRed(3800, angle33, 1000);
+        turnRightWithGyroOneSide(.25, 15);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
-        moveToWallRed_Stop(1600, .25, startLight + 6);
+        moveToWallRed_Stop(1800, .25, startLight + 6);
         moveToWallRed(200, .15); //slow down near end so stay aligned with wall
         sleep(500);
         resetEncoders();

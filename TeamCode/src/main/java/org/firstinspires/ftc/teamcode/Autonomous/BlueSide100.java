@@ -60,7 +60,7 @@ public class BlueSide100 extends AutoOpMode {
         double turn = 145;
         if(getGyroYaw() + turn > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
-            turnRightWithPID(firstTurn, .0052, .000018, 0.0);
+            turnRightWithPID(firstTurn, .0055, .000025, 0.0);
             sleep(100);
             turnRightWithPID(turn - firstTurn, .0045, .00002, 0.0);
         }

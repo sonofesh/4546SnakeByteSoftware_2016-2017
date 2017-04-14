@@ -190,8 +190,8 @@ public class TeleOpA extends OpMode {
             ShooterB.setPower(1);
         }
         else if (gamepad2.left_bumper) {
-            ShooterF.setPower(-.9);
-            ShooterB.setPower(.9);
+            ShooterF.setPower(.9);
+            ShooterB.setPower(-.9);
         }
         else {
             ShooterF.setPower(0);

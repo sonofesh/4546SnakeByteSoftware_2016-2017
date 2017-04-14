@@ -54,8 +54,8 @@ public class RedSideScore extends AutoOpMode {
         moveForwardPIDtoWallRed(3800, angle33, 1000);
         turnRightWithGyroOneSide(.25, 15);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
-        moveToWallRed_Stop(1800, .25, startLight + 6);
-        moveToWallRed(200, .15); //slow down near end so stay aligned with wall
+        moveToWallRed_Stop(2000, .2, startLight + 6);
+        //moveToWallRed(200, .15); //slow down near end so stay aligned with wall
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
  * Created by 4546 on 1/4/2017.
  * Does what the name says
  * Will consistently score 40 points and is a good option
- * if we're with a team that has an amazing auto(ex: Faltech)
+ * if we're with a team that has a more reliable autonomous
  * Same as other ShootOnly but written by extending AutOpMode
  */
 
@@ -39,15 +39,9 @@ public class ShootOnlyNew extends AutoOpMode {
             power = .85;
         else if(voltage > 14)
             power = .8;
-        shoot(power, 360);
+        shoot(power, 330);
         sleep(500);
         moveForwardWithEncoders(.4, 2500);
     }
 }
-
-//
-// start time set
-// start encoder set
-//if (start time - current time > x && start ecoder - current = ~0)
-//        { NOT MOVING}
 

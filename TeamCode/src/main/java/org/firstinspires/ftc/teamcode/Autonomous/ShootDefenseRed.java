@@ -24,7 +24,6 @@ public class ShootDefenseRed extends AutoOpMode {
         telemetry.update();
         double power = .85;
         waitForStart();
-        sleep(15000);
         moveForwardWithEncoders(.175, 1200);
         sleep(1000);
         bringDownShooter(.275, 1150);
@@ -40,7 +39,7 @@ public class ShootDefenseRed extends AutoOpMode {
         else if(voltage > 14)
             power = .8;
         shoot(power, 330);
-        sleep(500);
+        sleep(13000);
         turnLeftWithGyro(.275, 32);
         moveForwardWithEncoders(.5, 4500);
     }

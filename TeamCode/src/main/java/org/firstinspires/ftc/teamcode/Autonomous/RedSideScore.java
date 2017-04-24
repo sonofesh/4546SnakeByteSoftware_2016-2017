@@ -46,26 +46,42 @@ public class RedSideScore extends AutoOpMode {
         bringDownShooter(-.45, 400);
         double change = getGyroYaw() - perpendicular;
         double angle33 = getGyroYaw() + change;
-        turnLeftWithPID(32, .0035, .000013, 0.0);
+        turnLeftWithPID(35, .0035, .000013, 0.0);
         sleep(500);
         angle33 -= 32;
         //double p = .004; double i = .000015; //double d = 2.0;
         double startTime = System.currentTimeMillis();
-        moveForwardPIDtoWallRed(3800, angle33, 1000);
-        turnRightWithGyroOneSide(.25, 15);
+        moveForwardPIDtoWallRed(4000, angle33, 1000);
+        //turnRightWithGyroOneSide(.2, 5);
         //correctOneSideLeft(perpendicular, .0042, .000012, 0, 30);
-        moveToWallRed_Stop(2000, .2, startLight + 6);
+        moveToWallRed_Stop(2000, .23, startLight + 7);
         //moveToWallRed(200, .15); //slow down near end so stay aligned with wall
         sleep(500);
         resetEncoders();
         if(onWhiteLine(startLight + 5) == false)
-            moveToSecondLine(800, .2, startLight + 4);
+            moveToSecondLine(700, .2, startLight + 6);
         sleep(500);
         if(onWhiteLine(startLight + 5) == false) {
-            movePulseToWhiteLine(650, -.13, startLight + 3);
+            movePulseToWhiteLine(650, -.16, startLight + 5);
         }
         pushRedBeacon();
         resetEncoders();
+        sleep(500);
+        if(colorChange() == false) {
+            moveForwardWithEncoders(.2, 20);
+            pushRedBeacon();
+            sleep(500);
+        }
+        if(colorChange() == false) {
+            moveForwardWithEncoders(.2, 60);
+            pushRedBeacon();
+            sleep(500);
+        }
+        if(colorChange() == false) {
+            moveForwardWithEncoders(-.2, 160);
+            pushRedBeacon();
+            sleep(500);
+        }
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveToSecondLine(3000, .25);
         moveBackAgainstWall(400, .3);
@@ -76,11 +92,24 @@ public class RedSideScore extends AutoOpMode {
         sleep(500);
         pushRedBeacon();
         sleep(500);
+        if(colorChange() == false) {
+            moveForwardWithEncoders(-.2, 30);
+            pushRedBeacon();
+            sleep(500);
+        }
+        if(colorChange() == false) {
+            moveForwardWithEncoders(.2, 60);
+            pushRedBeacon();
+            sleep(500);
+        }
         moveForwardWithEncoders(.5, 375);//decreased from 500
         turnRightWithGyroOneSide(.6, 83);//slightly increased from 80
         sleep(500);
-        moveForwardWithEncoders(.5, 800); //decreased from 1700
+        moveForwardWithEncoders(.65, 600, 2000); //decreased from 1700
         sleep(500);
+        moveForwardWithEncoders(-.5, 300); //decreased from 1700
+        sleep(500);
+        moveForwardWithEncoders(.5, 400); //decreased from 1700
     }
 
     /*

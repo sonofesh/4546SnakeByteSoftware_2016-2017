@@ -33,7 +33,7 @@ public class BlueSideScore extends AutoOpMode {
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
             power = .95;
-        else if (voltage <= 13.75 && voltage > 13.5)
+        else if (voltage <= 13.75 &&  voltage > 13.5)
             power = .92;
         else if (voltage > 13.75 && voltage <= 13.9)
             power = .88;
@@ -51,7 +51,7 @@ public class BlueSideScore extends AutoOpMode {
         turnRightWithPID(160, .0055, .000045, 0.0);
 //        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
 //        sleep(500);
-        moveBackWardWithEncoders(.2, 300);
+        moveBackWardWithEncoders(.2, 600);
         moveToWallBlue(2250, .25);
         sleep(500);
         if(onWhiteLine() == false)

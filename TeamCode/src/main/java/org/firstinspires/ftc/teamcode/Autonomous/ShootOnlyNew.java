@@ -24,7 +24,7 @@ public class ShootOnlyNew extends AutoOpMode {
         telemetry.update();
         double power = .85;
         waitForStart();
-        sleep(12000);
+        sleep(14000);
         moveForwardWithEncoders(.175, 1100);
         sleep(1000);
         bringDownShooter(.275, 1150);

@@ -35,7 +35,7 @@ public class BlueSide100 extends AutoOpMode {
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
-            power = .95;
+            power = .93;
         else if (voltage <= 13.75 && voltage > 13.5)
             power = .92;
         else if (voltage > 13.75 && voltage <= 13.9)
@@ -47,47 +47,42 @@ public class BlueSide100 extends AutoOpMode {
         shoot(power, 360);
         bringDownShooter(-.4, 620);
         double angle45 = getGyroYaw();
-        if(getGyroYaw() + 40 > 360) {
+        if(getGyroYaw() + 43 > 360) {
             double firstTurn = Math.abs(360 - getGyroYaw());
-            turnRightWithPID(firstTurn, .004, .00003, 0.0);
-            turnRightWithPID(40 - firstTurn, .0045, .00003, 0.0);
+            turnRightWithPID(firstTurn, .004, .000025, 0.0);
+            turnRightWithPID(43 - firstTurn, .0045, .000025, 0.0);
         }
         else
-            turnRightWithPID(40, .0045, .000025, 0.0);
-        angle45 += 40;
-        moveForwardPID(3000, angle45);
-        sleep(750);
-        double turn = 145;
-        if(getGyroYaw() + turn > 360) {
-            double firstTurn = Math.abs(360 - getGyroYaw());
-            turnRightWithPID(firstTurn, .0055, .000025, 0.0);
-            sleep(100);
-            turnRightWithPID(turn - firstTurn, .0045, .00002, 0.0);
-        }
-        else
-            turnRightWithPID(turn, .004, .0003, 0.0);
+            turnRightWithPID(43, .0045, .00002, 0.0);
+        angle45 += 43;
+        moveForwardPID(3200, angle45);
+        double turn = 140;
+        double firstTurn = Math.abs(360 - getGyroYaw());
+        turnRightWithPID(firstTurn + 5, .0055, .0000275, 0.0);
+        sleep(500);
+        turnRightWithPID(turn - firstTurn, .004, .000017, 0.0);
         resetEncoders();
-        moveForwardWithEncoders(-.3, 600);
-        moveToWallBlue(3200, .25, startLight + 4);
+        sleep(250);
+        moveForwardWithEncoders(-.325, 1100);
+        moveToWallBlue(2300, .25, startLight + 5);
         sleep(500);
         if(onWhiteLine() == false)
-            movePulseToWhiteLine(900, -.13, startLight + 2);
+            movePulseToWhiteLine(900, -.13, startLight + 3);
         sleep(500);
         pushBlueBeacon();
-        sleep(1000);
+        sleep(500);
         resetEncoders();
         //correct(perpendicular, .04, .00015, 0.0, 0);
 //        moveForwardPID(2500, perpendicular);
 //        moveForwardsToWhiteLine(300, perpendicular);
-        moveToSecondLine(200, -.3, startLight + 20);
-        moveToSecondLine(3000, -.2, startLight + 3);
+        moveToSecondLine(500, -.3, startLight + 1000);
+        moveToSecondLine(2650, -.2, startLight + 4);
         sleep(500);
         if(onWhiteLine() == false)
-            movePulseToWhiteLine(650, .1, startLight + 2);
+            movePulseToWhiteLine(650, .15, startLight + 3);
         sleep(500);
         pushBlueBeacon();
         moveForwardWithEncoders(.12, 100);
-        sleep(500);
         pushBlueBeacon();
         sleep(500);
 //        moveBackWardWithEncoders(.4, 800);

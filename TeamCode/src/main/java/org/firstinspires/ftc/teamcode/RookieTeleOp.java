@@ -9,8 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Created by sopa on 9/25/16.
  */
 @TeleOp(name = "Teleop", group = "Teleop")
-@Disabled
-public class RookieTele extends OpMode
+public class RookieTeleOp extends OpMode
 {
     DcMotor FR;
     DcMotor FL;

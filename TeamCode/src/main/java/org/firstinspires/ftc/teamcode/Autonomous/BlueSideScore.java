@@ -9,14 +9,13 @@ import org.firstinspires.ftc.teamcode.Autonomous.OpModes.AutoOpMode;
 /**
  * Created by 4546 on 12/21/16.
  * This auto will move to the beacons, hit both, turn, shoot, and then knock the cap ball
- * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 + 19 = tests
+ * Test Count: 12 + 3 + 22 + 12 + 4 + 4 + 1 + 5 + 14 + 19 + 2 = 100 tests
  */
 @Autonomous(name = "BlueSide100", group = "Autonomous")
 public class BlueSideScore extends AutoOpMode {
     public BlueSideScore() {
         super();
     }
-
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
@@ -24,16 +23,13 @@ public class BlueSideScore extends AutoOpMode {
         telemetry.addData("init", "test6");
         telemetry.update();
         waitForStart();
-        double perpendicular = getGyroYaw();
         moveForwardWithEncoders(.16, 500);
-        //moveForwardPID(500);
-        //bring down shooter
         bringDownShooter(.3, 1150);
         sleep(1000);
         double voltage = hardwareMap.voltageSensor.get("Motor Controller 1").getVoltage();
         if (voltage <= 13.5)
             power = .95;
-        else if (voltage <= 13.75 &&  voltage > 13.5)
+        else if (voltage <= 13.75 && voltage > 13.5)
             power = .92;
         else if (voltage > 13.75 && voltage <= 13.9)
             power = .88;
@@ -49,22 +45,17 @@ public class BlueSideScore extends AutoOpMode {
         moveForwardPID(3200, angle36);
         sleep(500);
         turnRightWithPID(160, .0055, .000045, 0.0);
-//        correctOneSideRight(perpendicular, .004, .000015, 0, 0);
-//        sleep(500);
         moveBackWardWithEncoders(.2, 600);
         moveToWallBlue(2250, .25);
         sleep(500);
-        if(onWhiteLine() == false)
+        if (onWhiteLine() == false)
             moveBackwardsToWhiteLine(500);
         sleep(500);
         pushBlueBeacon();
         sleep(1000);
-        //correct(perpendicular, .04, .00015, 0.0, 0);
-//        moveForwardPID(2500, perpendicular);
-//        moveForwardsToWhiteLine(300, perpendicular);
         moveToSecondLine(3400, -.3, 6);
         sleep(500);
-        if(onWhiteLine() == false)
+        if (onWhiteLine() == false)
             moveBackwardsToWhiteLine(200);
         sleep(500);
         pushBlueBeacon();
@@ -74,6 +65,7 @@ public class BlueSideScore extends AutoOpMode {
         sleep(500);
         moveForwardWithEncoders(.5, 3000);
     }
+}
 
 
 //        moveBackWardWithEncoders(.175, 400);
@@ -171,5 +163,3 @@ public class BlueSideScore extends AutoOpMode {
 //        shoot(power, 350);
 //        sleep(750);
     //shoot
-
-}
